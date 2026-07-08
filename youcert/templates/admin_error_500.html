@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Internal Server Error | YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+
+            /* Status Colors */
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+
+            /* Spacing & Radius */
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .error-container {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top decorative line */
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #EF4444;
+            /* Red for 500 error */
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: #FEF2F2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #EF4444;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .error-code {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #EF4444 0%, #B91C1C 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .error-details {
+            background: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .error-details h4 {
+            color: #991B1B;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .error-details p {
+            color: #7F1D1D;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        .help-section {
+            background: #F8FAFC;
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            border: 1px solid #E2E8F0;
+            text-align: left;
+        }
+
+        .help-section h4 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .help-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .help-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .help-list li:last-child {
+            border-bottom: none;
+        }
+
+        .help-list li svg {
+            color: #4F46E5;
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            border-color: #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .contact-info {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            padding-top: 1.5rem;
+            border-top: 1px solid #F1F5F9;
+        }
+
+        .contact-info a {
+            color: #4F46E5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
+        .meta-info {
+            margin-top: 0.5rem;
+            font-size: 0.75rem;
+            color: #94A3B8;
+            font-family: monospace;
+        }
+
+        @media (max-width: 640px) {
+            .error-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+    <div class="error-container">
+        <div class="icon-wrapper">
+            <i data-lucide="server-crash" style="width: 48px; height: 48px;"></i>
+        </div>
+
+        <div class="error-code">500</div>
+        <h1 class="error-title">Internal Server Error</h1>
+        <p class="error-message">
+            Oops! Something went wrong on our end. We apologize for the inconvenience. Our team has been automatically
+            notified and is working to fix the issue.
+        </p>
+
+        <div class="error-details">
+            <h4>
+                <i data-lucide="alert-triangle" style="width: 18px; height: 18px;"></i>
+                What happened?
+            </h4>
+            <p>
+                The server encountered an unexpected condition that prevented it from fulfilling your request. This
+                could be due to a database error, configuration issue, or a bug in the code.
+            </p>
+        </div>
+
+        <div class="help-section">
+            <h4>Suggested Actions</h4>
+            <ul class="help-list">
+                <li><i data-lucide="refresh-cw"></i> Refresh the page and try again</li>
+                <li><i data-lucide="trash-2"></i> Clear your browser cache and cookies</li>
+                <li><i data-lucide="clock"></i> Try accessing the page after a few minutes</li>
+                <li><i data-lucide="corner-up-left"></i> Go back to the previous page</li>
+            </ul>
+        </div>
+
+        <div class="actions">
+            <a href="javascript:location.reload()" class="btn btn-primary">
+                <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
+                Refresh Page
+            </a>
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+                <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+                Back to Dashboard
+            </a>
+        </div>
+
+        <div class="contact-info">
+            <p>
+                Need immediate help? Contact support at
+                <a href="mailto:support@youcert.com">support@youcert.com</a>
+            </p>
+            <p class="meta-info">
+                Error ID: {{ request.environ.get('REQUEST_ID', 'N/A') }} |
+                Time: {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Log error to console
+        console.error('500 Internal Server Error');
+        console.error('Path:', window.location.pathname);
+        console.error('Time:', new Date().toISOString());
+
+        // Attempt to log error to server (optional)
+        try {
+            fetch('/api/log-client-error', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    type: '500_error',
+                    path: window.location.pathname,
+                    timestamp: new Date().toISOString()
+                })
+            }).catch(() => { });
+        } catch (e) { }
+
+        // ── Auto-refresh with a loop guard ────────────────────────────────────
+        // sessionStorage tracks how many times we've auto-reloaded on this URL
+        // so the page never loops more than MAX_AUTO_RELOADS times.
+        const MAX_AUTO_RELOADS = 3;
+        const SK = 'err500_reloads_' + window.location.pathname;
+        const reloadsDone = parseInt(sessionStorage.getItem(SK) || '0', 10);
+
+        if (reloadsDone < MAX_AUTO_RELOADS) {
+            // Still within the safe limit — start a 10-second countdown
+            let countdown = 10;
+
+            // Add a live countdown hint to the page
+            const hint = document.createElement('p');
+            hint.id = 'auto-refresh-hint';
+            hint.style.cssText = 'text-align:center;margin-top:1rem;color:#6b7280;font-size:0.85rem';
+            hint.textContent = `Auto-retrying in ${countdown}s… (attempt ${reloadsDone + 1}/${MAX_AUTO_RELOADS})`;
+            document.querySelector('.actions').after(hint);
+
+            const refreshTimer = setInterval(() => {
+                countdown--;
+                hint.textContent = `Auto-retrying in ${countdown}s… (attempt ${reloadsDone + 1}/${MAX_AUTO_RELOADS})`;
+                if (countdown <= 0) {
+                    clearInterval(refreshTimer);
+                    // Increment counter BEFORE reloading so the next load sees it
+                    sessionStorage.setItem(SK, reloadsDone + 1);
+                    location.reload();
+                }
+            }, 1000);
+        } else {
+            // We have already auto-reloaded MAX_AUTO_RELOADS times — STOP here
+            // to avoid an infinite loop. Clear the counter so a manual refresh
+            // starts from scratch.
+            sessionStorage.removeItem(SK);
+
+            const hint = document.createElement('p');
+            hint.style.cssText = 'text-align:center;margin-top:1rem;color:#EF4444;font-size:0.9rem;font-weight:600';
+            hint.textContent = 'Server is still warming up. Please wait a moment and click "Refresh Page" to try again.';
+            document.querySelector('.actions').after(hint);
+        }
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

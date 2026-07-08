@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>OTP Verification - YOUCERT Admin Panel</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- OTP Card --- */
+        .otp-container {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            max-width: 450px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decorative top line */
+        .otp-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--brand-gradient);
+        }
+
+        .otp-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo-wrapper {
+            width: 64px;
+            height: 64px;
+            background: #EEF2FF;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #4F46E5;
+        }
+
+        .otp-header h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .otp-header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* --- Alerts --- */
+        .flash-messages {
+            margin-bottom: 1.5rem;
+        }
+
+        .flash-message {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 0.75rem;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+        }
+
+        .flash-message.error {
+            background: var(--error-bg);
+            border: 1px solid #FECACA;
+            color: var(--error-text);
+        }
+
+        .flash-message.success {
+            background: var(--success-bg);
+            border: 1px solid #A7F3D0;
+            color: var(--success-text);
+        }
+
+        .flash-message.info {
+            background: var(--info-bg);
+            border: 1px solid #BFDBFE;
+            color: var(--info-text);
+        }
+
+        /* --- Info Box --- */
+        .info-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-left: 4px solid #6366F1;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .info-box p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.5;
+        }
+        
+        .info-box strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* --- Forms --- */
+        .otp-form {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 1.25rem;
+            text-align: center;
+            letter-spacing: 4px;
+            font-weight: 600;
+            font-family: monospace;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .otp-input-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Timer & Footer --- */
+        .timer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .timer strong {
+            font-family: monospace;
+            font-size: 1rem;
+            color: var(--text-dark);
+        }
+
+        .timer.warning strong { color: var(--warning-text); }
+        .timer.expired strong { color: var(--error-text); }
+
+        .resend-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #F1F5F9;
+        }
+
+        .resend-link a {
+            color: #6366F1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .resend-link a:hover {
+            color: #4338CA;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .otp-container {
+                padding: 2rem 1.5rem;
+            }
+            .otp-header h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="otp-container">
+        <div class="otp-header">
+            <div class="logo-wrapper">
+                <i data-lucide="shield-check" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h1>Verify Your Login</h1>
+            <p>Enter the 6-digit code sent to your email to complete the login process.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {% if category == 'error' %}
+                                <i data-lucide="alert-circle" style="width: 18px; height: 18px;"></i>
+                            {% elif category == 'success' %}
+                                <i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i>
+                            {% else %}
+                                <i data-lucide="info" style="width: 18px; height: 18px;"></i>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="info-box">
+            <p>Code sent to: <strong>{{ email }}</strong></p>
+            <p style="font-size: 0.75rem; margin-top: 0.25rem; color: #9CA3AF;">(Check spam folder if not received)</p>
+        </div>
+
+        <form method="POST" class="otp-form" action="{{ url_for('sevak69.login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="action" value="verify_otp">
+            <input type="hidden" name="email" value="{{ email }}">
+            <input type="hidden" name="purpose" value="{{ purpose }}">
+
+            <div class="form-group">
+                <label for="otp_code">Verification Code</label>
+                <input 
+                    type="text" 
+                    id="otp_code" 
+                    name="otp_code" 
+                    maxlength="6" 
+                    placeholder="000000"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    required
+                    autofocus
+                    onkeypress="if(!/[0-9]/.test(String.fromCharCode(event.which))) event.preventDefault()"
+                >
+                <div class="otp-input-hint">
+                    <i data-lucide="lock" style="width: 12px; height: 12px; display: inline; vertical-align: middle;"></i>
+                    Enter 6-digit numeric code
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                Complete Login
+                <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+            </button>
+        </form>
+
+        <form method="POST" action="{{ url_for('sevak69.login') }}" style="margin-bottom: 0;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="button" class="btn btn-secondary" id="resend-button">
+                <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                Restart & Resend Code
+            </button>
+        </form>
+
+        <div class="timer">
+            <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+            Code validity: <strong id="timer">10:00</strong> minutes
+        </div>
+
+        <div class="resend-link">
+            <a href="{{ url_for('sevak69.login') }}">Use Different Account</a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Logic for auto-submit and number-only input remains the same
+        const otpInput = document.getElementById('otp_code');
+        if (otpInput) {
+            otpInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                if (e.target.value.length === 6) {
+                    // Auto-submit after 6 digits
+                    setTimeout(() => {
+                        e.target.form.submit();
+                    }, 500);
+                }
+            });
+
+            // Only allow numbers
+            otpInput.addEventListener('keypress', (e) => {
+                if (!/[0-9]/.test(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
+        
+        // ** RESEND BUTTON LOGIC **
+        document.getElementById('resend-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Safest action is to clear session/redirect to force Step 1 re-authentication
+            window.location.href = "{{ url_for('sevak69.login') }}";
+        });
+
+        // Timer countdown (retains 10 minute logic)
+        let timeLeft = 600; 
+        const timerElement = document.getElementById('timer');
+        if (timerElement) {
+            setInterval(() => {
+                if (timeLeft > 0) {
+                    timeLeft--;
+                    const minutes = Math.floor(timeLeft / 60);
+                    const seconds = timeLeft % 60;
+                    timerElement.textContent = 
+                        `${minutes}:${String(seconds).padStart(2, '0')}`;
+                    
+                    if (timeLeft === 60) {
+                        timerElement.parentElement.classList.add('warning');
+                    }
+                    if (timeLeft === 0) {
+                        timerElement.parentElement.classList.remove('warning');
+                        timerElement.parentElement.classList.add('expired');
+                        timerElement.textContent = 'Expired';
+                    }
+                }
+            }, 1000);
+        }
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

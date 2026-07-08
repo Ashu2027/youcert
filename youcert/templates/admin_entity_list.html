@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>{{ entity_config.display_name }} - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .btn-small:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            color: #4F46E5;
+        }
+
+        .btn-resolve {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .btn-resolve:hover {
+            background: #A7F3D0;
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Filter Card --- */
+        .filter-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .filter-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-toggle {
+            background: none;
+            border: none;
+            color: #4F46E5;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .filter-content {
+            display: block;
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            overflow: hidden;
+            max-height: 1000px;
+            opacity: 1;
+        }
+
+        .filter-content.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.75rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-family: inherit;
+            appearance: none;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-filter {
+            flex-grow: 1;
+            padding: 0.75rem;
+            background: var(--cta-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-on-brand);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: all 0.2s ease;
+        }
+        .btn-filter:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(79, 70, 229, 0.2);
+        }
+
+        .btn-clear {
+            padding: 0.75rem 1.5rem;
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-clear:hover { background: #E5E7EB; }
+
+        /* --- Data Table --- */
+        .data-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        .data-table { width: 100%; border-collapse: collapse; }
+
+        .data-table th, .data-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #F1F5F9;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #F8FAFC;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table td {
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover { background: #F8FAFC; }
+
+        .data-table td.wrap { white-space: normal; word-break: break-word; min-width: 200px; }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .status-active, .status-verified, .status-resolved, .status-completed { 
+            background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); 
+        }
+        .status-inactive, .status-rejected, .status-failed { 
+            background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        .status-pending, .status-unresolved { 
+            background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+        .status-frozen {
+            background: #EEF2FF; color: #4F46E5; border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .image-thumb {
+            width: 40px; height: 40px; border-radius: 8px; object-fit: cover;
+            cursor: zoom-in; border: 1px solid #E5E7EB; transition: transform 0.2s;
+        }
+        .image-thumb:hover { transform: scale(1.1); }
+
+        .action-buttons { display: flex; gap: 0.5rem; align-items: center; }
+
+        /* --- Pagination --- */
+        .pagination {
+            display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
+            gap: 0.5rem; padding: 1.5rem; border-top: 1px solid #F1F5F9; background: #F8FAFC;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem; background: white; border: 1px solid #E2E8F0;
+            border-radius: var(--radius-sm); color: var(--text-dark); font-size: 0.875rem;
+            cursor: pointer; text-decoration: none; transition: all 0.2s; font-weight: 500;
+        }
+        .page-btn:hover { background: #F1F5F9; border-color: #CBD5E1; }
+        .page-btn.active { background: var(--brand-gradient); color: white; border-color: transparent; }
+        .page-btn.disabled { opacity: 0.5; cursor: not-allowed; background: #F3F4F6; pointer-events: none; }
+        .pagination span { padding: 0.5rem; color: var(--text-muted); }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center; padding: 5rem 2rem; color: var(--text-muted);
+        }
+        .empty-icon { color: #CBD5E1; width: 64px; height: 64px; margin-bottom: 1rem; }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+            padding: 1rem; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-image {
+            max-width: 90%; max-height: 90vh; border-radius: var(--radius-md);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .modal-close {
+            position: absolute; top: 1.5rem; right: 1.5rem; width: 40px; height: 40px;
+            border-radius: 50%; background: white; border: none; color: var(--text-dark);
+            font-size: 1.5rem; cursor: pointer; display: flex; align-items: center;
+            justify-content: center; transition: background 0.2s;
+        }
+        .modal-close:hover { background: #F3F4F6; }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .filter-grid { grid-template-columns: 1fr; }
+            .page-header { flex-direction: column; align-items: flex-start; }
+            .data-table th, .data-table td { padding: 0.75rem 1rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+            {% if entity_config.allow_create %}
+                 <a href="{{ url_for('sevak69.' + entity_key + '_create') }}" class="btn btn-primary">
+                     <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                     Create New
+                 </a>
+            {% endif %}
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div class="page-header-title">
+                <h1 class="page-title">
+                    <i data-lucide="list" style="width: 32px; height: 32px; color: #4F46E5;"></i> 
+                    {{ entity_config.display_name }}
+                </h1>
+                <p class="page-subtitle">Manage {{ entity_config.display_name|lower }} in the system. Total: {{ total or 0 }}</p>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% elif category == 'error' %}
+                            <i data-lucide="alert-circle"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if entity_config.filter_fields and entity_config.filter_fields|length > 0 %}
+        <div class="filter-card">
+            <div class="filter-header">
+                <div class="filter-title">
+                    <i data-lucide="search" style="width: 18px; height: 18px; color: #4F46E5;"></i>
+                    <span>Filter & Search</span>
+                </div>
+                <button type="button" class="filter-toggle" onclick="toggleFilters()" id="filterToggleButton">Hide Filters</button>
+            </div>
+            
+            {% set list_endpoint = 'sevak69.' + entity_key %}
+            {% if entity_key == 'contact_query' %}
+                {% set list_endpoint = 'sevak69.contact_query_list' %}
+            {% endif %}
+            <form method="GET" action="{{ url_for(list_endpoint) }}" id="filterForm" class="filter-content">
+                
+                <div class="filter-grid">
+                    {% for field in entity_config.filter_fields %}
+                    <div class="filter-group">
+                        <label for="filter_{{ field }}" class="filter-label">{{ field|replace('_', ' ')|title }}</label>
+                        
+                        {% if field in ['is_active', 'is_approved', 'email_verified', 'oauth_connected', 'is_frozen'] %}
+                            <select id="filter_{{ field }}" name="filter_{{ field }}" class="filter-select">
+                                <option value="">All</option>
+                                <option value="1" {% if filters.get(field) == '1' %}selected{% endif %}>Yes / Active</option> 
+                                <option value="0" {% if filters.get(field) == '0' %}selected{% endif %}>No / Inactive</option>
+                            </select>
+                        {% elif field == 'designation' and entity_key == 'admin' %}
+                             <select id="filter_{{ field }}" name="filter_{{ field }}" class="filter-select">
+                                 <option value="">All Designations</option>
+                                 {% for num, name in designation_names.items()|sort if designation_names %}
+                                     {% if num != 0 %} 
+                                     <option value="{{ num }}" {% if filters.get(field) == num|string %}selected{% endif %}>{{ name }} ({{ num }})</option>
+                                     {% endif %}
+                                 {% endfor %}
+                             </select>
+                        {% elif field == 'verification_status' and entity_key == 'bank_details' %}
+                             <select id="filter_{{ field }}" name="filter_{{ field }}" class="filter-select">
+                                 <option value="">All Statuses</option>
+                                 <option value="0" {% if filters.get(field) == '0' %}selected{% endif %}>Pending</option>
+                                 <option value="1" {% if filters.get(field) == '1' %}selected{% endif %}>Verified</option>
+                                 <option value="2" {% if filters.get(field) == '2' %}selected{% endif %}>Rejected</option>
+                             </select>
+                         {% elif field == 'payment_status' and entity_key == 'purchase_exam' %}
+                             <select id="filter_{{ field }}" name="filter_{{ field }}" class="filter-select">
+                                 <option value="">All Statuses</option>
+                                 <option value="pending" {% if filters.get(field) == 'pending' %}selected{% endif %}>Pending</option>
+                                 <option value="completed" {% if filters.get(field) == 'completed' %}selected{% endif %}>Completed</option>
+                                 <option value="failed" {% if filters.get(field) == 'failed' %}selected{% endif %}>Failed</option>
+                             </select>
+                         {% elif field == 'resolved' and entity_key == 'contact_query' %}
+                             <select id="filter_{{ field }}" name="filter_{{ field }}" class="filter-select">
+                                 <option value="">All Statuses</option>
+                                 <option value="0" {% if filters.get(field) == '0' %}selected{% endif %}>Unresolved (Pending)</option>
+                                 <option value="1" {% if filters.get(field) == '1' %}selected{% endif %}>Resolved</option>
+                             </select>
+                         {% elif field.endswith('_date') or field == 'created_at' or field == 'updated_at' %}
+                             <input type="date" id="filter_{{ field }}" name="filter_{{ field }}" class="filter-input" 
+                                    value="{{ filters.get(field, '') }}">
+                        {% else %} 
+                            <input type="text" id="filter_{{ field }}" name="filter_{{ field }}" class="filter-input" 
+                                   placeholder="Search..." 
+                                   value="{{ filters.get(field, '') }}">
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    
+                     <div class="filter-group">
+                         <label for="search" class="filter-label">General Search</label>
+                         <input type="text" id="search" name="search" class="filter-input" placeholder="Keyword search..." value="{{ search_query or '' }}">
+                     </div>
+                     
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn-filter">
+                        <i data-lucide="filter" style="width: 14px; height: 14px;"></i> Apply Filters
+                    </button>
+                    <button type="button" class="btn-clear" onclick="clearFilters()">
+                        <i data-lucide="x" style="width: 14px; height: 14px;"></i> Clear All
+                    </button>
+                </div>
+            </form>
+        </div>
+        {% endif %}
+
+        <div class="data-card">
+            {% if records is defined and records %} 
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                 {% set columns = records[0].keys()|list %}
+                                {% for column_name in columns %}
+                                     {% if column_name not in entity_config.hidden_fields and not column_name.endswith('_url') and not column_name.endswith('_original') %}
+                                    <th>{{ column_name|replace('_', ' ')|title }}</th>
+                                    {% endif %}
+                                {% endfor %}
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in records %}
+                            <tr>
+                                {% set pk_value = record[entity_config.pk_column] %}
+                                
+                                {% for column_name in columns %}
+                                     {% if column_name not in entity_config.hidden_fields and not column_name.endswith('_url') and not column_name.endswith('_original') %}
+                                    <td>
+                                        {% set value = record.get(column_name) %}
+                                        
+                                        {# --- CELL DISPLAY LOGIC --- #}
+                                        {% if column_name in entity_config.image_fields %}
+                                            {% set img_url = record.get(column_name + '_url') %}
+                                            {% if img_url %}
+                                                <img src="{{ img_url }}" 
+                                                     alt="Preview" 
+                                                     class="image-thumb"
+                                                     onclick="openImageModal('{{ img_url }}')"
+                                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                                                 <span style="display: none; font-size: 0.8em; color: #EF4444;">Image Error</span>
+                                            {% else %}
+                                                <span style="color: var(--text-muted); font-size: 0.8em;">No image</span>
+                                            {% endif %}
+                                        
+                                        {% elif column_name in ['is_active', 'is_approved', 'email_verified', 'oauth_connected', 'is_frozen'] %}
+                                            {% if value %}
+                                                 {% if column_name == 'is_frozen' %}
+                                                     <span class="status-badge status-frozen">
+                                                         <i data-lucide="snowflake" style="width: 10px; height: 10px;"></i> Frozen
+                                                     </span> 
+                                                 {% else %}
+                                                    <span class="status-badge status-active">
+                                                        <i data-lucide="check" style="width: 10px; height: 10px;"></i> Yes
+                                                    </span>
+                                                 {% endif %}
+                                            {% else %}
+                                                 {% if column_name == 'is_frozen' %}
+                                                      <span>-</span> 
+                                                 {% else %}
+                                                     <span class="status-badge status-inactive">
+                                                         <i data-lucide="x" style="width: 10px; height: 10px;"></i> No
+                                                     </span>
+                                                 {% endif %}
+                                            {% endif %}
+                                        
+                                         {% elif column_name == 'verification_status' %}
+                                             {% if value == 0 %} <span class="status-badge status-pending">Pending</span>
+                                             {% elif value == 1 %} <span class="status-badge status-verified">Verified</span>
+                                             {% elif value == 2 %} <span class="status-badge status-rejected">Rejected</span>
+                                             {% else %} <span style="color: var(--text-muted);">{{ value }}</span> {% endif %}
+                                         
+                                         {% elif column_name == 'resolved' and entity_key == 'contact_query' %}
+                                              {% if value == 1 %} <span class="status-badge status-resolved">Resolved</span>
+                                              {% else %} <span class="status-badge status-unresolved">Pending</span> {% endif %}
+                                        
+                                         {% elif column_name == 'designation' %}
+                                             {{ designation_names.get(value, 'Unknown') if designation_names else value }} 
+                                             {% if designation_names %} <span style="color: var(--text-muted); font-size: 0.75em;">({{ value }})</span> {% endif %}
+                                         
+                                         {% elif column_name == 'payment_status' %}
+                                             <span class="status-badge status-{{ value }}">{{ value|capitalize }}</span>
+                                        
+                                         {% elif value is string and (value|length == 19 or value|length == 16) and value[4] == '-' and value[7] == '-' %}
+                                             {{ value }} 
+                                        
+                                         {% elif value is string and value|length > 50 and column_name not in entity_config.encrypted_fields %}
+                                             <div class="wrap" title="{{ value }}">{{ value }}</div>
+                                         
+                                         {% elif value is not none %}
+                                            {{ value }}
+                                        {% else %}
+                                            <span style="color: var(--text-muted);">N/A</span>
+                                        {% endif %}
+                                    </td>
+                                    {% endif %}
+                                {% endfor %}
+                                <td>
+                                    <div class="action-buttons">
+                                        
+                                        {% if entity_key == 'contact_query' %}
+                                            <a href="{{ url_for('sevak69.contact_query_detail_action', query_id=pk_value) }}" class="btn-small">
+                                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i> View
+                                            </a>
+                                            
+                                            {% if record.get('resolved') == 0 %}
+                                                <form method="POST" 
+                                                      action="{{ url_for('sevak69.contact_query_detail_action', query_id=pk_value) }}" 
+                                                      onsubmit="return confirm('Mark as RESOLVED?');" 
+                                                      style="display: inline;">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                    <input type="hidden" name="action" value="resolve">
+                                                    <button type="submit" class="btn-small btn-resolve">
+                                                        <i data-lucide="check" style="width: 14px; height: 14px;"></i> Resolve
+                                                    </button>
+                                                </form>
+                                            {% endif %}
+                                        {% else %}
+                                            <a href="{{ url_for('sevak69.' + entity_key + '_edit', pk_value=pk_value) }}" class="btn-small">
+                                                <i data-lucide="edit-2" style="width: 14px; height: 14px;"></i> Edit
+                                            </a>
+                                        {% endif %}
+                                         
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i data-lucide="inbox" class="empty-icon"></i>
+                    <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark);">
+                        No records found
+                    </div>
+                    <p>Try adjusting your filters or create a new record using the button above.</p>
+                </div>
+            {% endif %}
+
+            {% if total is defined and per_page is defined and total > per_page %}
+                 {% set num_pages = (total / per_page)|round(0, 'ceil')|int %}
+                 {% if num_pages > 1 %}
+                 <div class="pagination">
+                      {% if page > 1 %}
+                         {% set prev_page = page - 1 %}
+                          {% set url_params = request.args.copy() %}
+                          {% set _ = url_params.set('page', prev_page) %}
+                         <a href="{{ url_for(list_endpoint, **url_params) }}" class="page-btn">
+                             <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
+                         </a>
+                     {% else %}
+                         <span class="page-btn disabled">
+                             <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
+                         </span>
+                     {% endif %}
+                     
+                     {% set page_start = [1, page - 2]|max %}
+                     {% set page_end = [num_pages, page + 2]|min %}
+                     
+                     {% if page_start > 1 %}
+                          {% set url_params = request.args.copy() %}
+                          {% set _ = url_params.set('page', 1) %}
+                         <a href="{{ url_for(list_endpoint, **url_params) }}" class="page-btn">1</a>
+                         {% if page_start > 2 %}<span>...</span>{% endif %}
+                     {% endif %}
+                     
+                     {% for page_num in range(page_start, page_end + 1) %}
+                          {% set url_params = request.args.copy() %}
+                          {% set _ = url_params.set('page', page_num) %}
+                         <a href="{{ url_for(list_endpoint, **url_params) }}" class="page-btn {% if page_num == page %}active{% endif %}">
+                             {{ page_num }}
+                         </a>
+                     {% endfor %}
+                     
+                     {% if page_end < num_pages %}
+                         {% if page_end < num_pages - 1 %}<span>...</span>{% endif %}
+                          {% set url_params = request.args.copy() %}
+                          {% set _ = url_params.set('page', num_pages) %}
+                         <a href="{{ url_for(list_endpoint, **url_params) }}" class="page-btn">{{ num_pages }}</a>
+                     {% endif %}
+
+                     {% if page < num_pages %}
+                         {% set next_page = page + 1 %}
+                          {% set url_params = request.args.copy() %}
+                          {% set _ = url_params.set('page', next_page) %}
+                         <a href="{{ url_for(list_endpoint, **url_params) }}" class="page-btn">
+                             Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                         </a>
+                     {% else %}
+                         <span class="page-btn disabled">
+                             Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                         </span>
+                     {% endif %}
+                 </div>
+                 {% endif %}
+             {% endif %}
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
+        <button type="button" class="modal-close" onclick="closeImageModal()">
+            <i data-lucide="x"></i>
+        </button>
+        <img src="" alt="Preview" class="modal-image" id="modalImage">
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        function toggleFilters() {
+            const content = document.getElementById('filterForm'); 
+            const button = document.getElementById('filterToggleButton');
+             
+             if (content.classList.contains('hidden')) {
+                 content.classList.remove('hidden');
+                 button.textContent = 'Hide Filters';
+                  requestAnimationFrame(() => {
+                      content.style.maxHeight = content.scrollHeight + "px"; 
+                      content.style.opacity = '1';
+                  });
+             } else {
+                 content.style.maxHeight = content.scrollHeight + "px"; 
+                 requestAnimationFrame(() => { 
+                    content.style.maxHeight = '0'; 
+                    content.style.opacity = '0';
+                    setTimeout(() => content.classList.add('hidden'), 300); 
+                    button.textContent = 'Show Filters';
+                 });
+             }
+        }
+
+        function clearFilters() {
+            const listEndpointElement = document.getElementById('filterForm').getAttribute('action');
+            if (listEndpointElement) {
+                window.location.href = listEndpointElement.split('?')[0]; 
+            } else {
+                 window.location.href = window.location.pathname;
+            }
+        }
+
+        function openImageModal(src) {
+             if (!src) return;
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('active');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+        
+         document.addEventListener('DOMContentLoaded', function() {
+              const urlParams = new URLSearchParams(window.location.search);
+              let hasFilters = false;
+              urlParams.forEach((value, key) => {
+                  if ((key.startsWith('filter_') && value) || (key === 'search' && value)) { 
+                      hasFilters = true;
+                  }
+              });
+              
+              const content = document.getElementById('filterForm');
+              const button = document.getElementById('filterToggleButton');
+               
+               if (content && button) { 
+                   if (!hasFilters) {
+                       content.classList.add('hidden');
+                       content.style.maxHeight = '0'; 
+                       content.style.opacity = '0';
+                       button.textContent = 'Show Filters';
+                   } else {
+                        content.classList.remove('hidden');
+                        content.style.maxHeight = content.scrollHeight + "px"; 
+                        content.style.opacity = '1';
+                        button.textContent = 'Hide Filters';
+                   }
+               }
+              
+              const alerts = document.querySelectorAll('.main-content > .alert'); 
+              alerts.forEach(alert => {
+                  setTimeout(() => {
+                     if (alert) { 
+                         alert.style.transition = 'opacity 0.3s ease';
+                         alert.style.opacity = '0';
+                         setTimeout(() => alert.remove(), 300);
+                     }
+                  }, 5000);
+              });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join as Creator - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            --input-radius: 16px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        /* --- Buttons --- */
+        .btn-primary-custom, .btn-primary {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%; /* Default to full width for forms */
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            width: auto;
+            font-size: 0.95rem;
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover, .btn-primary:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+        .btn-primary:disabled {
+            background: #9ca3af;
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: auto;
+        }
+        .footer h5, .footer h6 { font-weight: 700; color: var(--text-dark); }
+        .footer a { transition: color 0.3s ease; text-decoration: none; color: var(--text-muted); }
+        .footer a:hover { color: var(--text-dark); }
+
+        /* --- Form Styles (Standardized) --- */
+        .contact-form-container { max-width: 700px; margin: 0 auto; }
+        .page-content { color: var(--text-dark); }
+        .page-content h1 {
+            font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; text-align: center;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+        .page-intro {
+            font-size: 1.1rem; text-align: center; max-width: 600px; margin: 0 auto 3rem auto;
+            color: var(--text-muted); line-height: 1.6;
+        }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label {
+            display: block; margin-bottom: 0.6rem; font-weight: 600;
+            color: var(--text-dark); font-size: 0.95rem;
+        }
+        .form-input {
+            width: 100%; padding: 0.875rem 1.25rem;
+            border: 1px solid var(--border-color-alpha);
+            border-radius: var(--input-radius);
+            background-color: var(--bg-light-secondary);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition-smooth);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 1rem;
+        }
+        .form-input:focus {
+            outline: none; border-color: #6366F1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        .form-grid {
+            display: grid; grid-template-columns: 1fr; gap: 1.5rem;
+        }
+        @media (min-width: 768px) { .form-grid { grid-template-columns: 1fr 1fr; } }
+
+        /* --- Alerts (Preserved but standardized) --- */
+        .alert-message {
+            padding: 1.25rem; border-radius: var(--btn-radius); margin-bottom: 2rem;
+            display: none; animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent; align-items: flex-start; gap: 0.75rem;
+        }
+        .alert-message.show { display: flex; }
+        .alert-success { background-color: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #065F46; }
+        .alert-error { background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #991B1B; }
+        .alert-warning { background-color: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #92400E; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- Animations --- */
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .text-gradient {
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .glitter {
+            position: absolute; background-color: #A855F7; width: 4px; height: 4px; border-radius: 50%;
+            opacity: 0; pointer-events: none; transition: transform 0.8s, opacity 0.8s; z-index: 9999;
+        }
+    </style>
+
+
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-4xl my-16 md:my-24 p-8 md:p-12 glass-card page-content animate-on-scroll is-visible">
+        
+        <div class="contact-form-container">
+            <h1>Join as a Creator</h1>
+            <p class="page-intro">
+                Monetize your educational content. Apply to become a certified Youcert creator and let users earn certificates from your YouTube videos.
+            </p>
+
+            <div id="successAlert" class="alert-message alert-success">
+                <i data-lucide="check-circle-2" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
+                <div><strong>Application Received!</strong> <span id="successText"></span></div>
+            </div>
+            <div id="errorAlert" class="alert-message alert-error">
+                <i data-lucide="alert-circle" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
+                <div><strong>Error!</strong> <span id="errorText"></span></div>
+            </div>
+            <div id="warningAlert" class="alert-message alert-warning">
+                <i data-lucide="alert-triangle" style="width: 20px; height: 20px; flex-shrink: 0;"></i>
+                <div><strong>Warning!</strong> <span id="warningText"></span></div>
+            </div>
+
+            <form id="creatorJoinForm" action="#" method="POST">
+                <!-- CSRF Token (Assuming Flask context, add if rendered by backend) -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Your legal name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact_number" class="form-label">Contact Number</label>
+                    <input type="tel" id="contact_number" name="contact_number" class="form-input" placeholder="+91-9876543210" required>
+                </div>
+
+                <hr class="border-t border-gray-200 my-8">
+                <h3 class="text-xl font-bold mb-6 text-dark flex items-center gap-2">
+                    <i data-lucide="tv" style="width: 20px; height: 20px; color: #4F46E5;"></i>
+                    Channel Information
+                </h3>
+
+                <div class="form-group">
+                    <label for="channel_name" class="form-label">YouTube Channel Name</label>
+                    <input type="text" id="channel_name" name="channel_name" class="form-input" placeholder="e.g., Coding with Jane" required>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="channel_link" class="form-label">Channel Link (URL)</label>
+                        <input type="url" id="channel_link" name="channel_link" class="form-input" placeholder="https://youtube.com/@..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subscriber_count" class="form-label">Subscriber Count</label>
+                        <input type="number" id="subscriber_count" name="subscriber_count" class="form-input" placeholder="e.g., 50000" min="0" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="content_type" class="form-label">Primary Content Type</label>
+                    <input type="text" id="content_type" name="content_type" class="form-input" placeholder="e.g., Python Tutorials, Mathematics, Cooking" required>
+                    <p class="text-xs text-muted mt-2">Briefly describe the educational topics you cover.</p>
+                </div>
+
+                <div class="form-group mt-10">
+                    <button type="submit" id="submitButton" class="btn-primary">
+                        Submit Application
+                        <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your teaching should create a massive impact.
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for creators worldwide.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // CRITICAL: Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // observer.unobserve(entry.target); 
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+
+        // =====================================================================
+        // FORM LOGIC (Preserved & Adapted)
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const form = document.getElementById('creatorJoinForm');
+            const API_ENDPOINT = '/api/creator/join-request/submit';
+
+            // Alert Helper
+            function showAlert(type, message) {
+                const alertMap = {
+                    'success': document.getElementById('successAlert'),
+                    'error': document.getElementById('errorAlert'),
+                    'warning': document.getElementById('warningAlert')
+                };
+                
+                // Hide all first
+                Object.values(alertMap).forEach(el => { if(el) el.classList.remove('show'); });
+
+                const alertElement = alertMap[type];
+                const textElement = document.getElementById(type + 'Text');
+
+                if (alertElement && textElement) {
+                    textElement.textContent = message;
+                    alertElement.classList.add('show');
+                    lucide.createIcons(); // Refresh icons inside alerts
+                    
+                    // Auto hide
+                    const delay = type === 'success' ? 8000 : 6000;
+                    setTimeout(() => alertElement.classList.remove('show'), delay);
+                }
+            }
+
+            if(form) {
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    // Get inputs
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const contact_number = document.getElementById('contact_number').value.trim();
+                    const channel_name = document.getElementById('channel_name').value.trim();
+                    const channel_link = document.getElementById('channel_link').value.trim();
+                    const subscriber_count = document.getElementById('subscriber_count').value.trim();
+                    const content_type = document.getElementById('content_type').value.trim();
+                    const submitButton = document.getElementById('submitButton');
+
+                    // Validation
+                    if (!name || !email || !contact_number || !channel_name || !channel_link || !subscriber_count || !content_type) {
+                        showAlert('error', 'Please fill in all required fields.');
+                        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        return;
+                    }
+
+                    // Loading State
+                    submitButton.disabled = true;
+                    const originalText = submitButton.innerHTML;
+                    submitButton.innerHTML = 'Submitting... <i data-lucide="loader-2" class="animate-spin" style="width:18px;height:18px;margin-left:8px;"></i>';
+                    lucide.createIcons();
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('name', name);
+                        formData.append('email', email);
+                        formData.append('contact_number', contact_number);
+                        formData.append('channel_name', channel_name);
+                        formData.append('channel_link', channel_link);
+                        formData.append('subscriber_count', subscriber_count);
+                        formData.append('content_type', content_type);
+                        
+                        // Add CSRF token if present
+                        const csrfToken = document.querySelector('input[name="csrf_token"]');
+                        if (csrfToken) {
+                            formData.append('csrf_token', csrfToken.value);
+                        }
+
+                        // Simulate API call or real fetch
+                        const response = await fetch(API_ENDPOINT, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            showAlert('success', data.message);
+
+                            // Replace form with Success State Card
+                            setTimeout(() => {
+                                const formContainer = document.querySelector('.contact-form-container');
+                                
+                                formContainer.innerHTML = `
+                                    <div class="text-center flex flex-col items-center justify-center py-10 animate-on-scroll is-visible">
+                                        <div class="mb-6">
+                                            <i data-lucide="check-circle" style="width: 80px; height: 80px; color: #10B981;"></i>
+                                        </div>
+
+                                        <h1 class="text-3xl font-extrabold mb-4 text-gradient">
+                                            Application Received!
+                                        </h1>
+                                        
+                                        <p class="text-lg text-muted mb-8 max-w-md mx-auto leading-relaxed">
+                                            We have received your application to join Youcert. Our team will review your channel and contact you shortly.
+                                        </p>
+
+                                        <div class="w-full max-w-md bg-indigo-50 border border-indigo-200 rounded-xl p-4 mb-6 shadow-sm">
+                                            <p class="text-xs text-indigo-500 font-bold mb-1 uppercase tracking-wider">Request ID</p>
+                                            <p class="font-mono text-xl font-bold text-indigo-700 tracking-widest select-all">${data.request_id || 'PENDING'}</p>
+                                        </div>
+                                        
+                                        <p class="text-sm text-muted mb-8">
+                                            A confirmation has been logged for <strong>${email}</strong>.
+                                        </p>
+
+                                        <a href="/" class="btn-primary-custom text-white" style="display: inline-flex; width: auto;">
+                                            <i data-lucide="home" style="width: 18px; height: 18px;"></i> Return to Home
+                                        </a>
+                                    </div>
+                                `;
+                                lucide.createIcons();
+                                formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                
+                            }, 500); 
+                        } else {
+                            // API Error
+                            const errorMsg = data.error || 'An error occurred.';
+                            showAlert('error', errorMsg);
+                            form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalText;
+                        }
+
+                    } catch (error) {
+                        console.error(error);
+                        showAlert('error', 'Network error. Please try again later.');
+                        form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = originalText;
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

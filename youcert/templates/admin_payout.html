@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Monthly Payout - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Action Card --- */
+        .action-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .action-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+            color: var(--text-dark);
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-hint {
+            display: block;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* --- Data Table --- */
+        .data-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        .data-table { width: 100%; border-collapse: collapse; }
+
+        .data-table th, .data-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #F1F5F9;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #F8FAFC;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .data-table td { color: var(--text-dark); vertical-align: middle; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover { background: #F8FAFC; }
+        
+        .data-table td:nth-child(n+4), .data-table th:nth-child(n+4) { text-align: right; }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .status-completed { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .status-pending { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .status-failed { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-unknown { background: #F3F4F6; color: var(--text-muted); border: 1px solid #E5E7EB; }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            color: #CBD5E1;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .alert-warning { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        /* --- Spinner --- */
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .action-card { padding: 1.5rem; }
+            .data-table th, .data-table td { padding: 0.75rem 1rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+             <div class="logo-container">
+                 <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                 <span class="brand-name">YOUCERT Admin</span>
+             </div>
+        </div>
+        <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to Dashboard
+        </a>
+    </header>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="banknote" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                Monthly Payout Processing
+            </h1>
+            <p class="page-subtitle">Process creator payouts for the selected month (Supreme Only)</p>
+        </div>
+        
+         {% with messages = get_flashed_messages(with_categories=true) %}
+             {% if messages %}
+                 {% for category, message in messages %}
+                     <div class="alert alert-{{ category }}">
+                         {% if category == 'success' %}
+                             <i data-lucide="check-circle-2"></i>
+                         {% elif category == 'error' %}
+                             <i data-lucide="alert-circle"></i>
+                         {% else %}
+                             <i data-lucide="info"></i>
+                         {% endif %}
+                         <span>{{ message }}</span>
+                     </div>
+                 {% endfor %}
+             {% endif %}
+         {% endwith %}
+
+        <div class="action-card">
+            <div class="action-header">
+                <i data-lucide="calendar-check" style="width: 20px; height: 20px; color: #4F46E5;"></i>
+                Select Month and Process Payouts
+            </div>
+            <form method="POST" action="{{ url_for('sevak69.payout') }}" id="payoutForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-group">
+                    <label for="payout_month" class="form-label">Select Month & Year to Process</label>
+                    <input type="month" id="payout_month" name="payout_month" class="form-input" required 
+                           max="{{ current_month }}"> 
+                     <small class="form-hint">
+                         <i data-lucide="info" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
+                         This will calculate and attempt to process payouts for all eligible creators for the selected month. Ensure bank details are verified. This action cannot be undone.
+                     </small>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="processBtn">
+                     <i data-lucide="zap" style="width: 16px; height: 16px;"></i>
+                     <span id="btnText">Process Payouts for Selected Month</span>
+                     <span id="spinner" class="spinner" style="display: none;"></span>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Payout History Table -->
+         <h2 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem; color: var(--text-dark); display: flex; align-items: center; gap: 0.5rem;">
+             <i data-lucide="history" style="width: 20px; height: 20px;"></i>
+             Payout History (Last 12 Months)
+         </h2>
+         
+        <div class="data-card">
+             <div class="table-wrapper">
+                {% if payout_history and payout_history|length > 0 %}
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Payout Month</th>
+                                <th>Processed By</th>
+                                <th>Process Date</th>
+                                <th>Creators Paid</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for history in payout_history %}
+                            <tr>
+                                <td style="font-weight: 500;">{{ history.payout_month }}</td>
+                                <td>{{ history.processed_by_admin_id or 'N/A' }}</td>
+                                <td>{{ history.processed_at.strftime('%Y-%m-%d') if history.processed_at else 'N/A' }}</td>
+                                <td>{{ "{:,}".format(history.creators_paid or 0) }}</td>
+                                <td style="font-weight: 600; color: #4F46E5;">₹{{ "{:,.2f}".format(history.total_paid or 0) }}</td>
+                                <td>
+                                     <span class="status-badge status-{{ history.status|lower if history.status else 'unknown' }}">
+                                         {{ history.status or 'Unknown' }}
+                                     </span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="empty-state">
+                        <i data-lucide="file-clock" class="empty-icon"></i>
+                        <div>No payout history found yet. Process a payout using the form above.</div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    
+     <script>
+         // Initialize Icons
+         lucide.createIcons();
+
+         document.addEventListener('DOMContentLoaded', function() {
+             const monthInput = document.getElementById('payout_month');
+             // Set max month using the value passed from Flask
+             if (monthInput && "{{ current_month }}") { 
+                  monthInput.max = "{{ current_month }}"; 
+             } else if (monthInput) {
+                  // Fallback
+                  const today = new Date();
+                  const year = today.getFullYear();
+                  const month = String(today.getMonth() + 1).padStart(2, '0');
+                  monthInput.max = `${year}-${month}`;
+             }
+             
+             // Default to previous month if empty
+             if (monthInput && !monthInput.value) {
+                 const today = new Date();
+                 const prevMonth = new Date(today.setMonth(today.getMonth() - 1));
+                 const prevYear = prevMonth.getFullYear();
+                 const prevMonthNum = String(prevMonth.getMonth() + 1).padStart(2, '0');
+                 monthInput.value = `${prevYear}-${prevMonthNum}`;
+             }
+
+             // Show spinner on form submit
+             const payoutForm = document.getElementById('payoutForm');
+             const processBtn = document.getElementById('processBtn');
+             const btnText = document.getElementById('btnText');
+             const spinner = document.getElementById('spinner');
+
+             if (payoutForm && processBtn) {
+                 payoutForm.addEventListener('submit', function(e) {
+                     if (!confirm('Are you absolutely sure you want to process payouts for the selected month? This action cannot be easily undone.')) {
+                         e.preventDefault();
+                         return false;
+                     }
+                     
+                     // Show loading state
+                     processBtn.disabled = true;
+                     if (btnText) btnText.style.display = 'none';
+                     if (spinner) spinner.style.display = 'inline-block';
+                 });
+             }
+             
+             // Auto-dismiss alerts
+             const alerts = document.querySelectorAll('.main-content > .alert'); 
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 300);
+                    }
+                 }, 7000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

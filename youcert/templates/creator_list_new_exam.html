@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add New Exam - youcert-creator</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (Left Sidebar)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients (Used for text highlights/accents) */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+
+            /* Status Colors */
+            --color-success: #10B981;
+            --color-error: #EF4444;
+            --status-success-bg: #D1FAE5;
+            --status-error-bg: #FEE2E2;
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Compatibility Fix: Define standard background-clip */
+        .brand-name {
+            /* Existing styles kept */
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+
+        .nav-link.active svg {
+            color: #4F46E5;
+        }
+
+        .btn-cta {
+            background: #000000;
+            /* Black CTA button */
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        /* --- Cards & Components --- */
+        .content-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-input-light {
+            background-color: #FFFFFF !important;
+            border-color: #E2E8F0 !important;
+            color: var(--text-dark) !important;
+            border-radius: var(--radius-md);
+            padding: 0.65rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input-light:focus {
+            outline: none;
+            border-color: #6366F1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        }
+
+        /* Primary Button (Black) */
+        .btn-primary-custom {
+            background: #000000;
+            color: var(--text-on-brand);
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
+        }
+
+        .btn-primary-custom:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background-color: var(--status-success-bg);
+            border: 1px solid #A7F3D0;
+            color: var(--color-success);
+        }
+
+        .alert-error {
+            background-color: var(--status-error-bg);
+            border: 1px solid #FECACA;
+            color: var(--color-error);
+        }
+
+        .alert-warning {
+            background-color: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+
+        .loader {
+            border: 4px solid #F3F4F6;
+            border-top: 4px solid #6366F1;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        .loader-xs {
+            width: 16px;
+            height: 16px;
+            border-width: 2px;
+            border-top-color: #fff;
+        }
+
+        .loader-xs-dark {
+            width: 16px;
+            height: 16px;
+            border-width: 2px;
+            border-top-color: #6366F1;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Instruction Boxes - Now themed to match content-card */
+        .instruction-box {
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+            box-shadow: var(--glass-shadow);
+            /* Use main card shadow */
+            transition: all 0.3s;
+            background: var(--bg-light-secondary);
+            border-left: 4px solid #6366F1;
+            /* Add emphasis stripe */
+        }
+
+        .instruction-box:hover {
+            background: #F8FAFC;
+            border-color: #6366F1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .instruction-box h3 {
+            font-weight: 700;
+            color: var(--text-dark);
+            /* Use dark text color */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .instruction-box h3 svg {
+            color: #4F46E5;
+            /* Keep icon color distinct */
+        }
+
+        .instruction-box p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body class="flex h-screen">
+
+    <!-- SIDEBAR NAVIGATION -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- Main Content Area: Scrolls independently -->
+    <div id="main-content-area" class="main-content flex-1 overflow-y-auto relative z-30">
+
+        <main class="p-8">
+            <div class="max-w-4xl mx-auto">
+                <header class="mb-10 border-b border-card-border pb-8">
+                    <h1 class="text-4xl font-extrabold text-dark"
+                        style="background: var(--brand-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                        Add New Exam from YouTube</h1>
+                    <p class="text-muted mt-2">Paste a YouTube video or playlist link to automatically generate an exam
+                        course.</p>
+                </header>
+
+                <div id="alert-container" class="my-4"></div>
+
+                <div id="state-1-input">
+                    <!-- Added action and method attributes for the new script to function -->
+                    <form id="youtubeForm" action="/creator/list_new_exam/" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <div class="content-card">
+                            <div class="p-6">
+                                <label for="youtube_url"
+                                    class="block text-sm font-medium leading-6 text-text-dark mb-2">YouTube Video or
+                                    Playlist URL</label>
+                                <div class="mt-2 flex flex-col sm:flex-row gap-4">
+                                    <input type="text" id="youtube_url" name="youtube_url"
+                                        placeholder="https://www.youtube.com/watch?v=... OR https://www.youtube.com/playlist?list=..."
+                                        class="form-input-light block w-full shadow-sm sm:text-sm">
+                                    <button type="submit" id="submitButton"
+                                        class="btn-primary-custom flex-shrink-0 flex justify-center items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold">
+                                        <span>Fetch Course Details</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- NEW INSTRUCTION BOXES START -->
+                        <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+                            <!-- Single Video Instruction -->
+                            <div class="instruction-box">
+                                <h3>
+                                    <i data-lucide="video" style="width: 20px; height: 20px;"></i>
+                                    Single Video Tutorial
+                                </h3>
+                                <p>Paste the link to a <strong>single YouTube video</strong>. The system will process
+                                    this video to generate one complete exam focused on its content.</p>
+                                <p class="text-xs font-semibold mt-2">Example:
+                                    <code>https://www.youtube.com/watch?v=dQw4w9WgXcQ</code>
+                                </p>
+                            </div>
+
+                            <!-- Playlist Instruction -->
+                            <div class="instruction-box">
+                                <h3>
+                                    <i data-lucide="list-video" style="width: 20px; height: 20px;"></i>
+                                    Entire Playlist Course
+                                </h3>
+                                <p>Paste the <strong>entire playlist URL</strong>. The system will process all videos in
+                                    that playlist to create a comprehensive multi-part course exam.</p>
+                                <p class="text-xs font-semibold mt-2">Example:
+                                    <code>https://www.youtube.com/playlist?list=PLB-dY9d6yO23tLz091a1N9410d-jC1vYk</code>
+                                </p>
+                            </div>
+
+                        </div>
+                        <!-- NEW INSTRUCTION BOXES END -->
+
+                    </form>
+                    <div id="output" class="mt-4 p-4 rounded-xl"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const youtubeForm = document.getElementById('youtubeForm');
+        const ytUrlInput = document.getElementById('youtube_url');
+        const outputDiv = document.getElementById('output');
+        const submitButton = document.getElementById('submitButton');
+        const alertContainer = document.getElementById('alert-container');
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+        // Function to show alert messages (Preserved from original code)
+        function showAlert(message, type) {
+            const icon = type === 'success' ? 'check-circle-2' : type === 'error' ? 'alert-circle' : 'alert-triangle';
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${icon}" style="width: 20px; height: 20px;"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // Clear any existing alerts
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alertDiv);
+            lucide.createIcons();
+
+            // Auto-remove after 5 seconds (except for warnings which need user action)
+            if (type !== 'warning') {
+                setTimeout(() => {
+                    if (alertDiv.parentNode) {
+                        alertDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        /* ========================================================================
+           PREVIOUS LOGIC PRESERVED BELOW (COMMENTED OUT TO ENABLE NEW SCRIPT)
+           ========================================================================
+        
+        youtubeForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const url = ytUrlInput.value.trim();
+
+            // Basic URL validation
+            if (!url) {
+                showAlert('Please enter a YouTube URL', 'error');
+                return;
+            }
+
+            if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
+                showAlert('Please enter a valid YouTube URL', 'error');
+                return;
+            }
+
+            // Clear previous output and alerts
+            alertContainer.innerHTML = '';
+            outputDiv.innerHTML = `<div class="flex items-center gap-2 p-4 content-card"><div class="loader-xs-dark loader-xs animate-spin rounded-full"></div><span>Starting background process...</span></div>`;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<div class="loader loader-xs animate-spin rounded-full"></div>';
+            lucide.createIcons(); // Initialize button loader icon
+
+            const formData = new FormData();
+            formData.append('youtube_url', url);
+            formData.append('csrf_token', csrfToken);
+
+            fetch('/creator/list_new_exam/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                // Handle redirect responses
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return new Promise(() => {}); // Stop the promise chain
+                }
+                
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    return response.json().catch(() => {
+                        return { 
+                            success: false,
+                            message: `Server error (${response.status}). Please try again.`,
+                            error_type: 'server_error'
+                        };
+                    }).then(errorData => {
+                        const error = new Error(errorData.message || 'Unknown error occurred');
+                        error.errorData = errorData;
+                        error.status = response.status;
+                        throw error;
+                    });
+                }
+            })
+            .then(data => {
+                // Success response
+                if (data && data.success) {
+                    outputDiv.innerHTML = `<div class="p-4 text-green-700 font-medium">
+                        <div class="flex items-center gap-2">
+                            <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+                            ${data.message}
+                        </div>
+                    </div>`;
+                    lucide.createIcons();
+                    showAlert('Video processing completed successfully!', 'success');
+                    
+                    // Clear the form
+                    ytUrlInput.value = '';
+                } else {
+                    // Handle success:false in JSON response
+                    throw new Error(data.message || 'Processing failed');
+                }
+            })
+            .catch(error => {
+                let errorMessage = error.message || 'An unexpected error occurred';
+                
+                if (error.status === 401 && error.errorData) {
+                    const errorData = error.errorData;
+                    if (errorData.error_type === 'token_expired' && errorData.redirect) {
+                        showAlert(errorData.message || 'Your YouTube authentication has expired. Redirecting to reconnect...', 'warning');
+                        outputDiv.innerHTML = `<div class="p-4 text-yellow-700 font-medium flex items-center gap-2">
+                             <i data-lucide="alert-triangle" style="width: 20px; height: 20px;"></i>
+                             YouTube authentication expired. Redirecting...
+                        </div>`;
+                        lucide.createIcons();
+                        
+                        setTimeout(() => {
+                            window.location.href = errorData.redirect;
+                        }, 2000);
+                        return;
+                    }
+                }
+                
+                outputDiv.innerHTML = `<div class="p-4 text-red-700 font-medium flex items-center gap-2">
+                    <i data-lucide="x-circle" style="width: 20px; height: 20px;"></i>
+                    Error: ${errorMessage}
+                </div>`;
+                lucide.createIcons();
+                showAlert(errorMessage, 'error');
+            })
+            .finally(() => {
+                // Restore button state regardless of outcome
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>Fetch Course Details</span>';
+            });
+        });
+        */
+
+        // Auto-focus the URL input when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            if (ytUrlInput) ytUrlInput.focus();
+        });
+
+        // Handle browser back/forward navigation
+        window.addEventListener('pageshow', function (event) {
+            if (event.persisted) {
+                // Page was restored from cache, reset form state
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>Fetch Course Details</span>';
+                outputDiv.innerHTML = '';
+                outputDiv.classList.remove('content-card');
+                alertContainer.innerHTML = '';
+            }
+        });
+
+        /* =========================================
+           NEW SCRIPT: LIVE PROGRESS TRACKING
+           ========================================= */
+        let progressInterval = null;
+        let currentVideoId = null;
+
+        function startProgressTracking(videoId) {
+            currentVideoId = videoId;
+
+            // Initial progress display
+            outputDiv.innerHTML = `
+                <div class="content-card p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Processing Video...</h3>
+                        <div class="loader loader-xs animate-spin rounded-full"></div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span id="progress-stage">Initializing...</span>
+                            <span id="progress-percentage" class="font-semibold">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div id="progress-bar" class="bg-blue-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-600">
+                            <span id="progress-chunks">Chunks: 0/0</span>
+                            <span id="progress-eta">Calculating ETA...</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Poll for progress updates every 10 seconds (reduced to save container resources)
+            progressInterval = setInterval(() => updateProgress(videoId), 10000);
+
+            // Initial update
+            updateProgress(videoId);
+        }
+
+        async function updateProgress(videoId) {
+            try {
+                const response = await fetch(`/creator/api/processing_progress/${videoId}`);
+                const result = await response.json();
+
+                if (!result.success) {
+                    stopProgressTracking();
+                    return;
+                }
+
+                const data = result.data;
+                const percentage = Math.round(data.progress_percentage || 0);
+
+                // Update UI elements
+                document.getElementById('progress-percentage').textContent = `${percentage}%`;
+                document.getElementById('progress-bar').style.width = `${percentage}%`;
+                document.getElementById('progress-stage').textContent = data.current_stage || 'Processing...';
+                document.getElementById('progress-chunks').textContent =
+                    `Chunks: ${data.processed_chunks || 0}/${data.total_chunks || 0}`;
+
+                // Update ETA
+                if (data.eta_seconds) {
+                    const minutes = Math.floor(data.eta_seconds / 60);
+                    const seconds = data.eta_seconds % 60;
+                    document.getElementById('progress-eta').textContent =
+                        `ETA: ${minutes}m ${seconds}s`;
+                } else {
+                    document.getElementById('progress-eta').textContent = 'Calculating ETA...';
+                }
+
+                // Check if processing is complete or failed
+                if (data.status === 'completed') {
+                    stopProgressTracking();
+                    outputDiv.innerHTML = `
+                        <div class="p-4 text-green-700 font-medium">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+                                Video processing completed successfully! Exam created.
+                            </div>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    showAlert('Video processing completed successfully!', 'success');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Generate Exam';
+                    form.reset();
+                } else if (data.status === 'failed') {
+                    stopProgressTracking();
+                    const errorMsg = data.error_message || 'Processing failed';
+                    outputDiv.innerHTML = `
+                        <div class="p-4 text-red-700 font-medium flex items-center gap-2">
+                            <i data-lucide="x-circle" style="width: 20px; height: 20px;"></i>
+                            Error: ${errorMsg}
+                        </div>
+                    `;
+                    lucide.createIcons();
+                    showAlert('Processing failed. Please try again.', 'error');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Generate Exam';
+                }
+
+            } catch (error) {
+                console.error('Progress update error:', error);
+                // Don't stop tracking on network errors - the processing continues in background
+                // Just show a temporary connection message
+                const etaEl = document.getElementById('progress-eta');
+                if (etaEl) {
+                    etaEl.textContent = 'Reconnecting...';
+                }
+            }
+        }
+
+        function stopProgressTracking() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+            currentVideoId = null;
+        }
+
+        // Check for any ongoing processing when page loads
+        async function checkOngoingProcessing() {
+            try {
+                const response = await fetch('/creator/api/processing_videos');
+                const result = await response.json();
+                if (result.success && result.data && result.data.length > 0) {
+                    // There's an ongoing processing - show the progress
+                    const processing = result.data[0];
+                    currentVideoId = processing.content_id;
+                    showProgressTracker(currentVideoId);
+                }
+            } catch (e) {
+                console.log('No ongoing processing found');
+            }
+        }
+
+        // Run check on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            checkOngoingProcessing();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const submitButton = document.querySelector('button[type="submit"]');
+
+            if (!form) return;
+
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const url = formData.get('youtube_url');
+
+                if (!url || !url.trim()) {
+                    alert('Please enter a YouTube URL');
+                    return;
+                }
+
+                // Disable button
+                submitButton.disabled = true;
+                submitButton.textContent = 'Validating...';
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && data.success) {
+                        // Extract video ID from URL
+                        const videoId = extractVideoId(url);
+
+                        if (videoId) {
+                            // Start live progress tracking
+                            submitButton.textContent = 'Processing...';
+                            startProgressTracking(videoId);
+                        } else {
+                            // Fallback if video ID can't be extracted
+                            alert(data.message || 'Processing started!');
+                            form.reset();
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Generate Exam';
+                        }
+                    } else if (data.needs_reconnect && data.redirect) {
+                        // Token expired - redirect to reconnect
+                        alert(data.message || 'Your YouTube session has expired.');
+                        window.location.href = data.redirect;
+                    } else {
+                        // Other error
+                        alert(data.message || 'An error occurred. Please try again.');
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Generate Exam';
+                    }
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Network error. Please check your connection and try again.');
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Generate Exam';
+                }
+            });
+        });
+
+        // Helper function to extract video ID from YouTube URL
+        function extractVideoId(url) {
+            const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        // Clean up interval on page unload
+        window.addEventListener('beforeunload', stopProgressTracking);
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

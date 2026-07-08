@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Query Details - {{ record.query_id }}</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME VARIABLES
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .btn-resolve-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+            border: none;
+        }
+        .btn-resolve-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Detail Card --- */
+        .detail-container { 
+            background: var(--bg-light-secondary); 
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg); 
+            padding: 2.5rem; 
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* --- Page Title Area --- */
+        .page-header-area {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 1.5rem;
+        }
+
+        .page-title { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
+            color: var(--text-dark);
+            word-break: break-word;
+            line-height: 1.3;
+        }
+        .page-subtitle { 
+            color: var(--text-muted); 
+            font-size: 0.9rem; 
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* --- Status & Actions --- */
+        .action-area {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 1.25rem;
+            margin-bottom: 2rem;
+            background: #F8FAFC;
+            border-radius: var(--radius-md);
+            border: 1px solid #E2E8F0;
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem; 
+            border-radius: 999px; 
+            font-size: 0.8rem;
+            font-weight: 600; 
+            display: inline-flex; 
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+         .status-resolved { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+         .status-unresolved { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        /* --- Data Grid --- */
+        .query-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        
+        .grid-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .grid-value {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        /* --- Message Box --- */
+        .message-section {
+            margin-top: 2rem;
+        }
+        
+        .message-box {
+            border: 1px solid #E2E8F0;
+            background: #FFFFFF;
+            padding: 2rem;
+            border-radius: var(--radius-md);
+            margin-top: 0.75rem;
+            font-size: 1rem;
+            line-height: 1.7;
+            color: var(--text-dark);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            white-space: pre-wrap; /* Preserve formatting */
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-error { background: var(--error-bg); color: var(--error-text); }
+        .alert-success { background: var(--success-bg); color: var(--success-text); }
+        .alert-info { background: var(--info-bg); color: var(--info-text); }
+
+        @media (max-width: 768px) {
+            .query-grid { grid-template-columns: 1fr; }
+            .header { padding: 1rem; }
+            .detail-container { padding: 1.5rem; }
+            .action-area { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .btn-resolve-primary { width: 100%; justify-content: center; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <div>
+            <a href="{{ url_for('sevak69.contact_query_list') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Back to Queries
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="detail-container">
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'error' %}
+                                <i data-lucide="x-circle"></i>
+                            {% elif category == 'success' %}
+                                <i data-lucide="check-circle-2"></i>
+                            {% else %}
+                                <i data-lucide="info"></i>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <div class="page-header-area">
+                <h1 class="page-title">{{ record.subject }}</h1>
+                <div class="page-subtitle">
+                    <i data-lucide="hash" style="width: 14px; height: 14px;"></i> 
+                    ID: {{ record.query_id }} 
+                    <span style="margin: 0 0.5rem; color: #CBD5E1;">|</span>
+                    <i data-lucide="calendar" style="width: 14px; height: 14px;"></i>
+                    {{ record.submitted_at }}
+                </div>
+            </div>
+
+            <div class="action-area">
+                <div class="status-info">
+                    {% if is_resolved %}
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="status-badge status-resolved">
+                                <i data-lucide="check" style="width: 14px; height: 14px;"></i> Resolved
+                            </span>
+                            <span class="page-subtitle" style="font-size: 0.8rem;">
+                                By {{ record.resolved_by or 'Admin' }} • {{ record.resolved_at or 'N/A' }}
+                            </span>
+                        </div>
+                    {% else %}
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <span class="status-badge status-unresolved">
+                                <i data-lucide="clock" style="width: 14px; height: 14px;"></i> Pending
+                            </span>
+                            <span class="page-subtitle" style="font-size: 0.8rem;">
+                                Awaiting action from admin team.
+                            </span>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {% if not is_resolved %}
+                    <form method="POST" 
+                          action="{{ url_for('sevak69.contact_query_detail_action', query_id=record.query_id) }}"
+                          onsubmit="return confirm('Confirm marking query {{ record.query_id }} as RESOLVED?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="resolve">
+                        <button type="submit" class="btn btn-resolve-primary">
+                            <i data-lucide="check-square"></i>
+                            Mark as Solved
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
+
+            <div class="query-grid">
+                <div class="grid-item">
+                    <span class="grid-label">Submitted By</span>
+                    <span class="grid-value">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="user" style="width: 16px; height: 16px; color: #94A3B8;"></i>
+                            {{ record.name }}
+                        </div>
+                    </span>
+                </div>
+                <div class="grid-item">
+                    <span class="grid-label">Email</span>
+                    <span class="grid-value">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="mail" style="width: 16px; height: 16px; color: #94A3B8;"></i>
+                            {{ record.email }}
+                        </div>
+                    </span>
+                </div>
+                <div class="grid-item">
+                    <span class="grid-label">Phone</span>
+                    <span class="grid-value">{{ record.phone or 'N/A' }}</span>
+                </div>
+                <div class="grid-item">
+                    <span class="grid-label">Visitor IP</span>
+                    <span class="grid-value" style="font-family: monospace; color: var(--text-muted);">{{ record.visitor_ip or 'N/A' }}</span>
+                </div>
+            </div>
+
+            <div class="message-section">
+                <span class="grid-label">Query Message</span>
+                <div class="message-box">
+                    {{ record.message }}
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Auto-dismiss Flash Messages
+        document.addEventListener('DOMContentLoaded', function() {
+             const alerts = document.querySelectorAll('.main-content > .alert');
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                 }, 4000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

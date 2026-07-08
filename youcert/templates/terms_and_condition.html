@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        /* --- Buttons --- */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: auto;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            font-size: 0.95rem; /* Smaller size for header button */
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Content Typography (Preserved for Legal Text) --- */
+        .terms-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em; margin-bottom: 2.5rem; text-align: center;
+        }
+        .terms-content h2 {
+            font-size: 1.75rem; font-weight: 700; color: var(--text-dark);
+            margin-top: 3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color-alpha);
+        }
+        .terms-content h3 {
+            font-size: 1.35rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 2rem; margin-bottom: 1rem;
+        }
+        .terms-content h4 {
+            font-size: 1.15rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 1.5rem; margin-bottom: 0.75rem;
+        }
+        .terms-content p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1.05rem; }
+        .terms-content ul, .terms-content ol { color: var(--text-muted); margin-bottom: 1.5rem; padding-left: 1.5rem; line-height: 1.7; }
+        .terms-content ul { list-style-type: disc; }
+        .terms-content ol { list-style-type: decimal; }
+        .terms-content li { margin-bottom: 0.5rem; }
+        .terms-content strong { font-weight: 600; color: var(--text-dark); }
+        .terms-content a { color: #6366F1; transition: color 0.3s ease; font-weight: 500; text-decoration: none; }
+        .terms-content a:hover { color: #9333ea; text-decoration: underline; }
+        .terms-content hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--border-color-alpha); }
+        
+        /* Alert boxes */
+        .terms-content .notice-box {
+            background-color: #EEF2FF; border: 1px solid #C7D2FE; border-left: 4px solid #6366F1;
+            border-radius: var(--btn-radius); padding: 1.5rem; margin: 2rem 0;
+        }
+        .terms-content .notice-box p { color: #4F46E5 !important; margin-bottom: 0; line-height: 1.6; }
+        .terms-content .alert-box {
+            background-color: #FEE2E2; border: 1px solid #FECACA; border-left: 4px solid #EF4444;
+            border-radius: var(--btn-radius); padding: 1.5rem; margin: 2rem 0;
+        }
+        .terms-content .alert-box p { color: #B91C1C !important; margin-bottom: 0; line-height: 1.6; }
+        .terms-content .alert-box strong { color: #B91C1C; }
+
+        /* --- Animations --- */
+        .animate-on-scroll {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .glitter {
+            position: absolute; background-color: #A855F7; width: 4px; height: 4px; border-radius: 50%;
+            opacity: 0; pointer-events: none; transition: transform 0.8s, opacity 0.8s; z-index: 9999;
+        }
+    </style>
+
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body class="flex flex-col">
+    <div class="animated-background"></div>
+
+    <!-- Header (Top Nav) -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-primary-custom header-btn" href="{{ url_for('user.oauth_login') }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 max-w-[1000px] py-16 flex-grow">
+        <div class="glass-card p-8 md:p-12 terms-content">
+            
+            <!-- Original Content Starts Here -->
+            <h1>Terms of Service</h1>
+            <p class="text-center !mb-8"><strong>Effective Date:</strong> October 21, 2025</p>
+
+            <h2>Introduction</h2>
+            <p>Welcome to Youcert. These Terms of Service (these "Terms" or this "Agreement") are a binding legal agreement between you ("you," "User," "Creator," or "Learner") and Youcert (or its future legal entity name, "Youcert," "we," "us," or "our"), a company registered in India. This Agreement governs your access to and use of our website, platform, applications, artificial intelligence models, and all associated services, tools, and features (collectively, the "Service").</p>
+            <p>By accessing, registering for, creating an account, browsing, or using our Service in any manner, you (A) acknowledge that you have read, understood, and agree to be bound by this Agreement and all other policies, rules, or guidelines incorporated by reference (including our <a href="/privacy-policy">Privacy Policy</a>, which is an integral part of these Terms); (B) represent and warrant that you are of legal age to form a binding contract and are not prohibited by law from accessing or using the Service; and (C) agree that you are entering into this Agreement on behalf of yourself, or if you are using the Service on behalf of an organization, you agree to these Terms for that organization and represent that you have the authority to bind that organization to this Agreement.</p>
+            <p><strong>If you do not agree to all of the terms and conditions contained in this Agreement, you must not access or use the Service.</strong></p>
+            
+            <div class="notice-box">
+                <p><strong>IMPORTANT: ARBITRATION, CLASS ACTION WAIVER, AND JURISDICTION NOTICE:</strong><br>
+                This Agreement is governed by the laws of India. Section 16 of these Terms contains a <strong>mandatory individual arbitration agreement</strong> and a <strong>class action waiver</strong>. These provisions require that, with limited exceptions, all disputes between you and Youcert be resolved by binding, individual arbitration in India. You are waiving your right to a trial by jury and your right to participate in a class-action lawsuit or class-wide arbitration. Please read this section carefully.</p>
+            </div>
+
+            <h2>1. Definitions</h2>
+            <p>To make these Terms clearer and more precise, we will use the following definitions:</p>
+            <ul>
+                <li><strong>"Service"</strong> refers to the Youcert platform, website (youcert.com and all subdomains), applications, proprietary artificial intelligence models, algorithms, databases, technical documentation, and all associated tools, features, content, and materials provided or operated by us.</li>
+                <li><strong>"Platform"</strong> refers to the specific software and web-based tools within the Service that Users access to create, manage, sell, purchase, or take Exams.</li>
+                <li><strong>"User"</strong> means any individual or entity that accesses, browses, or uses the Service in any way, whether as a visitor, a registered Learner, or a registered Creator.</li>
+                <li><strong>"Creator"</strong> means a User who has successfully completed the Creator verification process and registers a Creator Account to use the Service to create, publish, and manage Exams based on their Creator Content.</li>
+                <li><strong>"Learner"</strong> means a User who registers a Learner Account to browse, purchase, and take Exams.</li>
+                <li><strong>"Creator Content"</strong> means the original YouTube video(s), their public URLs, titles, descriptions, and all associated intellectual property, including the video's captions and transcripts, which are owned or controlled by a Creator and submitted to the Service for processing.</li>
+                <li><strong>"Generated Content"</strong> means the content summaries, exam questions (including all question types, stems, and options), answers, answer explanations, and other assessment materials that are created by the Youcert Service's proprietary AI models through the processing of Creator Content.</li>
+                <li><strong>"Exam"</strong> means the complete, publishable assessment module created by a Creator on the Service. An Exam consists of the Generated Content and may also include any other materials, instructions, or settings added or approved by the Creator.</li>
+                <li><strong>"Certificate"</strong> means the verifiable digital certificate of completion, or other forms of acknowledgment, issued by Youcert to a Learner upon their successful passing (as per the defined passing criteria) of an Exam.</li>
+                <li><strong>"Youcert IP"</strong> means all software, technology, artificial intelligence models, algorithms, code (source and object), designs, text, graphics, logos, trademarks, service marks, trade dress, the "look and feel" of the Service, and all other intellectual property rights that constitute or are part of the Service, excluding all forms of User Content.</li>
+                <li><strong>"User Content"</strong> means all content, data, and information submitted, uploaded, or posted to the Service by any User. User Content includes, but is not limited to, Creator Content, as well as any feedback, reviews, comments, or profile information submitted by Learners or Creators.</li>
+                <li><strong>"Confidential Information"</strong> includes, but is not limited to, a Creator's raw video transcripts and captions, all non-public Youcert IP, and any non-public business, financial, or technical information of either party.</li>
+                <li><strong>"Third-Party Services"</strong> means any website, application, API, or service not owned or controlled by Youcert, including but not limited to YouTube API Services and our payment processors.</li>
+            </ul>
+
+            <h2>2. The Youcert Service</h2>
+            
+            <h3>2.1 Service Overview</h3>
+            <p>Youcert provides an innovative two-sided platform that leverages artificial intelligence to bridge the gap between informal YouTube education and formal, verifiable learning. Our Service empowers Creators to monetize their educational content and provides Learners with a structured path to validate their knowledge.</p>
+            
+            <h4>2.1.1 For Creators</h4>
+            <p>The Service provides tools to:</p>
+            <ul>
+                <li>Securely link their YouTube channel and verify their ownership through authorized means (e.g., Google OAuth).</li>
+                <li>Submit YouTube video URLs ("Creator Content") for processing by our proprietary AI systems.</li>
+                <li>Automatically extract video captions/transcripts.</li>
+                <li>Automatically generate AI-powered, in-depth content summaries from these transcripts.</li>
+                <li>Automatically create comprehensive examinations ("Exams") based on these summaries, with questions algorithmically designed to test a range of cognitive levels (e.g., from Bloom's Taxonomy BT1-BT6, covering remembering, understanding, applying, analyzing, evaluating, and creating).</li>
+                <li>Access a dashboard to review, edit, approve, and publish their Exams.</li>
+                <li>Set a purchase price for Learners to access their Exams.</li>
+                <li>Track Learner engagement, performance metrics, and revenue through an analytics dashboard.</li>
+            </ul>
+            
+            <h4>2.1.2 For Learners</h4>
+            <p>The Service provides tools to:</p>
+            <ul>
+                <li>Discover and browse a marketplace of Exams published by their favorite Creators.</li>
+                <li>Securely purchase access to take an Exam.</li>
+                <li>Engage in a structured, timed examination experience within our platform.</li>
+                <li>Upon successful completion and passing of an Exam, receive a verifiable digital Certificate, which can be shared on professional profiles or portfolios.</li>
+            </ul>
+            
+            <h3>2.2 Eligibility & Access</h3>
+            
+            <h4>2.2.1 Age Requirement</h4>
+            <p>You must be at least <strong>18 years old</strong> or the age of legal majority in your jurisdiction to create an account and use the Service. </p>
+            <p>If you are between the ages of 13 and 18 (or the applicable age of legal majority), you may only use the Service under the direct supervision of a parent or legal guardian who has read and agreed to be bound by these Terms on your behalf. By permitting a minor to use the Service, the parent or guardian agrees to be fully responsible for the minor's acts and omissions, including any financial charges or legal liability they may incur.</p>
+            
+            <h4>2.2.2 Prohibited Users</h4>
+            <p>You may not use the Service if:</p>
+            <ul>
+                <li>You are under the age of 13. We do not knowingly collect personal information from children under 13.</li>
+                <li>You have previously been suspended, terminated, or banned from our Service.</li>
+                <li>Your use of the Service is in violation of any applicable local, state, national, or international law or regulation.</li>
+                <li>You are a person or entity, or are located in a country or region, that is subject to trade sanctions, embargoes, or other restrictions under the laws of India or other applicable jurisdictions (see Section 17).</li>
+            </ul>
+            
+            <h4>2.2.3 Verification</h4>
+            <p>We reserve the right to refuse access to the Service or terminate your account if we, in our sole discretion, believe you have violated our eligibility criteria or provided false information. This may include requiring you to provide proof of identity or age.</p>
+
+            <h3>2.3 Third-Party Services & Content</h3>
+            
+            <h4>2.3.1 YouTube API Services</h4>
+            <p>The core functionality of our Service for Creators relies on the YouTube API Services. By connecting your YouTube channel or otherwise using the Service, you acknowledge and agree that you are also bound by the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer">YouTube Terms of Service</a> and the <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a>. </p>
+            <p>Youcert is not owned, operated, or endorsed by Google or YouTube. We are an independent service that utilizes their API. You understand and agree that:</p>
+            <ul>
+                <li>Youcert is not responsible for the operation, availability, or accuracy of the YouTube API Services, nor for any content on YouTube itself.</li>
+                <li>Google or YouTube may change, limit, or terminate their API services or your access to them at any time, which may interrupt or permanently disable your ability to use certain features of our Service. Youcert shall have no liability for any such interruption or cessation of features caused by Third-Party Services.</li>
+                <li>We do not endorse, support, represent, or guarantee the completeness, truthfulness, accuracy, or reliability of any Creator Content.</li>
+            </ul>
+            
+            <h4>2.3.2 Other Third-Party Links</h4>
+            <p>The Service may contain links to other third-party websites, services, or resources that are not owned or controlled by Youcert. We do not endorse and are not responsible or liable for their content, products, services, or privacy policies. You access such third-party services at your own risk and are subject to their terms and conditions.</p>
+            
+            <h3>2.4 Service Modifications, Availability, and Downtime</h3>
+            
+            <h4>2.4.1 Right to Modify</h4>
+            <p>We are constantly improving the Service. We reserve the right, at our sole discretion, to modify, add, or discontinue features of the Service at any time, temporarily or permanently, with or without notice. This includes, but is not limited to, changing our AI models, modifying the user interface, altering pricing, or adding new features. You agree that we will not be liable to you or any third party for any modification, suspension, or discontinuance of the Service or any part thereof.</p>
+            
+            <h4>2.4.2 Availability</h4>
+            <p>While we strive for high availability, we do not guarantee that the Service will be operational 100% of the time. The Service may be subject to interruptions, downtime, or delays, whether for scheduled maintenance, emergency repairs, or due to failures of telecommunications links, APIs, or equipment that are beyond our control. We will make reasonable efforts to provide advance notice of any planned downtime.</p>
+            
+            <h4>2.4.3 No Liability for Downtime</h4>
+            <p>Youcert shall not be liable for any loss, damage, or inconvenience (including, for example, the interruption of a timed Exam) caused by any such downtime or service interruption, except as may be strictly required by law or our limited Refund Policy.</p>
+
+            <hr>
+
+            <h2>3. User Accounts & Security</h2>
+
+            <h3>3.1 Account Registration</h3>
+            <p>To access most features of the Service, including creating or taking Exams, you must register for an account. We may offer different registration methods, such as via Google OAuth or other third-party services. You agree to provide accurate, current, and complete information during the registration process and to update such information to keep it accurate, current, and complete. We reserve the right to suspend or terminate your account if any information provided is found to be inaccurate, not current, or incomplete. You may not create an account for anyone other than yourself, nor may you use an identity or email address that you are not authorized to use.</p>
+
+            <h3>3.2 Account Security</h3>
+            <p>You are solely responsible for safeguarding your account credentials (e.g., the password for your Google account used for OAuth) and for maintaining the security of your account. You agree not to disclose your credentials or share your account with any third party. You are responsible for all activities, charges, and actions that occur under your account, whether or not you authorized them. Selling, trading, or transferring your account to another person is strictly prohibited. You must notify us immediately at <a href="mailto:support@youcert.com">support@youcert.com</a> of any unauthorized use of your account or any other breach of security. You agree that we are not liable for any loss or damage arising from your failure to maintain the security of your account.</p>
+            
+            <h3>3.3 Account Types</h3>
+            <p>We offer two main types of accounts: "Creator Accounts" and "Learner Accounts." The specific features, permissions, and obligations for each account type are distinct and are further detailed in these Terms. You may be required to maintain separate accounts if you wish to act as both a Creator and a Learner. We reserve the right to introduce new account types or modify existing ones.</p>
+            
+            <h3>3.4 Account Suspension and Termination</h3>
+            <p>We reserve the right to suspend, deactivate, or terminate your account at any time, with or without notice, as detailed in Section 12.</p>
+
+            <hr>
+
+            <h2>4. Terms for Creators</h2>
+
+            <h3>4.1 Creator Verification</h3>
+            <p>To register as a Creator and publish Exams, you <strong>must</strong> verify your ownership of the associated YouTube channel through our designated validation process (e.g., via Google OAuth, granting permissions for us to confirm channel ownership). This verification is a critical security measure to protect intellectual property, prevent impersonation, and maintain the integrity of our platform. You may not create, list, or sell Exams for any YouTube channel you do not own and cannot verifiably prove you control. We reserve the right to revoke your Creator status and remove your Exams if your verification status changes, is revoked by the third-party provider (e.g., Google), or is found to be fraudulent. We may require re-verification at any time.</p>
+
+            <h3>4.2 License Grant from Creators</h3>
+            <p>You retain all of your pre-existing ownership rights to your Creator Content (your original videos, transcripts, etc.). We do not claim any ownership over your original content.</p>
+            <p>However, by submitting your Creator Content to the Service, you grant Youcert a <strong>non-exclusive, worldwide, royalty-free, sublicensable, and transferable license</strong> to perform the following actions, solely for the purpose of operating, developing, providing, and promoting the Service:
+            <ol>
+                <li><strong>To Access and Use:</strong> To access your Creator Content via the YouTube API or other means you provide (e.g., file upload).</li>
+                <li><strong>To Process:</strong> To copy, store, process, analyze, and perform technical operations on your Creator Content (specifically including the captions and transcripts) using our proprietary software and AI models.</li>
+                <li><strong>To Create Derivative Works:</strong> To create Generated Content (summaries, questions, etc.) based on your Creator Content. You acknowledge that while you own the underlying Creator Content, Youcert owns the Youcert IP (including the AI models and algorithms) used to create the Generated Content. The specific Generated Content (the text of the questions/summaries) created for your Exam is licensed to you for use *only* on the Youcert platform, as part of your Exam.</li>
+                <li><strong>To Host and Distribute:</strong> To host, store, display, reproduce, modify (for formatting), distribute, and sell access to the resulting Exam (which includes the Generated Content) to Learners and other Users through the Service.</li>
+                <li><strong>To Market and Promote:</strong> To use your name, likeness, channel name, logos, and trademarks ("Creator Marks") and to display snippets or previews of your Creator Content or Exam, solely for the purpose of marketing and promoting your Exams and the Youcert platform, both on and off the Service (e.g., in social media ads). You may opt out of certain promotional uses by contacting us in writing, and we will cease such use within a commercially reasonable timeframe.</li>
+            </ol>
+            </p>
+            <p>This license continues for as long as your Exam is published on the Service. If you remove your Exam, this license terminates, except that Youcert may retain access to your Exam for Learners who have already purchased it for a commercially reasonable period, and we may retain archival copies for legal, compliance, or data-training (in aggregated, anonymized form) purposes.</p>
+
+            <h3>4.3 Our Promise: Transcript Confidentiality</h3>
+            <p>We are committed to protecting your intellectual property. We will treat your raw video transcripts and captions as your "Confidential Information." <strong>We promise that your raw video transcripts and captions will not be made visible, downloadable, or directly accessible to any third party, including Learners.</strong> Our Service is designed to only display the final, AI-generated summaries and Exam questions derived from your transcripts, not the transcripts themselves.</p>
+            <p><strong>Disclaimer:</strong> This confidentiality obligation does not apply to any information that (a) is or becomes publicly known through no fault of Youcert; (b) we independently develop without reference to your transcripts; or (c) we are required to disclose by law or a valid court order. While we implement robust technical and organizational security measures, you acknowledge that no system is impenetrable. We cannot guarantee that an unauthorized third party will never be able to defeat our security measures. Our liability in such an event is strictly limited by Section 14 (Limitation of Liability) of these Terms.</p>
+
+            <h3>4.4 Creator Representations and Warranties</h3>
+            <p>You represent and warrant that you have all necessary rights, power, and authority to enter into these Terms and perform your obligations. You further represent and warrant that, at all times you use the Service:</p>
+            <ul>
+                <li><strong>Ownership:</strong> You are the sole and exclusive owner of your Creator Content, or you have obtained all necessary rights, licenses, consents, and releases from any third parties (including any co-hosts, guests, or music licensors) to submit the Creator Content and grant Youcert the license described in Section 4.2.</li>
+                <li><strong>No Infringement:</strong> Your Creator Content (and our use of it as permitted by these Terms) does not and will not infringe, misappropriate, or violate any third party's rights, including copyright, trademark, patent, trade secret, moral rights, rights of publicity, or rights of privacy.</li>
+                <li><strong>Legal Compliance:</strong> Your Creator Content is not unlawful, defamatory, libelous, obscene, pornographic, harassing, threatening, fraudulent, or otherwise objectionable, and its creation and distribution comply with all applicable laws and regulations (including YouTube's Terms of Service).</li>
+                <li><strong>Accuracy:</strong> To the best of your knowledge, the factual information contained within your Creator Content is accurate and not misleading. You are not submitting content you know to be false or dangerous.</li>
+                <li><strong>No Harmful Code:</strong> Your Creator Content is free from any viruses, worms, malware, Trojan horses, or other harmful or destructive code.</li>
+                <li><strong>Authority:</strong> You have the full right, power, and authority to grant the licenses herein and to bind any organization you represent to these Terms.</li>
+            </ul>
+            <p>You agree that you will indemnify, defend, and hold harmless Youcert for any breach of these warranties, as detailed in Section 15.</p>
+            
+            <h3>4.5 Creator Obligations</h3>
+            <p>As a Creator, you are not merely a user; you are a partner in the educational experience. You agree to the following obligations:</p>
+            <ul>
+                <li><strong>Content Quality:</strong> You are responsible for the quality, accuracy, and educational value of your Creator Content and your final, published Exam.</li>
+                <li><strong>Review of AI Content:</strong> You MUST review all Generated Content for accuracy before publishing, as detailed in Section 6.</li>
+                <li><strong>Honest Representation:</strong> You will not mislead Learners about the content, length, difficulty, or value of your Exam or the associated Certificate.</li>
+                <li><strong>Learner Support:</strong> To the extent that Youcert provides communication tools, you agree to make a good faith effort to respond to Learner queries or complaints about your Exam content in a timely and professional manner.</li>
+                <li><strong>Content Updates:</strong> If you become aware that your Creator Content or Exam contains a significant error or has become outdated, you agree to either update the Exam or unpublish it from the Service.</li>
+            </ul>
+
+            <h3>4.6 Creator Content Moderation</h3>
+            <p>While we are not obligated to monitor Creator Content or Exams, we reserve the right to review, screen, or remove any Exam at any time and for any reason, without notice. This includes, but is not limited to, content that we believe (in our sole discretion):</p>
+            <ul>
+                <li>Violates these Terms, our <a href="#">Privacy Policy</a>, or any other content policies we may publish.</li>
+                <li>Infringes on any intellectual property right or is the subject of a valid Takedown Notice (see Section 10).</li>
+                <li>Is of extremely low quality, factually incorrect, or misleading.</li>
+                <li>Is not primarily educational in nature.</li>
+                <li>Generates an excessive number of Learner complaints, poor reviews, or refund requests.</li>
+                <li>Poses a legal, financial, or reputational risk to Youcert, our users, or our partners.</li>
+            </ul>
+            <p>We are not liable for any losses or damages you may incur as a result of our removal of your Exam from the Service.</p>
+
+            <hr>
+            
+            <h2>5. Terms for Learners</h2>
+
+            <h3>5.1 Purchasing and Accessing Exams</h3>
+            
+            <h4>5.1.1 Limited License Grant</h4>
+            <p>When you purchase an Exam, Youcert grants you a <strong>limited, non-exclusive, non-transferable, revocable license</strong> to access and take that Exam solely for your personal, non-commercial, educational purposes. This license is for use only through the Youcert platform and only for the individual who made the purchase.</p>
+            <p>This license expressly prohibits you from:</p>
+            <ul>
+                <li>Downloading the Exam (except for any materials expressly designated as downloadable, such as a Certificate).</li>
+                <li>Copying, reproducing, scraping, or screen-capturing any part of the Exam.</li>
+                <li>Selling, renting, leasing, or sublicensing your access to the Exam to any other person.</li>
+                <li>Sharing your account credentials to allow others to take an Exam you purchased.</li>
+                <li>Publicly displaying, performing, or distributing any part of the Exam or its questions.</li>
+            </ul>
+            
+            <h4>5.1.2 Access Period</h4>
+            <p>Your purchase grants you access to the Exam for the period specified at the time of purchase (e.g., "one-time access," "1-year access," or "lifetime access").</p>
+            <p><strong>"Lifetime access"</strong> means for the lifetime of the Exam's availability on our Service, *not* your lifetime. The availability of an Exam is determined by Youcert and the Creator. We and the Creator reserve the right to remove an Exam from the Service at any time for any reason (e.g., content is outdated, Creator terminates their account, Youcert business model changes). If an Exam you purchased for "lifetime access" is removed, our liability is limited to, at our sole discretion, either (a) a pro-rata refund based on a 1-year presumed lifetime, or (b) providing you with access to a comparable Exam. No refunds will be provided for "lifetime access" Exams removed after 1 years from your purchase date.</p>
+
+            <h3>5.2 Academic Integrity and Learner Conduct</h3>
+            <p>The value of our Certificates depends on the integrity of our Learners. You agree to complete all Exams with honesty and integrity. You represent and warrant that you are the individual taking the Exam and that you will not engage in any form of academic misconduct. </p>
+            <p>You specifically agree not to:</p>
+            <ul>
+                <li><strong>Impersonation:</strong> Allow any other person to take an Exam on your behalf.</li>
+                <li><strong>Unauthorized Collaboration:</strong> Collaborate with any other person while taking a timed Exam.</li>
+                <li><strong>Using Unauthorized Aids:</strong> Use any unauthorized aids, materials, notes, books, websites, or software while taking an Exam. This includes, but is not limited to, using other browser tabs to search for answers, or using AI assistants (e.g., ChatGPT, Google Gemini) to help formulate answers.</li>
+                <li><strong>Distributing Content:</strong> Copy, screenshot, record (video or audio), photograph, or otherwise capture and distribute any Exam questions, answers, or content.</li>
+                <li><strong>Posting Content:</strong> Post or share Exam questions or answers (or your solutions) on any external website, forum, social media, or chat group.</li>
+                <li><strong>Hacking:</strong> Attempt to reverse-engineer, hack, or disrupt the examination system, timer, or scoring mechanism.</li>
+            </ul>
+            <p>Any violation of this section, or any suspected violation (as determined in our reasonable discretion), is a material breach of these Terms and may result in the immediate and permanent termination of your account, forfeiture of any and all fees paid, and the permanent revocation of any and all Certificates you have received from our Service.</p>
+            
+            <h3>5.3 Certificates of Completion</h3>
+            <p>Upon successfully passing an Exam (as defined by the passing score set by the Creator or Youcert), you may be issued a digital Certificate. You acknowledge and agree to the following critical disclaimers:</p>
+            <ul>
+                <li><strong>Not Academic Credit:</strong> A Certificate is <strong>not</strong> a formal academic degree, diploma, or qualification. It is not issued by an accredited institution (unless otherwise explicitly stated) and does not represent formal academic credit, nor does it guarantee acceptance into any academic program.</li>
+                <li><strong>No Guarantees of Recognition:</strong> Youcert and its Creators make no guarantees, warranties, or representations that a Certificate will be recognized or valued by any third party, including employers, academic institutions, or government bodies.</li>
+                <li><strong>No Endorsement:</strong> A Certificate merely demonstrates successful completion of a specific Exam on our Service. It does not represent an endorsement by Youcert of your skills, knowledge, or competence, nor does it represent an endorsement by Youcert of the Creator or the quality of their course.</li>
+                <li><strong>Verification:</strong> The Certificate may contain a verification feature (e.g., a QR code or unique URL). This feature is part of the Service and is subject to the same availability limitations. We do not guarantee the verification feature will be available indefinitely.</li>
+                <li><strong>Revocation:</strong> Youcert reserves the right to revoke any Certificate, at any time, if it is found that you violated these Terms (e.g., academic misconduct), if the Certificate was issued in error, or if the payment for the Exam is subject to a chargeback or refund.</li>
+            </ul>
+            
+            <h3>5.4 Learner-Creator Disputes</h3>
+            <p>If you are dissatisfied with the content or quality of an Exam (e.g., you believe it contains errors or is poorly made), you should first contact our support team. However, you acknowledge that Youcert is a platform provider and marketplace. We do not create the Creator Content or (beyond the AI generation) the Exam content. Youcert is not a party to any direct dispute between you and a Creator regarding the educational quality or accuracy of their Exam. Our obligations in such disputes are limited to our Refund Policy (Section 8.4) and our right to moderate content (Section 4.6).</p>
+            
+            <h3>5.5 Learner User Content</h3>
+            <p>If you submit any User Content, such as a review, rating, or comment about an Exam, you agree that it will be truthful, constructive, and non-defamatory. You grant Youcert a perpetual, worldwide, royalty-free license to use, display, and reproduce your review in connection with promoting the Service and the relevant Exam. We reserve the right to remove any review that violates our policies.</p>
+
+            <hr>
+
+            <h2>6. Disclaimers Regarding AI-Generated Content</h2>
+            
+            <div class="alert-box">
+                <p><strong>IMPORTANT: ACKNOWLEDGMENT OF AI LIMITATIONS.</strong><br>
+                This section is critical to your use of the Service, whether as a Creator or a Learner. Our Service uses advanced generative artificial intelligence (AI) to produce Generated Content (summaries and questions) from Creator Content.</p>
+            </div>
+
+            <h3>6.1 Acknowledgment of AI Limitations</h3>
+            <p>You acknowledge and agree that generative AI is a new and probabilistic technology. As such, all Generated Content may:
+            <ul>
+                <li><strong>Contain Inaccuracies:</strong> The AI may misunderstand the Creator Content and generate factually incorrect summaries or questions.</li>
+                <li><strong>"Hallucinate":</strong> The AI may invent facts, sources, or details that were not present in the Creator Content.</li>
+                <li><strong>Be Biased:</strong> The AI may reflect or amplify biases present in its training data or in the Creator Content.</li>
+                <li><strong>Be Incomplete:</strong> The AI may fail to identify or test key concepts from the Creator Content.</li>
+                <li><strong>Be Offensive:</strong> The AI may, in rare cases, produce content that is offensive, inappropriate, or not in line with Youcert's or the Creator's values.</li>
+            </ul>
+            </p>
+
+            <h3>6.2 Creator as Publisher and Final Authority</h3>
+            <p>As stated in Section 4.5, the Creator is the publisher of the Exam. Youcert provides AI tools to *assist* the Creator, not to replace them. The Creator is solely and exclusively responsible for reviewing, editing, and approving all Generated Content before publishing an Exam. <strong>By publishing, the Creator adopts the Generated Content as their own.</strong></p>
+            
+            <h3>6.3 No Youcert Warranty for AI Content</h3>
+            <p><strong>Youcert provides all Generated Content on an "AS IS" basis, without warranty of any kind.</strong> We expressly disclaim any and all warranties, whether express or implied, regarding the accuracy, completeness, reliability, or fitness for any particular purpose of the Generated Content. We are not liable for any errors or omissions in the Generated Content.</p>
+            
+            <h3>6.4 Learner Acknowledgment of Risk</h3>
+            <p>As a Learner, you acknowledge that the Exams you are taking are based on AI-Generated Content that has been reviewed and published by a Creator. You agree that Youcert is not responsible for any inaccuracies in the Exam questions or summaries. Your reliance on any information within an Exam is solely at your own risk. Your sole remedy for dissatisfaction with an Exam's content is to stop using the Exam and request a refund *only* under the extremely limited conditions of our Refund Policy.</p>
+
+            <hr>
+
+            <h2>7. User-Generated Content (General)</h2>
+            <p>This section applies to all User Content that is *not* Creator Content (e.g., profile pictures, forum posts, Exam reviews, comments).</p>
+            
+            <h3>7.1 Responsibility for Your Content</h3>
+            <p>You are solely responsible for any User Content you post, upload, or submit to the Service. You assume all risks associated with your User Content, including anyone's reliance on its quality, accuracy, or reliability, or any disclosure by you of information that makes you personally identifiable.</p>
+            
+            <h3>7.2 License Grant to Youcert</h3>
+            <p>By posting User Content, you grant Youcert a perpetual, irrevocable, worldwide, royalty-free, non-exclusive, sublicensable, and transferable license to use, reproduce, distribute, prepare derivative works of, display, and perform your User Content in connection with the Service and our business (e.g., for promoting the Service). This includes displaying your Exam reviews or comments to other Users.</p>
+            
+            <h3>7.3 Prohibited Content</h3>
+            <p>You agree not to post any User Content that:
+            <ul>
+                <li>Is fraudulent, false, misleading, or deceptive.</li>
+                <li>Is defamatory, obscene, pornographic, vulgar, or offensive.</li>
+                <li>Promotes discrimination, bigotry, racism, hatred, harassment, or harm against any individual or group.</li>
+                <li>Is violent or threatening or promotes violence or actions that are threatening to any other person.</li>
+                <li>Promotes illegal or harmful activities or substances.</li>
+                <li>Infringes any third party's intellectual property or privacy rights.</li>
+            </ul>
+            </p>
+            <h3>7.4 Moderation</h3>
+            <p>We have the right (but not the obligation) to remove or disable access to any User Content at our sole discretion, for any reason, including for violation of these Terms.</p>
+
+            <hr>
+
+            <h2>8. Fees, Payments, and Revenue</h2>
+
+            <h3>8.1 Fees for Learners</h3>
+            <p>Learners agree to pay the fees for the Exams they purchase, as displayed at the time of purchase. You authorize us (through our Third-Party payment processor) to charge your designated payment method (e.g., credit card, UPI, digital wallet) for the total amount of your purchase, including all applicable taxes (such as GST).</p>
+
+            <h3>8.2 Payment Processing</h3>
+            <p>We use third-party payment processors (e.g., Stripe, Razorpay) to handle all transactions. By making a purchase, you agree to provide accurate payment information and you agree to be bound by the terms and conditions of our chosen payment processor. All payment information you provide is sent directly to the payment processor and is subject to their privacy policy. We do not store your full credit card or financial account numbers.</p>
+            
+            <h3>8.3 Creator Revenue Share and Payouts</h3>
+            
+            <h4>8.3.1 Revenue Share</h4>
+            <p>In consideration for your use of the Service (including platform hosting, AI processing, payment processing, marketing, and certificate issuance), Youcert will retain a service fee ("Service Fee") from the gross revenue collected from your Exam sales. You will be entitled to the remaining portion ("Creator Revenue").</p>
+            <p>The specific Service Fee percentage (or revenue share split) will be detailed in your Creator Dashboard or a separate Creator Agreement. We reserve the right to change the Service Fee at any time. We will provide you with at least thirty (30) days' notice via email or a dashboard notification before any such changes that adversely affect you take effect.</p>
+            
+            <h4>8.3.2 Payout Terms</h4>
+            <p>Payouts of your Creator Revenue will be made according to the schedule (e.g., Net-30, Net-45, or another specified period after the end of the month in which the sale occurred) and method (e.g., bank transfer, PayPal) specified in your Creator Dashboard. We may require you to reach a minimum accumulated revenue (e.g., $50 or equivalent) before initiating a payout. We are not responsible for payout delays caused by our payment processors.</p>
+            
+            <h4>8.3.3 Holds and Deductions</h4>
+            <p>You explicitly authorize us to hold or deduct from your payouts any amounts corresponding to:
+            <ul>
+                <li>Refunds issued to Learners for your Exams.</li>
+                <li>Chargebacks and associated fees from our payment processor.</li>
+                <li>Any suspected fraudulent activity, pending investigation.</li>
+                <li>Any taxes we are required by law to withhold.</li>
+            </ul>
+            </p>
+            
+            <h4>8.3.4 Creator Payout and Tax Information</h4>
+            <p>To receive payouts, you must provide and maintain accurate and valid payout information (e.g., bank account details, PayPal email). As an Indian-based company, we may also require you to provide valid tax identification information (e.g., PAN, GSTIN). You are solely responsible for the accuracy of this information. If we are unable to pay you because your information is incorrect or incomplete, we may hold your revenue until it is corrected, and we will not be liable for any interest or damages.</p>
+
+            <h3>8.4 Creator and Learner Taxes</h3>
+            
+            <h4>8.4.1 For Creators (Income Tax, GST)</h4>
+            <p>You are solely responsible for determining, collecting, and remitting all applicable taxes (such as income tax, Goods and Services Tax (GST), or VAT) on your Creator Revenue, as required by your local laws. Youcert is not responsible for advising you on your tax obligations. We will provide you with sales information as required, but you are the ultimate party responsible for reporting and paying your taxes. We may withhold taxes from your payouts if required by Indian or international law.</p>
+            
+            <h4>8.4.2 For Learners (Sales Tax, GST)</h4>
+            <p>Prices for Exams will be inclusive of all applicable taxes (such as GST or VAT) which Youcert will collect and remit as required by law. The price you see at checkout will be the final price you pay.</p>
+
+            <h3>8.5 Refund Policy</h3>
+            <p>Our refund policy is strict due to the digital nature of our product and the fact that revenue is shared with Creators.</p>
+            <ul>
+                <li><strong>General Policy:</strong> Except as explicitly stated in this section or as required by mandatory applicable law, <strong>all purchases are final and non-refundable.</strong></li>
+                <li><strong>Discretionary Refunds (Limited):</strong> We may, at our <strong>sole discretion</strong>, choose to offer a refund if you request it within <strong>48 hours</strong> of purchase AND you have <strong>not yet started or attempted the Exam</strong> (i.e., you have not clicked "Start Exam"). No refunds will be issued for any reason after an Exam has been started or completed, or after 48 hours from the time of purchase, whichever comes first.</li>
+                <li><strong>Technical Failures:</strong> If you are unable to complete an Exam due to a verifiable technical failure of the Youcert platform (not your own internet or device), you must contact support immediately. We may, at our discretion, offer you a credit or a chance to retake the Exam.</li>
+                <li><strong>Exam Takedown:</strong> If Youcert removes an Exam you purchased (per Section 4.6) before you were able to complete it, you may be eligible for a refund or credit, at our discretion.</li>
+                <li><strong>Duplicate Payments:</strong> In the event of an accidental duplicate payment for the same Exam, we will refund the duplicate transaction in full upon verification.</li>
+                <li><strong>Banned Accounts:</strong> No refunds or credits will be provided if your account is suspended or terminated for a violation of these Terms (e.g., academic misconduct, Section 5.2).</li>
+                <li><strong>Chargebacks:</strong> Initiating a chargeback with your bank without first contacting our support team to resolve the issue is a violation of these Terms and may result in the immediate termination of your account and revocation of all Certificates.</li>
+            </ul>
+            </p>
+
+            <hr>
+
+            <h2>9. Intellectual Property Rights</h2>
+
+            <h3>9.1 Youcert IP</h3>
+            <p>Excluding User Content, you acknowledge that the Service itself—including all software, code (backend and frontend), technology, our proprietary AI models and algorithms, databases, technical documentation, text, graphics, logos, icons, images, audio clips, video clips, the "look and feel" of the platform, and all trademarks, service marks, and trade names ("Youcert IP")—are the sole and exclusive property of Youcert and its licensors, protected by copyright, trademark, patent, trade secret, and other intellectual property laws of India and foreign countries.</p>
+            <p>We grant you a limited, non-exclusive, non-sublicensable, non-transferable, revocable license to access and use the Service strictly in accordance with these Terms. You agree not to copy, modify, create derivative works of, publicly display, publicly perform, republish, reverse-engineer, decompile, or disassemble any part of the Youcert IP without our prior written consent.</p>
+
+            <h3>9.2 User Content (General)</h3>
+            <p>You retain ownership of your User Content. By posting any User Content (such as a Learner review), you grant Youcert a non-exclusive, worldwide, royalty-free, perpetual, and irrevocable license to use, display, reproduce, modify (for formatting), and distribute your User Content in connection with operating and promoting the Service.</p>
+            
+            <h3>9.3 Ownership of Generated Content</h3>
+            <p>This is a key distinction.
+            <ul>
+                <li><strong>You (Creator)</strong> own your original Creator Content.</li>
+                <li><strong>We (Youcert)</strong> own the Youcert IP, which includes the AI models, algorithms, and processes that create the Generated Content.</li>
+                <li><strong>The Generated Content itself</strong> (the specific text of the questions and summaries created for your Exam) is considered a derivative work. Upon creation, Youcert grants you (the Creator) an exclusive license to use this Generated Content *as part of your Exam, only on the Youcert platform*. You may not export this Generated Content to use or sell on any other platform without our express written permission.</li>
+            </ul>
+            </p>
+
+            <h3>9.4 Feedback</h3>
+            <p>We welcome your feedback, comments, and suggestions for improving the Service ("Feedback"). You can submit Feedback by contacting us. If you provide us with any Feedback, you grant us a perpetual, irrevocable, worldwide, royalty-free, fully paid-up, non-exclusive, sublicensable, and transferable license to use, implement, commercialize, and exploit that Feedback in any way, for any purpose, without any obligation, attribution, or compensation to you. You agree that any Feedback you provide is non-confidential.</p>
+
+            <hr>
+
+            <h2>10. Copyright Takedown Policy (DMCA / Indian Copyright Act)</h2>
+            <p>Youcert respects the intellectual property rights of others and expects its Users to do the same. We will respond to notices of alleged copyright infringement that comply with applicable law (such as the Digital Millennium Copyright Act in the U.S. or the Copyright Act, 1957 in India). It is our policy, in appropriate circumstances, to terminate the accounts of Users who are deemed to be repeat infringers.</p>
+            
+            <h3>10.1 Takedown Notice</h3>
+            <p>If you are a copyright owner (or their agent) and believe that any content on our Service (including an Exam or Creator Content) infringes your copyright, please submit a written notice ("Takedown Notice") to our Copyright Agent with the following information:
+            <ol>
+                <li>A physical or electronic signature of the copyright owner or a person authorized to act on their behalf.</li>
+                <li>Identification of the copyrighted work claimed to have been infringed (or, if multiple works, a representative list).</li>
+                <li>Identification of the material that is claimed to be infringing or to be the subject of infringing activity and that is to be removed (including its location on the Service, such as a URL, sufficient for us to find it).</li>
+                <li>Your contact information (full name, address, telephone number, and email address).</li>
+                <li>A statement that you have a good faith belief that use of the material in the manner complained of is not authorized by the copyright owner, its agent, or the law.</li>
+                <li>A statement that the information in the notification is accurate, and, under penalty of perjury, that you are authorized to act on behalf of the copyright owner.</li>
+            </ol>
+            </p>
+            
+            <h3>10.2 Counter-Notice</h3>
+            <p>If you are a Creator and you believe that your Exam was removed or disabled as a result of mistake or misidentification, you may submit a written "Counter-Notice" to our Copyright Agent with the following:
+            <ol>
+                <li>Your physical or electronic signature.</li>
+                <li>Identification of the material that has been removed and its location before removal.</li>
+                <li>A statement under penalty of perjury that you have a good faith belief that the material was removed as a result of mistake or misidentification.</li>
+                <li>Your name, address, telephone number, and a statement that you consent to the jurisdiction of the courts in Midnapore, India, and that you will accept service of process from the person who provided the original Takedown Notice.</li>
+            </ol>
+            </p>
+            <p>Upon receipt of a valid Counter-Notice, we may, in accordance with applicable law, forward it to the complaining party and may restore the content after a designated waiting period, unless the complaining party files a court action against you.</p>
+
+            <h3>10.3 Repeat Infringer Policy</h3>
+            <p>In accordance with applicable law, Youcert has adopted a policy of terminating, in appropriate circumstances and at our sole discretion, the accounts of Users who are deemed to be repeat infringers of copyright. We may also, at our discretion, limit access to the Service or terminate the accounts of any Users who infringe any intellectual property rights of others, whether or not there is any repeat infringement.</p>
+            
+            <h3>10.4 Copyright Agent</h3>
+            <p>Our designated Copyright Agent for all notices of infringement is:
+            <br>Youcert Copyright Agent
+            <br>Email: <a href="mailto:copyright@youcert.com">copyright@youcert.com</a>
+            </p>
+            <p>Note: This contact is only for copyright notices. For all other inquiries, please contact <a href="mailto:support@youcert.com">support@youcert.com</a>.</p>
+
+            <hr>
+            
+            <h2>11. Prohibited Conduct</h2>
+            <p>As a condition of your use of the Service, you agree not to do, or attempt to do, any of the following, directly or indirectly:</p>
+
+            <h3>11.1 Illegal and Harmful Conduct</h3>
+            <ul>
+                <li>Use the Service for any purpose that is illegal, fraudulent, or in violation of any applicable local, state, national, or international law or regulation.</li>
+                <li>Harass, threaten, stalk, defame, or otherwise abuse or harm any other User or Youcert employee.</li>
+                <li>Upload, post, or transmit any content that is unlawful, hateful, obscene, pornographic, discriminatory (based on race, ethnicity, religion, gender, sexual orientation, disability, or age), or promotes violence, terrorism, or self-harm.</li>
+            </ul>
+
+            <h3>11.2 Platform Integrity and Security</h3>
+            <ul>
+                <li>Upload or transmit any viruses, malware, worms, Trojan horses, spyware, or other harmful or malicious code.</li>
+                <li>Interfere with or disrupt the operation, servers, or networks connected to the Service.</li>
+                <li>Attempt to gain unauthorized access to any part of the Service, other User accounts, or our computer systems or private databases.</li>
+                <li>Use the Service in any manner that could disable, overburden, damage, or impair the Service or interfere with any other party's use of the Service.</li>
+                <li>Attempt to probe, scan, or test the vulnerability of our systems or network or breach any security or authentication measures.</li>
+            </ul>
+
+            <h3>11.3 Data Collection and Spam</h3>
+            <ul>
+                <li>Scrape, data-mine, crawl, or use any robot, spider, or other automated means to access the Service or extract data (except for public search engines indexing public-facing pages).</li>
+                <li>Reverse-engineer, decompile, or disassemble any part of the Youcert IP.</li>
+                <li>Send unsolicited advertising, promotional materials, or spam to other Users.</li>
+                <li>Collect or store personal data about other Users without their express permission or in violation of our Privacy Policy.</li>
+            </ul>
+
+            <h3>11.4 Impersonation and Misrepresentation</h3>
+            <ul>
+                <li>Impersonate any person or entity, or falsify your affiliation with any person or entity.</li>
+                <li>(For Creators) Falsely claim ownership of a YouTube channel or create Exams for content you do not own.</li>
+                <li>Provide false, inaccurate, or misleading information during account registration, verification, or in your profile.</li>
+                <li>(For Learners) Engage in any form of academic misconduct as defined in Section 5.2.</li>
+            </ul>
+
+            <h3>11.5 Infringement of Rights</h3>
+            <ul>
+                <li>Infringe, misappropriate, or violate the intellectual property, privacy, or other rights of any third party.</li>
+                <li>Remove, obscure, or alter any copyright, trademark, or other proprietary rights notices.</li>
+                <li>Encourage or assist any other person in doing any of the foregoing.</li>
+            </ul>
+            <p>Any violation of this section may lead to immediate suspension or termination of your account, civil, and/or criminal liability.</p>
+
+            <hr>
+            
+            <h2>12. Privacy Policy</h2>
+            <p>Our <a href="/privacy-policy">Privacy Policy</a> describes how we collect, use, and share your personal data. By using the Service, you agree that we can use such data in accordance with our Privacy Policy, which is incorporated by reference into these Terms. Please review it carefully.</p>
+
+            <hr>
+
+            <h2>13. Disclaimers of Warranties</h2>
+            
+            <p>YOUR USE OF THE SERVICE IS AT YOUR SOLE RISK. THE SERVICE AND ALL CONTENT, MATERIALS, AND INFORMATION PROVIDED THEREIN ARE PROVIDED ON AN <strong>"AS IS"</strong> AND <strong>"AS AVAILABLE"</strong> BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.</p>
+            
+            <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, YOUCERT, ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND LICENSORS EXPRESSLY DISCLAIM ALL WARRANTIES, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE, INCLUDING, BUT NOT LIMITED TO:</p>
+            
+            <ul>
+                <li><strong>DISCLAIMER OF ALL WARRANTIES:</strong> ANY AND ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.</li>
+                
+                <li><strong>DISCLAIMER OF AI CONTENT:</strong> ANY WARRANTY REGARDING THE ACCURACY, COMPLETENESS, RELIABILITY, OR SAFETY OF ANY <strong>AI-GENERATED CONTENT</strong>. AS STATED IN SECTION 6, YOU ACKNOWLEDGE THAT AI CONTENT CAN BE WRONG, INCOMPLETE, BIASED, OR OUT-OF-DATE. YOU AGREE TO RELY ON SUCH CONTENT SOLELY AT YOUR OWN RISK.</li>
+                
+                <li><strong>DISCLAIMER OF SERVICE AVAILABILITY:</strong> ANY WARRANTY THAT THE SERVICE WILL BE UNINTERRUPTED, SECURE, ERROR-FREE, OR FREE OF VIRUSES AND OTHER HARMFUL COMPONENTS, OR THAT ANY DEFECTS WILL BE CORRECTED.</li>
+                
+                <li><strong>DISCLAIMER OF CERTIFICATE VALUE:</strong> ANY WARRANTY ABOUT THE EDUCATIONAL VALUE OF ANY EXAM OR THE THIRD-PARTY RECOGNITION (BY EMPLOYERS OR OTHERS) OF ANY CERTIFICATE.</li>
+                
+                <li><strong>DISCLAIMER OF ENDORSEMENT:</strong> YOUCERT DOES NOT ENDORSE, VET, OR GUARANTEE ANY CREATOR, LEARNER, EXAM, OR CREATOR CONTENT. ANY REFERENCE TO A CREATOR DOES NOT CONSTITUTE AN ENDORSEMENT OR RECOMMENDATION.</li>
+                
+                <li><strong>DISCLAIMER OF PROFESSIONAL ADVICE:</strong> CONTENT ON THE SERVICE (INCLUDING EXAMS) IS FOR EDUCATIONAL AND INFORMATIONAL PURPOSES ONLY AND DOES NOT CONSTITUTE FINANCIAL, LEGAL, MEDICAL, OR OTHER PROFESSIONAL ADVICE. YOU SHOULD CONSULT A QUALIFIED PROFESSIONAL BEFORE MAKING DECISIONS BASED ON SUCH CONTENT.</li>
+            </ul>
+            
+            <p>NO ADVICE OR INFORMATION, WHETHER ORAL OR WRITTEN, OBTAINED BY YOU FROM YOUCERT OR THROUGH THE SERVICE WILL CREATE ANY WARRANTY NOT EXPRESSLY STATED IN THESE TERMS.</p>
+
+            <hr>
+            
+            <h2>14. Limitation of Liability</h2>
+            
+            <p>TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT WILL YOUCERT, ITS AFFILIATES, OFFICERS, DIRECTORS, EMPLOYEES, PARTNERS, OR AGENTS BE LIABLE FOR ANY <strong>INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES</strong>, OR ANY <strong>LOSS OF PROFITS OR REVENUES</strong> (WHETHER INCURRED DIRECTLY OR INDIRECTLY), OR ANY <strong>LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES</strong>, RESULTING FROM:
+            <ol type="a">
+                <li>YOUR ACCESS TO OR USE OF, OR INABILITY TO ACCESS OR USE, THE SERVICE;</li>
+                <li>ANY CONDUCT OR CONTENT OF ANY THIRD PARTY ON THE SERVICE, INCLUDING ANY DEFAMATORY, OFFENSIVE, OR ILLEGAL CONDUCT OF OTHER USERS OR THIRD PARTIES;</li>
+                <li>ANY CONTENT OBTAINED FROM THE SERVICE, PARTICULARLY ANY RELIANCE PLACED ON THE ACCURACY OR COMPLETENESS OF EXAMS OR AI-GENERATED CONTENT;</li>
+                <li>UNAUTHORIZED ACCESS, USE, OR ALTERATION OF YOUR ACCOUNT, TRANSMISSIONS, OR CONTENT, EVEN IF WE HAVE BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES;</li>
+                <li>ANY ERRORS, MISTAKES, OR INACCURACIES IN, OR ANY CESSATION OF, THE SERVICE, THE YOUTUBE API, OR OUR PAYMENT PROCESSORS; OR</li>
+                <li>ANY OTHER MATTER RELATING TO THE SERVICE.</li>
+            </ol>
+            </p>
+
+            <p><strong>AGGREGATE LIABILITY CAP:</strong> IN NO EVENT SHALL YOUCERT'S TOTAL AGGREGATE LIABILITY TO YOU FOR ALL CLAIMS, DAMAGES, AND CAUSES OF ACTION ARISING OUT OF OR RELATING TO THESE TERMS OR YOUR USE OF THE SERVICE EXCEED THE GREATER OF:
+            <br>(A) <strong>ONE HUNDRED U.S. DOLLARS ($100.00)</strong> (or its equivalent in INR)
+            <br>OR
+            <br>(B) THE TOTAL AMOUNT OF FEES YOU PAID TO YOUCERT (IF A LEARNER) OR THE TOTAL CREATOR REVENUE YOU RECEIVED FROM YOUCERT (IF A CREATOR) IN THE SIX (6) MONTHS IMMEDIATELY PRECEDING THE DATE OF THE EVENT GIVING RISE TO THE CLAIM.
+            </p>
+            
+            <p><strong>BASIS OF THE BARGAIN:</strong> YOU ACKNOWLEDGE AND AGREE THAT YOUCERT HAS OFFERED ITS SERVICE, SET ITS PRICES, AND ENTERED INTO THESE TERMS IN RELIANCE UPON THE WARRANTY DISCLAIMERS AND THE LIMITATIONS OF LIABILITY SET FORTH HEREIN. THESE LIMITATIONS ARE A FUNDAMENTAL AND ESSENTIAL BASIS OF THE BARGAIN BETWEEN YOU AND YOUCERT, AND THEY SHALL APPLY EVEN IF ANY REMEDY FAILS OF ITS ESSENTIAL PURPOSE.</p>
+            
+            <p><strong>EXCLUSIONS:</strong> SOME JURISDICTIONS DO NOT ALLOW THE EXCLUSION OF CERTAIN WARRANTIES OR THE LIMITATION OF LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES. ACCORDINGLY, SOME OF THE ABOVE LIMITATIONS MAY NOT APPLY TO YOU, AND OUR LIABILITY SHALL BE LIMITED TO THE MAXIMUM EXTENT PERMITTED BY LAW IN SUCH JURISDICTIONS.</p>
+
+            <hr>
+
+            <h2>15. Indemnification</h2>
+            <p>You agree to defend, indemnify, and hold harmless Youcert and its parent company, subsidiaries, affiliates, and its and their respective officers, directors, employees, agents, licensors, and partners (the "Youcert Indemnified Parties") from and against any and all claims, demands, actions, suits, allegations, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to reasonable attorney's fees and legal costs) (collectively, "Losses") arising from or related to:</p>
+            
+            <h3>15.1 General Indemnity (All Users)</h3>
+            <ul>
+                <li>Your use of and access to the Service.</li>
+                <li>Your violation of any term of this Agreement.</li>
+                <li>Your violation of any applicable law or regulation.</li>
+                <li>Your violation of any third-party right, including any intellectual property, privacy, or publicity right.</li>
+                <li>Any activity that occurs under your account, whether or not authorized by you.</li>
+                <li>Your User Content (such as reviews or comments).</li>
+            </ul>
+
+            <h3>15.2 Creator-Specific Indemnity</h3>
+            <p>If you are a Creator, you *additionally* agree to defend, indemnify, and hold harmless the Youcert Indemnified Parties from and against any and all Losses arising from or related to:</p>
+            <ul>
+                <li><strong>Your Creator Content:</strong> Any claim that your Creator Content infringes or misappropriates the copyrights, trademarks, or other rights of a third party.</li>
+                <li><strong>Your Published Exam:</strong> Any claim arising from the content of your published Exam, including claims of inaccuracy, error, or misleading information.</li>
+                <li><strong>Learner Claims:</strong> Any claim brought by a Learner or any third party related to their use of, or dissatisfaction with, your Exam (including claims for personal injury, property damage, or other losses allegedly caused by reliance on your Exam content).</li>
+                <li><strong>Your Taxes:</strong> Any claim by any tax authority related to your failure to pay applicable taxes (e.g., income tax, GST) on your Creator Revenue.</li>
+                <li><strong>Your Breach of Warranty:</strong> Any claim arising from your breach of the representations and warranties in Section 4.4.</li>
+            </ul>
+
+            <h3>15.3 Indemnification Procedure</h3>
+            <p>We reserve the right to assume the exclusive defense and control of any matter otherwise subject to indemnification by you, at your expense. In such case, you agree to cooperate fully with our defense of such claim. You agree not to settle any matter in which you have an indemnification obligation without our prior written consent. This indemnification obligation will survive the termination of these Terms and your use of the Service.</p>
+
+            <hr>
+
+            <h2>16. Dispute Resolution and Mandatory Arbitration</h2>
+            
+            <p><strong>PLEASE READ THIS SECTION CAREFULLY – IT MAY SIGNIFICANTLY AFFECT YOUR LEGAL RIGHTS, INCLUDING YOUR RIGHT TO FILE A LAWSUIT IN COURT.</strong></p>
+
+            <h3>16.1 Informal Dispute Resolution</h3>
+            <p>We want to address your concerns without needing a formal legal case. Before filing any claim against Youcert, you agree to try to resolve the dispute informally by contacting <a href="mailto:copyright@youcert.com">copyright@youcert.com</a>. We will try to resolve the dispute informally by contacting you via email. If a dispute is not resolved within sixty (60) days after submission, you or Youcert may bring a formal proceeding.</p>
+
+            <h3>16.2 Mandatory Arbitration Agreement</h3>
+            <p>You and Youcert agree that any dispute, claim, or controversy arising out of or relating to these Terms or the breach, termination, enforcement, interpretation, or validity thereof, or the use of the Service (collectively, "Disputes") will be settled by <strong>binding, individual arbitration</strong>, except as specified below.</p>
+            
+            <h3>16.3 Exceptions to Arbitration</h3>
+            <p>Notwithstanding Section 16.2, both parties retain the right:
+            <ol>
+                <li>To seek injunctive or other equitable relief in a court of competent jurisdiction to prevent the actual or threatened infringement, misappropriation, or violation of a party's copyrights, trademarks, trade secrets, patents, or other intellectual property rights.</li>
+                <li>To bring an individual action in a small claims court (or equivalent court) if the claim qualifies and remains in such court.</li>
+            </ol>
+            </p>
+
+            <h3>16.4 Arbitration Rules (India)</h3>
+            <p>As we are an India-based company, the arbitration will be administered in accordance with the <strong>Arbitration and Conciliation Act, 1996 (India)</strong>, as amended from time to time.
+            <ul>
+                <li>The arbitration will be conducted by a <strong>single arbitrator</strong>, mutually agreed upon by both parties.</li>
+                <li>The <strong>seat and venue</strong> of arbitration shall be <strong>Midnapore, India</strong>.</li>
+                <li>The <strong>language</strong> of the arbitration shall be <strong>English</strong>.</li>
+                <li>The arbitrator's decision shall be final and binding on both parties. Judgment on the arbitration award may be entered in any court having jurisdiction.</li>
+            </ul>
+            </p>
+            
+            <h3>16.5 CLASS ACTION AND JURY TRIAL WAIVER</h3>
+            <p><strong>YOU AND YOUCERT AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN YOUR OR ITS INDIVIDUAL CAPACITY, AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS OR REPRESENTATIVE PROCEEDING.</strong></p>
+            <p>Further, unless both you and Youcert agree otherwise, the arbitrator may not consolidate more than one person's claims, and may not otherwise preside over any form of a representative or class proceeding.</p>
+            <p>By agreeing to these Terms, you are <strong>waiving your right to a trial by jury</strong> (if applicable) and your <strong>right to participate in a class action</strong> lawsuit or class-wide arbitration.</p>
+
+            <h3>16.6 Arbitration Opt-Out</h3>
+            <p>You have the right to opt out of this arbitration agreement. If you do not wish to be bound by this arbitration clause, you must notify us in writing within <strong>thirty (30) days</strong> of the date you first accept these Terms (or first use the Service, whichever is earlier). Your written notification must be mailed to us at the address in Section 19, Attn: Legal/Arbitration Opt-Out. Your notice must include your full name, the email address associated with your Youcert account, and a clear statement that you wish to opt out of this arbitration agreement. If you opt out, all other parts of this Agreement will continue to apply, and disputes will be resolved in the courts specified in Section 13.</p>
+
+            <hr>
+
+            <h2>17. Global Compliance and Sanctions</h2>
+            <p>Youcert is based in India, but the Service is accessible globally. You agree to comply with all applicable local, state, national, and international laws and regulations in connection with your use of the Service. This includes, but is not limited to, all applicable laws regarding intellectual property, data privacy, and online conduct.</p>
+            <p>You represent and warrant that you are not:
+            <ol>
+                <li>Located in, or a national or resident of, any country or region that is subject to a comprehensive trade embargo or sanctions by the Government of India, the United Nations, or other applicable government authority.</li>
+                <li>Listed on any "restricted party" or "sanctioned entity" list maintained by the Government of India or other applicable government (e.g., the U.S. Treasury's Specially Designated Nationals list or the EU's consolidated list).</li>
+            </ol>
+            </p>
+            <p>You agree that you will not use the Service to conduct any transaction with or on behalf of any such sanctioned person, entity, or country. We reserve the right to suspend or terminate your account immediately if we suspect you are in violation of this clause.</p>
+
+            <hr>
+            
+            <h2>18. General Provisions</h2>
+            
+            <h3>18.1 Entire Agreement</h3>
+            <p>These Terms, together with our <a href="/privacy-policy">Privacy Policy</a> and any other policies or agreements expressly incorporated by reference (such as a Creator Agreement, if applicable), constitute the entire and exclusive understanding and agreement between Youcert and you regarding the Service. These Terms supersede and replace all prior oral or written understandings or agreements between us.</p>
+            
+            <h3>18.2 Changes to Terms</h3>
+            <p>We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If we make a material change, we will provide you with reasonable notice prior to the change taking effect, such as by posting the new Terms on the Service, sending you an email, or displaying a prominent notice within the platform. What constitutes a "material change" will be determined at our sole discretion.</p>
+            <p>By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised Terms. If you do not agree to the new Terms, you must stop using the Service.</p>
+            
+            <h3>18.3 Severability</h3>
+            <p>If any provision of these Terms (or part of a provision) is held to be invalid, illegal, or unenforceable by a court or arbitrator, that provision will be enforced to the maximum extent permissible, and the remaining provisions of these Terms will remain in full force and effect.</p>
+            
+            <h3>18.4 No Waiver</h3>
+            <p>The failure of Youcert to enforce any right or provision of these Terms will not be considered a waiver of those rights or any subsequent breach. A waiver of any provision is effective only if in writing and signed by an authorized representative of Youcert.</p>
+            
+            <h3>18.5 Assignment</h3>
+            <p>You may not assign or transfer these Terms or your rights and obligations hereunder, by operation of law or otherwise, without our prior written consent. Any attempt to do so without consent will be null and void. We may freely assign or transfer these Terms, and our rights and obligations, without restriction. Subject to the foregoing, these Terms will bind and inure to the benefit of the parties, their successors, and permitted assigns.</p>
+            
+            <h3>18.6 Force Majeure</h3>
+            <p>Youcert shall not be liable for any delay or failure to perform resulting from causes outside our reasonable control, including, but not limited to, acts of God, war, terrorism, riots, embargos, acts of civil or military authorities, fire, floods, accidents, epidemics, pandemics, strikes, or shortages of transportation facilities, fuel, energy, labor, or materials, or failures of public or private telecommunications networks (including the internet) or API services (including the YouTube API).</p>
+            
+            <h3>18.7 Relationship of Parties</h3>
+            <p>You and Youcert are independent contractors. These Terms do not create a partnership, joint venture, agency, franchise, or employment relationship between you and Youcert. You have no authority to bind Youcert in any way.</p>
+            
+            <h3>18.8 Electronic Communications</h3>
+            <p>By using the Service, you consent to receive communications from us electronically, including notices, agreements, disclosures, and other information via email and postings on the Service. You agree that all electronic communications we provide to you satisfy any legal requirement that such communications be in writing.</p>
+
+            <h3>18.9 Interpretation</h3>
+            <p>The section headings in these Terms are for convenience only and have no legal or contractual effect. The word "including" means "including without limitation." In the event of any conflict between these Terms and any other policy, these Terms shall control.</p>
+
+            <hr>
+            
+            <h2>19. Contact and Grievance Officer</h2>
+            <p>For any questions, concerns, or feedback about these Terms, or to submit a grievance, please contact us at:</p>
+
+            Email: <a href="mailto:support@youcert.com">support@youcert.com</a>
+            <br>
+            Legal Notices: <a href="mailto:copyright@youcert.com">copyright@youcert.com</a>
+            <br><br>
+            <p>In accordance with the <strong>Information Technology Act, 2000</strong> and the <strong>Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021</strong>, the name and contact details of the Grievance Officer are provided below:</p>
+            
+            <strong>Grievance Officer</strong>
+            <br>
+            Title: Grievance Officer
+            <br>
+            Email: <a href="mailto:copyright@youcert.com">copyright@youcert.com</a>
+            <br>
+            <p>We will endeavor to acknowledge receipt of your grievance within 24 hours and resolve it within 15 days from the date of receipt.</p>
+            <!-- Original Content Ends Here -->
+
+        </div>
+    </main>
+
+    <!-- Footer (Base Theme) -->
+    <footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // CRITICAL: Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

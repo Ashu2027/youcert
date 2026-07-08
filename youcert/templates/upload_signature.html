@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YOUCERT - Upload Signature</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (Auth Screen - Centered)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* --- Auth Card (Centered) --- */
+        .auth-card {
+             background: var(--glass-bg);
+             border-radius: var(--radius-lg);
+             border: 1px solid var(--card-border);
+             box-shadow: var(--glass-shadow);
+             width: 100%;
+             max-width: 480px; /* Slightly wider for upload form */
+             padding: 2.5rem;
+             position: relative;
+             overflow: hidden;
+        }
+
+        /* Decorative top line */
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--brand-gradient);
+        }
+        
+        /* Logo & Header */
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .logo-wrapper {
+            width: 48px;
+            height: 48px;
+            background: #EEF2FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            color: #4F46E5;
+        }
+        
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* File Input Styling */
+        .file-input-main {
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            background-color: #FFFFFF;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            padding: 0.5rem;
+            width: 100%;
+        }
+        .file-input-main:hover {
+            border-color: #6366F1;
+        }
+        /* Target the 'Choose File' button inside the input */
+        .file-input-main::file-selector-button {
+            background-color: #F3F4F6;
+            color: var(--text-dark);
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem 1rem;
+            margin-right: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .file-input-main::file-selector-button:hover {
+            background-color: #E5E7EB;
+        }
+
+        /* Primary Button (Black - Text Only) */
+        .btn-primary-custom {
+            background: #000000;
+            color: var(--text-on-brand);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
+        }
+
+        .text-secondary-premium {
+            color: var(--text-muted);
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <div class="auth-card">
+        <!-- Logo and App Name -->
+        <div class="logo-box">
+            <div class="logo-wrapper">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="w-8 h-8" onerror="this.style.display='none'" />
+            </div>
+            <span class="brand-name">Youcert Creator</span>
+        </div>
+        
+        <h2 class="text-center text-2xl font-bold mb-2 text-dark">Upload Your Signature</h2>
+        <p class="text-center text-sm text-muted mb-8">This signature will be used on certificates issued to your learners.</p>
+        
+        <form method="POST" action="/creator/upload_signature" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            
+            <div class="mb-8">
+                <label for="signature" class="block text-sm font-semibold mb-2 text-dark">Select Signature File</label>
+                <input 
+                    type="file" 
+                    id="signature" 
+                    name="signature" 
+                    accept="image/*" 
+                    required
+                    class="file-input-main"
+                />
+                <p class="mt-2 text-xs text-secondary-premium">Accepted formats: PNG, JPG, SVG (Max 5MB)</p>
+            </div>
+
+            <button type="submit" class="btn-primary-custom">
+                Upload Signature
+            </button>
+        </form>
+    </div>
+    
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+

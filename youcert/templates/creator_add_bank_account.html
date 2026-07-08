@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Bank Account - youcert-creator</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+
+    <!-- Tailwind CSS (Keep as requested) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons (Premium Replacement for FontAwesome/Emojis) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            transition: color 0.2s;
+        }
+
+        .nav-link.active svg {
+            color: #4F46E5;
+        }
+
+        .btn-cta {
+            background: #000000;
+            /* Changed to black as requested */
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+            max-width: 1200px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Forms & Cards --- */
+        .glass-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .form-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* --- File Upload --- */
+        .file-upload-box {
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--radius-md);
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: #F8FAFC;
+        }
+
+        .file-upload-box:hover {
+            border-color: #6366F1;
+            background: #EEF2FF;
+        }
+
+        .file-upload-box.has-file {
+            border-color: #10B981;
+            background: #ECFDF5;
+        }
+
+        .upload-icon {
+            width: 32px;
+            height: 32px;
+            color: #6366F1;
+            margin-bottom: 0.75rem;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border: 1px solid #A7F3D0;
+        }
+
+        .alert-error {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border: 1px solid #FECACA;
+        }
+
+        .alert-warning {
+            background: var(--warning-bg);
+            color: var(--warning-text);
+            border: 1px solid #FDE68A;
+        }
+
+        .alert-info {
+            background: var(--info-bg);
+            color: var(--info-text);
+            border: 1px solid #BFDBFE;
+        }
+
+        /* --- Mobile --- */
+        @media (max-width: 768px) {
+
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Add Bank Account</h1>
+                <p class="page-subtitle">Provide your bank details for secure payouts</p>
+            </div>
+            <a href="/creator/bank_accounts" class="btn-secondary">
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                Back
+            </a>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category if category in ['success', 'error', 'warning', 'info'] else 'info' }}">
+                {% if category == 'success' %} <i data-lucide="check-circle-2"></i>
+                {% elif category == 'error' %} <i data-lucide="alert-circle"></i>
+                {% elif category == 'warning' %} <i data-lucide="alert-triangle"></i>
+                {% else %} <i data-lucide="info"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="glass-card">
+            <form id="bank-account-form" method="POST" action="/creator/bank_accounts/add/"
+                enctype="multipart/form-data">
+                <!-- CSRF Token -->
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <!-- Account Holder Information -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="user" style="color: #6366F1;"></i>
+                        Account Holder Information
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">Account Holder Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="account_holder_name" required class="form-input"
+                                placeholder="Full name as per bank records">
+                        </div>
+                        <div>
+                            <label class="form-label">Account Holder Address <span class="text-red-500">*</span></label>
+                            <input type="text" name="account_holder_address" required class="form-input"
+                                placeholder="Complete address">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bank Details -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="building-2" style="color: #6366F1;"></i>
+                        Bank Details
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">Bank Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="bank_name" required class="form-input"
+                                placeholder="Name of your bank">
+                        </div>
+                        <div>
+                            <label class="form-label">Branch Name</label>
+                            <input type="text" name="branch_name" class="form-input" placeholder="Branch location">
+                        </div>
+                        <div>
+                            <label class="form-label">Account Number <span class="text-red-500">*</span></label>
+                            <input type="text" name="account_number" required class="form-input"
+                                placeholder="Your account number">
+                        </div>
+                        <div>
+                            <label class="form-label">Account Type <span class="text-red-500">*</span></label>
+                            <select name="account_type" required class="form-input">
+                                <option value="savings">Savings</option>
+                                <option value="current">Current</option>
+                                <option value="business">Business</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="form-label">Bank Address</label>
+                            <input type="text" name="bank_address" class="form-input" placeholder="Bank branch address">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Banking Methods -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="arrow-right-left" style="color: #6366F1;"></i>
+                        Banking Methods <span class="text-sm font-normal text-gray-400 ml-2">(Provide at least
+                            one)</span>
+                    </h2>
+                    <div
+                        class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div>
+                            <label class="form-label">IFSC Code <span
+                                    class="text-xs text-gray-400 font-normal">(India)</span></label>
+                            <input type="text" name="ifsc_code" class="form-input" placeholder="e.g., SBIN0001234">
+                        </div>
+                        <div>
+                            <label class="form-label">SWIFT Code <span
+                                    class="text-xs text-gray-400 font-normal">(International)</span></label>
+                            <input type="text" name="swift_code" class="form-input" placeholder="e.g., SBININBB123">
+                        </div>
+                        <div>
+                            <label class="form-label">IBAN <span
+                                    class="text-xs text-gray-400 font-normal">(Europe/Intl)</span></label>
+                            <input type="text" name="iban" class="form-input" placeholder="e.g., GB29NWBK...">
+                        </div>
+                        <div>
+                            <label class="form-label">Routing Number <span
+                                    class="text-xs text-gray-400 font-normal">(USA)</span></label>
+                            <input type="text" name="routing_number" class="form-input" placeholder="e.g., 123456789">
+                        </div>
+                        <div>
+                            <label class="form-label">Sort Code <span
+                                    class="text-xs text-gray-400 font-normal">(UK)</span></label>
+                            <input type="text" name="sort_code" class="form-input" placeholder="e.g., 12-34-56">
+                        </div>
+                        <div>
+                            <label class="form-label">BSB Number <span
+                                    class="text-xs text-gray-400 font-normal">(Australia)</span></label>
+                            <input type="text" name="bsb_number" class="form-input" placeholder="e.g., 123-456">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Country & Currency -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="globe" style="color: #6366F1;"></i>
+                        Country & Currency
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">Country Code <span class="text-red-500">*</span></label>
+                            <select name="country_code" required class="form-input">
+                                <option value="IND">India (IND)</option>
+                                <option value="USA">United States (USA)</option>
+                                <option value="GBR">United Kingdom (GBR)</option>
+                                <option value="AUS">Australia (AUS)</option>
+                                <option value="CAN">Canada (CAN)</option>
+                                <option value="EUR">European Union (EUR)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">Currency Code <span class="text-red-500">*</span></label>
+                            <select name="currency_code" required class="form-input">
+                                <option value="INR">Indian Rupee (INR)</option>
+                                <option value="USD">US Dollar (USD)</option>
+                                <option value="GBP">British Pound (GBP)</option>
+                                <option value="AUD">Australian Dollar (AUD)</option>
+                                <option value="CAD">Canadian Dollar (CAD)</option>
+                                <option value="EUR">Euro (EUR)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Government ID -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="badge-check" style="color: #6366F1;"></i>
+                        Government ID Verification
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">ID Type <span class="text-red-500">*</span></label>
+                            <select name="id_type" required class="form-input">
+                                <option value="">Select ID Type</option>
+                                <option value="passport">Passport</option>
+                                <option value="national_id">National ID Card</option>
+                                <option value="drivers_license">Driver's License</option>
+                                <option value="aadhaar">Aadhaar Card (India)</option>
+                                <option value="pan">PAN Card (India)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label">ID Number <span class="text-red-500">*</span></label>
+                            <input type="text" name="id_number" required class="form-input"
+                                placeholder="Enter ID number">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Uploads -->
+                <div class="mb-8">
+                    <h2 class="form-section-title">
+                        <i data-lucide="upload-cloud" style="color: #6366F1;"></i>
+                        Document Uploads
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="form-label">Government ID Image <span class="text-red-500">*</span></label>
+                            <div class="file-upload-box" id="id-upload-area">
+                                <input type="file" name="id_image" id="id-image-input" accept=".jpg,.jpeg,.png,.pdf"
+                                    required class="hidden">
+                                <i data-lucide="credit-card" class="upload-icon"></i>
+                                <p class="font-medium text-gray-700">Click to upload ID image</p>
+                                <p class="text-xs text-gray-500 mt-1">Accepted: JPG, PNG, PDF (Max 5MB)</p>
+                                <p id="id-file-name" class="text-sm font-medium mt-2 text-green-600"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label">Bank Statement/Passbook <span
+                                    class="text-red-500">*</span></label>
+                            <div class="file-upload-box" id="bank-upload-area">
+                                <input type="file" name="bank_document" id="bank-doc-input"
+                                    accept=".jpg,.jpeg,.png,.pdf" required class="hidden">
+                                <i data-lucide="file-text" class="upload-icon"></i>
+                                <p class="font-medium text-gray-700">Click to upload bank document</p>
+                                <p class="text-xs text-gray-500 mt-1">Accepted: JPG, PNG, PDF (Max 5MB)</p>
+                                <p id="bank-file-name" class="text-sm font-medium mt-2 text-green-600"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Notice -->
+                <div class="mb-8 p-4 rounded-xl bg-indigo-50 border-l-4 border-indigo-500">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="shield-check" class="text-indigo-600 mt-1"></i>
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm">Your Data is Secure</h3>
+                            <p class="text-xs text-gray-600 mt-1">All sensitive information (account numbers, ID
+                                numbers) and documents are encrypted using industry-standard encryption before storage.
+                                Your data is protected and only accessible for verification purposes.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="flex justify-end gap-4 pt-4 border-t border-gray-100">
+                    <a href="/creator/bank_accounts" class="btn-secondary">Cancel</a>
+                    <button type="submit" class="btn-cta" id="submit-btn" style="padding: 0.6rem 1.5rem;">
+                        <i data-lucide="save" style="width: 18px; height: 18px;"></i>
+                        Add Bank Account
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('bank-account-form');
+            const submitBtn = document.getElementById('submit-btn');
+
+            // File upload handlers
+            const idUploadArea = document.getElementById('id-upload-area');
+            const idInput = document.getElementById('id-image-input');
+            const idFileName = document.getElementById('id-file-name');
+
+            const bankUploadArea = document.getElementById('bank-upload-area');
+            const bankInput = document.getElementById('bank-doc-input');
+            const bankFileName = document.getElementById('bank-file-name');
+
+            // Helper for upload UI
+            function setupUpload(area, input, nameDisplay) {
+                area.addEventListener('click', () => input.click());
+                input.addEventListener('change', function () {
+                    if (this.files.length > 0) {
+                        const file = this.files[0];
+                        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                            alert('File size must be less than 5MB');
+                            this.value = '';
+                            nameDisplay.textContent = '';
+                            area.classList.remove('has-file');
+                            return;
+                        }
+                        nameDisplay.textContent = `✓ ${file.name}`;
+                        area.classList.add('has-file');
+
+                        // Re-render icon to ensure it stays visible if needed or change style
+                        const icon = area.querySelector('svg');
+                        if (icon) icon.style.color = '#059669'; // Green on success
+                    } else {
+                        nameDisplay.textContent = '';
+                        area.classList.remove('has-file');
+                        const icon = area.querySelector('svg');
+                        if (icon) icon.style.color = '#6366F1'; // Reset color
+                    }
+                });
+            }
+
+            setupUpload(idUploadArea, idInput, idFileName);
+            setupUpload(bankUploadArea, bankInput, bankFileName);
+
+            // Form validation
+            form.addEventListener('submit', function (e) {
+                const bankingMethods = [
+                    document.querySelector('[name="ifsc_code"]').value,
+                    document.querySelector('[name="swift_code"]').value,
+                    document.querySelector('[name="iban"]').value,
+                    document.querySelector('[name="routing_number"]').value,
+                    document.querySelector('[name="sort_code"]').value,
+                    document.querySelector('[name="bsb_number"]').value
+                ].filter(v => v.trim() !== '');
+
+                if (bankingMethods.length === 0) {
+                    e.preventDefault();
+                    alert('Please provide at least one banking method (e.g., IFSC, SWIFT, IBAN).');
+                    return;
+                }
+
+                // Disable submit button to prevent double submission
+                submitBtn.disabled = true;
+                const originalContent = submitBtn.innerHTML;
+                submitBtn.innerHTML = `
+                    <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Processing...
+                `;
+            });
+
+            // Auto-hide notifications
+            const notifications = document.querySelectorAll('.alert');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.style.transition = 'opacity 0.3s ease';
+                    notification.style.opacity = '0';
+                    setTimeout(() => notification.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

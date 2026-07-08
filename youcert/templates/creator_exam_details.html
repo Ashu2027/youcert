@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Exam Details - youcert-creator</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (Left Sidebar)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients (Used for text highlights/accents) */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+
+            /* Status Colors */
+            --color-success: #10B981;
+            --color-error: #EF4444;
+            --status-success-bg: #D1FAE5;
+            --status-error-bg: #FEE2E2;
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* Hide number input spinner buttons */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: none;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+
+        .nav-link.active svg {
+            color: #4F46E5;
+        }
+
+        .btn-cta {
+            background: #000000;
+            /* Black CTA button */
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Cards & Components --- */
+        .glass-card,
+        .content-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-input-light {
+            background-color: #FFFFFF !important;
+            border-color: #E2E8F0 !important;
+            color: var(--text-dark) !important;
+            border-radius: var(--radius-md);
+            padding: 0.65rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input-light:focus {
+            outline: none;
+            border-color: #6366F1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        }
+
+        /* Primary Button (Black) */
+        .btn-primary-custom {
+            background: #000000;
+            color: var(--text-on-brand);
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
+        }
+
+        /* Danger Button (Red) */
+        .btn-danger-custom {
+            background: var(--color-error);
+            color: var(--text-on-brand);
+            border: 1px solid #DC2626;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+            background: #DC2626;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background-color: var(--status-success-bg);
+            border: 1px solid #A7F3D0;
+            color: var(--color-success);
+        }
+
+        .alert-error {
+            background-color: var(--status-error-bg);
+            border: 1px solid #FECACA;
+            color: var(--color-error);
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body class="flex h-screen">
+
+    <!-- SIDEBAR NAVIGATION -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- Main Content Area: Scrolls independently -->
+    <div id="main-content-area" class="main-content flex-1 overflow-y-auto relative z-30">
+
+        <main class="p-8">
+            <div class="max-w-7xl mx-auto">
+                <header class="flex justify-between items-center mb-10">
+                    <div>
+                        <h1 class="page-title">Exam Details</h1>
+                        <p class="page-subtitle">View and manage the details for this listed exam (ID: {{
+                            exam.unique_exam_number }}).</p>
+                    </div>
+                    <!-- Keep existing route/link -->
+                    <a href="/creator/listed_exams" class="btn-secondary flex items-center gap-2">
+                        <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                        <span>Back to List</span>
+                    </a>
+                </header>
+
+                <div id="alert-container" class="my-4"></div>
+
+                <section>
+                    <div class="content-card p-6 flex flex-col lg:flex-row gap-6 items-start">
+
+                        <!-- Exam Thumbnail / Meta -->
+                        <div class="w-full lg:w-80 flex-shrink-0">
+                            <!-- Image Display (GCS signed URL from backend) -->
+                            <img id="exam-thumbnail"
+                                src="{{ exam.thumbnail_url or 'https://placehold.co/300x168/F5F5F7/6E6E73?text=No+Thumbnail' }}"
+                                onerror="this.onerror=null;this.src='https://placehold.co/300x168/F5F5F7/6E6E73?text=No+Thumbnail';"
+                                alt="Exam Thumbnail"
+                                class="w-full h-auto object-cover rounded-xl mb-4 border border-card-border shadow-md">
+
+                            <!-- Key Metadata -->
+                            <div class="space-y-3 text-sm">
+                                <div class="flex items-center gap-3 text-dark">
+                                    <i data-lucide="calendar" style="width: 16px; height: 16px; color: #4F46E5;"></i>
+                                    <span class="font-medium">Listed On: {{ exam.created_at.strftime('%Y-%m-%d')
+                                        }}</span>
+                                </div>
+                                <div class="flex items-center gap-3 text-dark">
+                                    <i data-lucide="video" style="width: 16px; height: 16px; color: #4F46E5;"></i>
+                                    <span class="font-medium">Source: <a href="{{ exam.youtube_video_link }}"
+                                            target="_blank" class="text-indigo-600 hover:underline">View
+                                            Source</a></span>
+                                </div>
+                            </div>
+
+                            <!-- Sync Data Button -->
+                            <div class="mt-6 border-t border-card-border pt-4">
+                                <button type="button" id="syncDataBtn" data-exam-number="{{ exam.unique_exam_number }}"
+                                    class="w-full flex justify-center items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-colors bg-indigo-600 hover:bg-indigo-700">
+                                    <i data-lucide="refresh-cw" style="width: 16px; height: 16px;"></i>
+                                    <span>Sync & Fix Missing Data</span>
+                                </button>
+                                <p class="text-xs text-muted mt-2 text-center">Click if thumbnail or questions are
+                                    missing.</p>
+                            </div>
+
+                            <!-- Regenerate Questions Button -->
+                            <div class="mt-4 border-t border-card-border pt-4">
+                                <button type="button" id="regenerateQuestionsBtn"
+                                    data-exam-number="{{ exam.unique_exam_number }}"
+                                    class="w-full flex justify-center items-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold text-white shadow-md transition-colors bg-purple-600 hover:bg-purple-700">
+                                    <i data-lucide="repeat" style="width: 16px; height: 16px;"></i>
+                                    <span>Regenerate Questions</span>
+                                </button>
+                                <p class="text-xs text-muted mt-2 text-center">Manually reparse video (15-day cooldown).
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Main Details & Actions -->
+                        <div class="flex flex-col flex-grow w-full">
+                            <h2 id="exam-title" class="text-3xl font-bold text-dark mb-2">{{ exam.exam_title }}</h2>
+                            <p class="text-muted text-sm mb-4 font-medium">
+                                <span class="text-dark">Creator:</span> {{ exam.channel_name }}
+                            </p>
+
+                            <!-- Status and Price Display -->
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-2 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8 p-4 bg-gray-50/50 rounded-xl border border-card-border">
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold uppercase text-muted mb-1">Total Questions</span>
+                                    <span class="text-xl font-bold text-dark">{{ exam.total_questions }}</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold uppercase text-muted mb-1">Pass Score</span>
+                                    <span class="text-xl font-bold text-dark">{{ exam.passing_score }}%</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold uppercase text-muted mb-1">Current Price</span>
+                                    <span
+                                        class="text-xl font-bold text-dark text-{{ 'green-600' if exam.exam_price > 0 else 'gray-600' }}">
+                                        ₹<span id="current-price">{{ '%.2f'|format(exam.exam_price) }}</span>
+                                    </span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-semibold uppercase text-muted mb-1">Current Status</span>
+                                    <span id="exam-status-text" class="text-xl font-bold 
+                                        {{ 'text-green-600' if exam.is_active else 'text-red-600' }}">
+                                        {{ 'Active' if exam.is_active else 'Inactive' }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Action Cards -->
+                            <div class="border-t border-card-border pt-6">
+                                <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6">
+
+                                    <!-- Card 1: Update Price -->
+                                    <div class="glass-card p-6 border-indigo-100 border-l-4">
+                                        <h4 class="text-base font-semibold text-dark mb-3 flex items-center gap-2">
+                                            <i data-lucide="tag" style="width: 18px; height: 18px; color: #4F46E5;"></i>
+                                            Update Price
+                                        </h4>
+                                        <form id="updatePriceForm" class="flex gap-3 items-center">
+                                            <!-- CSRF Token -->
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="exam_number"
+                                                value="{{ exam.unique_exam_number }}">
+
+                                            <div class="relative flex-1">
+                                                <div
+                                                    class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                                                    <span class="text-muted sm:text-sm">₹</span>
+                                                </div>
+                                                <input type="number" id="new_price" name="price"
+                                                    value="{{ '%.2f'|format(exam.exam_price) }}" step="0.01" min="0"
+                                                    class="block w-full form-input-light pl-7 pr-4 shadow-sm sm:text-sm"
+                                                    placeholder="0.00" required>
+                                            </div>
+                                            <button type="submit" id="updatePriceBtn"
+                                                class="btn-primary-custom flex-shrink-0 flex justify-center items-center rounded-md px-4 py-2 text-sm font-semibold">
+                                                Save
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Card 2: Toggle Status -->
+                                    <div class="glass-card p-6 border-l-4
+                                        {{ 'border-green-400' if exam.is_active else 'border-red-400' }}">
+
+                                        <h4 class="text-base font-semibold text-dark mb-3 flex items-center gap-2">
+                                            <i data-lucide="power"
+                                                style="width: 18px; height: 18px; color: #4F46E5;"></i>
+                                            Control Exam Status
+                                        </h4>
+
+                                        <button type="button" id="toggleStatusBtn"
+                                            data-exam-number="{{ exam.unique_exam_number }}"
+                                            data-is-active="{{ 'true' if exam.is_active else 'false' }}" class="w-full flex justify-center items-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors
+                                            {{ 'btn-danger-custom' if exam.is_active else 'btn-primary-custom' }}">
+                                            {% if exam.is_active %}
+                                            <i data-lucide="circle-slash"
+                                                style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Deactivate
+                                            Exam
+                                            {% else %}
+                                            <i data-lucide="check-circle"
+                                                style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Activate
+                                            Exam
+                                            {% endif %}
+                                        </button>
+                                        <p class="text-xs text-muted mt-2 text-center">
+                                            {{ 'The exam is currently visible to learners.' if exam.is_active else 'The
+                                            exam is hidden until activated.' }}
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                                <!-- Card 3: View AI-Generated Questions -->
+                                <div class="glass-card p-6 border-purple-100 border-l-4 mt-6">
+                                    <h4 class="text-base font-semibold text-dark mb-3 flex items-center gap-2">
+                                        <i data-lucide="brain" style="width: 18px; height: 18px; color: #9333ea;"></i>
+                                        AI-Generated Questions
+                                    </h4>
+                                    <p class="text-sm text-muted mb-4">
+                                        View all {{ exam.total_questions }} questions generated by AI with correct
+                                        answers and explanations.
+                                    </p>
+                                    <button type="button" id="viewQuestionsBtn"
+                                        data-exam-number="{{ exam.unique_exam_number }}"
+                                        class="w-full flex justify-center items-center rounded-md px-4 py-2 text-sm font-semibold text-white shadow-md transition-colors btn-primary-custom">
+                                        <i data-lucide="list-checks"
+                                            style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                        View All Questions & Answers
+                                    </button>
+                                </div>
+
+                                <!-- Card 4: Share Exam Link -->
+                                <div class="glass-card p-6 border-blue-100 border-l-4 mt-6">
+                                    <h4 class="text-base font-semibold text-dark mb-3 flex items-center gap-2">
+                                        <i data-lucide="share-2" style="width: 18px; height: 18px; color: #3B82F6;"></i>
+                                        Share Exam Link
+                                    </h4>
+                                    <p class="text-sm text-muted mb-4">
+                                        Share this exam with your audience. Anyone with the link can view and purchase
+                                        the exam.
+                                    </p>
+                                    <div class="flex gap-3">
+                                        <input type="text" id="shareExamLink" readonly
+                                            value="{{ request.host_url }}exam/{{ exam.unique_exam_number }}/"
+                                            class="flex-1 form-input-light text-sm bg-gray-50 cursor-text"
+                                            onclick="this.select();">
+                                        <button type="button" id="copyLinkBtn"
+                                            class="btn-primary-custom flex-shrink-0 flex justify-center items-center rounded-md px-4 py-2 text-sm font-semibold"
+                                            onclick="copyExamLink()">
+                                            <i data-lucide="copy"
+                                                style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                            Copy Link
+                                        </button>
+                                    </div>
+                                    <div id="copySuccessMsg"
+                                        class="hidden mt-3 text-sm text-green-600 font-medium flex items-center gap-2">
+                                        <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                                        Link copied to clipboard!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Additional Sections if needed (e.g., Sales Data, Analytics) -->
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Questions Modal -->
+    <div id="questionsModal"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-bold text-dark flex items-center gap-2">
+                        <i data-lucide="brain" style="width: 24px; height: 24px; color: #9333ea;"></i>
+                        AI-Generated Questions & Answers
+                    </h3>
+                    <p class="text-sm text-muted mt-1" id="modalExamTitle"></p>
+                </div>
+                <button onclick="closeQuestionsModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="overflow-y-auto p-6" style="max-height: calc(90vh - 80px);">
+                <div id="questionsContainer" class="space-y-4">
+                    <!-- Questions will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden CSRF Token Container -->
+    <div id="csrf-token" style="display: none;">{{ csrf_token() }}</div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const alertContainer = document.getElementById('alert-container');
+        const csrfToken = document.getElementById('csrf-token').textContent;
+
+        function showAlert(message, type) {
+            const icon = type === 'success' ? 'check-circle-2' : 'alert-circle';
+            const alertClasses = type === 'success' ? 'alert-success' : 'alert-error';
+
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClasses}" role="alert">
+                    <i data-lucide="${icon}" style="width: 20px; height: 20px;"></i>
+                    <span class="font-medium">${message}</span>
+                </div>
+            `;
+            lucide.createIcons();
+
+            // Auto-dismiss
+            const newAlert = alertContainer.querySelector('.alert');
+            if (newAlert) {
+                setTimeout(() => {
+                    newAlert.style.transition = 'opacity 0.5s ease';
+                    newAlert.style.opacity = '0';
+                    setTimeout(() => newAlert.remove(), 500);
+                }, 5000);
+            }
+        }
+
+        // Handle Update Price Form
+        const updatePriceForm = document.getElementById('updatePriceForm');
+        updatePriceForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const examNumber = this.querySelector('input[name="exam_number"]').value;
+            const newPriceInput = this.querySelector('input[name="price"]');
+            const newPrice = newPriceInput.value;
+
+            const parsedPrice = parseFloat(newPrice);
+            if (isNaN(parsedPrice) || parsedPrice < 0) {
+                showAlert('Please enter a valid price.', 'error');
+                newPriceInput.focus();
+                return;
+            }
+
+            fetch(`/creator/exam/${examNumber}/update_price/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({ price: parsedPrice })
+            })
+                .then(response => {
+                    // Ensure CSRF token is included for form submission logic safety
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        showAlert(data.message, 'success');
+                        const priceSpan = document.getElementById('current-price');
+                        if (priceSpan) {
+                            priceSpan.textContent = parsedPrice.toFixed(2);
+                        }
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    showAlert(error.message || 'An unexpected error occurred.', 'error');
+                    console.error('Error:', error);
+                });
+        });
+
+        // Handle Toggle Status Button
+        const toggleStatusBtn = document.getElementById('toggleStatusBtn');
+        toggleStatusBtn.addEventListener('click', function () {
+            const examNumber = this.dataset.examNumber;
+            const btn = this;
+
+            // Disable button during fetch
+            btn.disabled = true;
+
+            fetch(`/creator/exam/${examNumber}/toggle_status/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    btn.disabled = false;
+
+                    if (data.success) {
+                        const isActive = data.new_status;
+                        this.dataset.isActive = isActive;
+
+                        const statusTextSpan = document.getElementById('exam-status-text');
+                        const cardBorder = btn.closest('.glass-card').classList;
+                        const statusSection = btn.closest('.content-card').querySelector('.grid.gap-4'); // Target the stats section
+
+                        // Update Status Button and Card
+                        if (isActive) {
+                            // Activate
+                            btn.innerHTML = '<i data-lucide="circle-slash" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Deactivate Exam';
+                            btn.classList.remove('btn-primary-custom');
+                            btn.classList.add('btn-danger-custom');
+
+                            statusTextSpan.textContent = 'Active';
+                            statusTextSpan.classList.remove('text-red-600');
+                            statusTextSpan.classList.add('text-green-600');
+
+                            // Update border hint
+                            cardBorder.remove('border-red-400');
+                            cardBorder.add('border-green-400');
+                            btn.nextElementSibling.textContent = 'The exam is currently visible to learners.';
+
+                        } else {
+                            // Deactivate
+                            btn.innerHTML = '<i data-lucide="check-circle" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Activate Exam';
+                            btn.classList.remove('btn-danger-custom');
+                            btn.classList.add('btn-primary-custom');
+
+                            statusTextSpan.textContent = 'Inactive';
+                            statusTextSpan.classList.remove('text-green-600');
+                            statusTextSpan.classList.add('text-red-600');
+
+                            // Update border hint
+                            cardBorder.remove('border-green-400');
+                            cardBorder.add('border-red-400');
+                            btn.nextElementSibling.textContent = 'The exam is hidden until activated.';
+                        }
+                        lucide.createIcons();
+                        showAlert(data.message, 'success');
+                    } else {
+                        showAlert(data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    btn.disabled = false;
+                    showAlert('An unexpected error occurred.', 'error');
+                    console.error('Error:', error);
+                });
+        });
+
+        // Auto-dismiss alerts on initial load
+        document.addEventListener('DOMContentLoaded', function () {
+            const alerts = document.querySelectorAll('#alert-container > .alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    if (alert) {
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                }, 5000);
+            });
+        });
+
+        // View Questions Modal Functions
+        const viewQuestionsBtn = document.getElementById('viewQuestionsBtn');
+        const questionsModal = document.getElementById('questionsModal');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const modalExamTitle = document.getElementById('modalExamTitle');
+
+        viewQuestionsBtn.addEventListener('click', function () {
+            const examNumber = this.dataset.examNumber;
+            openQuestionsModal(examNumber);
+        });
+
+        function openQuestionsModal(examNumber) {
+            questionsModal.classList.remove('hidden');
+            questionsContainer.innerHTML = '<div class="text-center py-8"><div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div><p class="mt-4 text-muted">Loading questions...</p></div>';
+
+            fetch(`/creator/exam/${examNumber}/questions/`, {
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => Promise.reject(err));
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        modalExamTitle.textContent = `${data.exam_title} (${data.total_questions} Questions)`;
+                        displayQuestions(data.questions);
+                    } else {
+                        questionsContainer.innerHTML = `<div class="text-center py-8 text-red-600"><i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto;"></i><p class="mt-4">${data.message}</p></div>`;
+                        lucide.createIcons();
+                    }
+                })
+                .catch(error => {
+                    questionsContainer.innerHTML = `<div class="text-center py-8 text-red-600"><i data-lucide="alert-circle" style="width: 48px; height: 48px; margin: 0 auto;"></i><p class="mt-4">Failed to load questions. Please try again.</p></div>`;
+                    console.error('Error:', error);
+                    lucide.createIcons();
+                });
+        }
+
+        function displayQuestions(questions) {
+            if (!questions || questions.length === 0) {
+                questionsContainer.innerHTML = '<p class="text-center text-muted py-8">No questions available.</p>';
+                return;
+            }
+
+            const html = questions.map((q, index) => {
+                const correctAnswerText = q.options[q.correct_answer] || 'N/A';
+
+                return `
+                    <div class="glass-card p-5 border-l-4 border-purple-400">
+                        <div class="flex gap-3">
+                            <div class="flex-shrink-0">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center font-bold text-sm">
+                                    ${index + 1}
+                                </div>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-semibold text-dark mb-3">${escapeHtml(q.question)}</h5>
+
+                                <div class="space-y-2 mb-4">
+                                    ${Object.entries(q.options).map(([key, value]) => {
+                    const isCorrect = key === q.correct_answer;
+                    return `
+                                            <div class="flex items-start gap-2 p-2 rounded-lg ${isCorrect ? 'bg-green-50 border border-green-200' : 'bg-gray-50'}">
+                                                <span class="font-semibold text-sm ${isCorrect ? 'text-green-700' : 'text-gray-600'}">${key.toUpperCase()}.</span>
+                                                <span class="text-sm ${isCorrect ? 'text-green-900 font-medium' : 'text-gray-700'}">${escapeHtml(value)}</span>
+                                                ${isCorrect ? '<i data-lucide="check-circle" style="width: 16px; height: 16px; color: #10B981; margin-left: auto;"></i>' : ''}
+                                            </div>
+                                        `;
+                }).join('')}
+                                </div>
+
+                                <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <div class="flex items-start gap-2">
+                                        <i data-lucide="lightbulb" style="width: 16px; height: 16px; color: #3B82F6; flex-shrink: 0; margin-top: 2px;"></i>
+                                        <div>
+                                            <p class="text-xs font-semibold text-blue-900 mb-1">Explanation:</p>
+                                            <p class="text-sm text-blue-800">${escapeHtml(q.explanation || 'No explanation provided.')}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            questionsContainer.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function closeQuestionsModal() {
+            questionsModal.classList.add('hidden');
+            questionsContainer.innerHTML = '';
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on outside click
+        questionsModal.addEventListener('click', function (e) {
+            if (e.target === questionsModal) {
+                closeQuestionsModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && !questionsModal.classList.contains('hidden')) {
+                closeQuestionsModal();
+            }
+        });
+
+        // Copy Exam Link Function
+        function copyExamLink() {
+            const linkInput = document.getElementById('shareExamLink');
+            const copyBtn = document.getElementById('copyLinkBtn');
+            const successMsg = document.getElementById('copySuccessMsg');
+
+            // Select and copy
+            linkInput.select();
+            linkInput.setSelectionRange(0, 99999); // For mobile devices
+
+            navigator.clipboard.writeText(linkInput.value).then(() => {
+                // Show success message
+                successMsg.classList.remove('hidden');
+                lucide.createIcons();
+
+                // Update button temporarily
+                copyBtn.innerHTML = '<i data-lucide="check" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Copied!';
+                copyBtn.classList.add('bg-green-600');
+                lucide.createIcons();
+
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    successMsg.classList.add('hidden');
+                    copyBtn.innerHTML = '<i data-lucide="copy" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i> Copy Link';
+                    copyBtn.classList.remove('bg-green-600');
+                    lucide.createIcons();
+                }, 3000);
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showAlert('Failed to copy link. Please try again.', 'error');
+            });
+        }
+
+        // Sync & Fix Missing Data
+        const syncDataBtn = document.getElementById('syncDataBtn');
+        if (syncDataBtn) {
+            syncDataBtn.addEventListener('click', function () {
+                const examNumber = this.dataset.examNumber;
+                const btn = this;
+                const originalHtml = btn.innerHTML;
+
+                if (!confirm("This will attempt to re-download missing thumbnails and re-queue the exam questions generation. Proceeed?")) {
+                    return;
+                }
+
+                // Set loading state
+                btn.disabled = true;
+                btn.innerHTML = '<div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div><span>Syncing...</span>';
+
+                fetch(`/creator/exam/${examNumber}/sync_data/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(err => Promise.reject(err));
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        btn.innerHTML = originalHtml;
+                        lucide.createIcons();
+
+                        if (data.success) {
+                            showAlert(data.message, 'success');
+                            // If it indicates a thumbnail was fetched, refresh the page after showing alert
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            btn.disabled = false;
+                            showAlert(data.message, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                        lucide.createIcons();
+                        showAlert(error.message || 'An unexpected error occurred during sync.', 'error');
+                        console.error('Sync Error:', error);
+                    });
+            });
+        }
+
+        // Regenerate Questions Logic
+        const regenerateBtn = document.getElementById('regenerateQuestionsBtn');
+        if (regenerateBtn) {
+            regenerateBtn.addEventListener('click', function () {
+                const examNumber = this.dataset.examNumber;
+                const btn = this;
+                const originalHtml = btn.innerHTML;
+
+                if (!confirm("This will regenerate all questions for this exam from scratch. Proceed?")) {
+                    return;
+                }
+
+                // Set loading state
+                btn.disabled = true;
+                btn.innerHTML = '<div class="inline-block animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div><span>Regenerating...</span>';
+
+                fetch(`/creator/exam/${examNumber}/regenerate_questions/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    }
+                })
+                    .then(response => {
+                        if (response.status === 404 || response.status === 500) {
+                            return response.json().then(err => Promise.reject(err));
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        btn.innerHTML = originalHtml;
+                        lucide.createIcons();
+
+                        if (data.success) {
+                            showAlert(data.message, 'success');
+                            btn.disabled = false;
+                        } else if (data.blocked) {
+                            btn.disabled = false;
+                            // Re-use sweetalert styling for warning
+                            showAlert(data.message, 'warning');
+                        } else {
+                            btn.disabled = false;
+                            showAlert(data.message || 'Failed to regenerate questions.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        btn.disabled = false;
+                        btn.innerHTML = originalHtml;
+                        lucide.createIcons();
+                        showAlert(error.message || 'An unexpected error occurred.', 'error');
+                        console.error('Regeneration Error:', error);
+                    });
+            });
+        }
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

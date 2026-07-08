@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Answers - Youcert</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        /* ============================================================
+           YOUCERT — Review Answers
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:     #F0F0F5;
+            --c-dark:   #1A1A2E;
+            --c-muted:  #7C7C8E;
+            --c-soft:   #E8E8F0;
+            --c-indigo: #6366F1;
+            --grad:     linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+            --t:        all 0.4s var(--spring);
+            --r:        20px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            background: var(--c-bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ── Navigation ── */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-link.active {
+            opacity: 1;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        .text-primary-theme {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        /* ══════════════════════════════════════════
+           HERO BANNER
+        ══════════════════════════════════════════ */
+        .hero {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 3.2rem 0 3.6rem;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .hero-orb-a {
+            width: 440px;
+            height: 440px;
+            top: -160px;
+            right: -50px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.38), transparent 60%);
+            animation: ho1 18s ease-in-out infinite;
+        }
+
+        .hero-orb-b {
+            width: 280px;
+            height: 280px;
+            bottom: -90px;
+            left: 4%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent 60%);
+            animation: ho2 22s ease-in-out infinite;
+        }
+
+        @keyframes ho1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-40px, 28px); }
+        }
+
+        @keyframes ho2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(28px, -20px); }
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            padding: 0.32rem 0.9rem;
+            border-radius: 99px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.55);
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .hero-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #818CF8, #C084FC);
+            flex-shrink: 0;
+        }
+
+        .hero-title {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 800;
+            letter-spacing: -0.048em;
+            line-height: 1.05;
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-title .accent {
+            background: linear-gradient(120deg, #A5B4FC, #F0ABFC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Hero CTA buttons */
+        .hero-btns {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .btn-glass {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.82rem 1.5rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            transition: var(--t);
+            white-space: nowrap;
+        }
+
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.26);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .btn-glass-retake {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: rgba(99, 102, 241, 0.35);
+            color: #C7D2FE;
+        }
+
+        .btn-glass-retake:hover {
+            background: rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ══════════════════════════════════════════
+           REVIEW CONTENT
+        ══════════════════════════════════════════ */
+        .review-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem 4rem;
+        }
+
+        /* Loading state */
+        .loading-container {
+            text-align: center;
+            padding: 5rem 0;
+            color: var(--c-muted);
+        }
+
+        .loading-spinner {
+            width: 38px;
+            height: 38px;
+            border: 4px solid rgba(99, 102, 241, 0.12);
+            border-top-color: var(--c-indigo);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1.2rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-container h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.4rem;
+            color: var(--c-dark);
+        }
+
+        .loading-container p {
+            font-size: 0.875rem;
+            color: var(--c-muted);
+        }
+
+        /* Error / empty state */
+        .empty-state {
+            text-align: center;
+            padding: 4rem;
+            color: var(--c-muted);
+        }
+
+        /* ══════════════════════════════════════════
+           REVIEW CARDS
+        ══════════════════════════════════════════ */
+        .review-card {
+            background: #fff;
+            border-radius: var(--r);
+            padding: 2rem;
+            margin-bottom: 1.4rem;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            transition: var(--t);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .review-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 36px rgba(99, 102, 241, 0.1);
+            border-color: rgba(99, 102, 241, 0.12);
+        }
+
+        /* Question header */
+        .question-header {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.4rem;
+        }
+
+        .q-badge {
+            width: 32px;
+            height: 32px;
+            background: var(--c-dark);
+            color: #fff;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Sora', sans-serif;
+            font-weight: 800;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .q-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--c-dark);
+            line-height: 1.55;
+        }
+
+        /* Answer blocks */
+        .answer-block {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.95rem 1.2rem;
+            border-radius: 14px;
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            border: 1px solid transparent;
+            transition: var(--t);
+        }
+
+        /* User correct */
+        .user-correct {
+            background: #ECFDF5;
+            color: #065F46;
+            border-color: #A7F3D0;
+        }
+
+        /* User incorrect */
+        .user-incorrect {
+            background: #FEF2F2;
+            color: #991B1B;
+            border-color: #FECACA;
+        }
+
+        /* Correct answer reveal (when user was wrong) */
+        .solution-block {
+            background: #EFF6FF;
+            color: #1E40AF;
+            border-color: #BFDBFE;
+        }
+
+        .icon-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+        }
+
+        .icon-correct {
+            background: #10B981;
+            color: #fff;
+        }
+
+        .icon-incorrect {
+            background: #EF4444;
+            color: #fff;
+        }
+
+        .icon-info {
+            background: #3B82F6;
+            color: #fff;
+        }
+
+        .label-text {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 0.06em;
+            margin-right: 0.5rem;
+            min-width: 80px;
+            opacity: 0.7;
+        }
+
+        /* ── Page-level buttons ── */
+        .btn-primary-custom {
+            background: var(--c-dark);
+            color: #fff;
+            border: none;
+            padding: 0.82rem 1.6rem;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--t);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary-custom:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-secondary-custom {
+            background: #fff;
+            color: var(--c-dark);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            padding: 0.82rem 1.6rem;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--t);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--c-bg);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero-inner {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-btns {
+                align-self: flex-start;
+            }
+
+            .review-container {
+                padding: 1.8rem 1rem 4rem;
+            }
+
+            .review-card {
+                padding: 1.4rem;
+            }
+
+            .answer-block {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            /* Hide icon circles on mobile to save space */
+            .icon-box {
+                display: none;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <!-- Nav (inline nav preserved as-is from original) -->
+    <header class="header-nav" id="mainNav">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center">
+            <a class="flex items-center gap-3" href="{{ url_for('user.index') }}" style="text-decoration: none;">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-bold text-primary-theme">Youcert</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-2">
+                <a class="nav-link" href="{{ url_for('user.index') }}">Home</a>
+                <a class="nav-link" href="{{ url_for('user.exams') }}">Exams</a>
+                <a class="nav-link active" href="{{ url_for('user.completed_exams') }}">History</a>
+                <a class="nav-link" href="{{ url_for('user.user_profile') }}">Profile</a>
+            </nav>
+            <div class="md:hidden text-xl text-dark"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <!-- ═══ HERO ═══ -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+        <div class="hero-inner">
+            <div>
+                <div class="hero-eyebrow">
+                    <div class="hero-eyebrow-dot"></div>
+                    Post-Exam Review
+                </div>
+                <h1 class="hero-title">Review <span class="accent">Answers</span></h1>
+                <p class="hero-sub">Analyze your performance and learn from mistakes</p>
+            </div>
+            <div class="hero-btns">
+                <a href="{{ url_for('user.completed_exams') }}" class="btn-glass">
+                    <i class="fas fa-arrow-left" style="font-size: 0.8rem;"></i> Back
+                </a>
+                <a href="#" id="reexamButton" class="btn-glass btn-glass-retake">
+                    <i class="fas fa-redo" style="font-size: 0.8rem;"></i> Retake Exam
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══ REVIEW CONTENT ═══ -->
+    <div class="review-container">
+
+        <div id="loadingState" class="loading-container">
+            <div class="loading-spinner"></div>
+            <h3>Loading Review…</h3>
+            <p>Fetching your answer sheet</p>
+        </div>
+
+        <!-- Answer cards injected here by JS -->
+        <div id="answersContainer"></div>
+
+        <div id="errorState" class="empty-state hidden">
+            <i class="fas fa-exclamation-circle" style="font-size: 2.8rem; color: #FCA5A5; display: block; margin-bottom: 1rem;"></i>
+            <h3 style="font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.1rem; margin-bottom: 0.5rem; color: var(--c-dark);">Unable to Load Review</h3>
+            <p style="margin-bottom: 1.2rem;">We couldn't fetch your exam data.</p>
+            <button onclick="location.reload()" class="btn-secondary-custom">Try Again</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Nav scroll effect
+        const mainNav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            mainNav.classList.toggle('scrolled', scrollY > 6);
+        }, { passive: true });
+
+        // exam_id — preserved exactly
+        const examId = '{{ exam_id }}';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('reexamButton').href = `/exam_form/${examId}`;
+            fetchReviewData();
+        });
+
+        async function fetchReviewData() {
+            try {
+                const response = await fetch(`/api/exam_review/${examId}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                const data = await response.json();
+                if (data.success && data.examReport) {
+                    renderReview(data.examReport);
+                } else {
+                    showError();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError();
+            }
+        }
+
+        function renderReview(report) {
+            const container = document.getElementById('answersContainer');
+            const loader    = document.getElementById('loadingState');
+
+            loader.style.display = 'none';
+            container.innerHTML  = '';
+
+            if (report.length === 0) {
+                container.innerHTML = `<div class="empty-state">No questions found for this exam.</div>`;
+                return;
+            }
+
+            report.forEach((item, index) => {
+                const isCorrect         = item.userAnswer === item.correctAnswer;
+                const userAnswerText    = item.options[item.userAnswer] || 'Not Answered';
+                const correctAnswerText = item.options[item.correctAnswer];
+
+                const card = document.createElement('div');
+                card.className = 'review-card';
+
+                let html = `
+                    <div class="question-header">
+                        <div class="q-badge">${index + 1}</div>
+                        <div class="q-text">${item.question}</div>
+                    </div>
+
+                    <div class="answer-block ${isCorrect ? 'user-correct' : 'user-incorrect'}">
+                        <div class="icon-box ${isCorrect ? 'icon-correct' : 'icon-incorrect'}">
+                            <i class="fas ${isCorrect ? 'fa-check' : 'fa-times'}"></i>
+                        </div>
+                        <div>
+                            <span class="label-text">Your Answer:</span>
+                            <span>${userAnswerText}</span>
+                        </div>
+                    </div>`;
+
+                // Show correct answer when user was wrong
+                if (!isCorrect) {
+                    html += `
+                        <div class="answer-block solution-block">
+                            <div class="icon-box icon-info">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <span class="label-text">Correct Answer:</span>
+                                <span>${correctAnswerText}</span>
+                            </div>
+                        </div>`;
+                }
+
+                card.innerHTML = html;
+                container.appendChild(card);
+            });
+        }
+
+        function showError() {
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('errorState').classList.remove('hidden');
+        }
+    </script>
+
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,136 @@
+# =====================================================================
+# PRODUCTION REQUIREMENTS FOR YOUCERT PROJECT
+# Updated: 2026-02-24 (Cloudflare Migration — GCP SDKs removed)
+# Python Version: 3.12+ (3.13 has gevent C-extension issues)
+# =====================================================================
+
+# =====================================================================
+# CORE WEB FRAMEWORK
+# =====================================================================
+Flask==3.1.2
+Werkzeug==3.1.5
+Jinja2==3.1.6
+MarkupSafe==3.0.3
+itsdangerous==2.2.0
+click==8.3.1
+blinker==1.9.0
+
+# =====================================================================
+# DATABASE & ORM
+# =====================================================================
+PyMySQL==1.1.2
+mysqlclient==2.2.7
+Flask-MySQLdb==2.0.0
+
+# =====================================================================
+# AUTHENTICATION & SECURITY
+# =====================================================================
+cryptography==46.0.3          # Fernet encryption (TOKEN_ENCRYPTION_KEY)
+python-dotenv==1.2.1
+pyotp==2.9.0
+
+# Google OAuth 2.0 login (still needed — user sign-in via Google)
+google-auth==2.41.0
+google-auth-httplib2==0.3.0
+google-auth-oauthlib==1.2.3
+google-api-python-client==2.187.0  # YouTube Data API v3
+
+# =====================================================================
+# CLOUDFLARE R2 STORAGE (S3-compatible)
+# =====================================================================
+boto3==1.38.0                 # R2 S3-compatible client
+botocore==1.38.0              # Required by boto3
+
+# =====================================================================
+# FORMS & VALIDATION
+# =====================================================================
+Flask-WTF==1.2.2
+WTForms==3.2.1
+
+# =====================================================================
+# API & HTTP CLIENTS
+# =====================================================================
+requests==2.32.5
+urllib3==2.6.3
+certifi==2026.1.4
+charset-normalizer==3.4.4
+
+# =====================================================================
+# YOUTUBE & VIDEO PROCESSING
+# =====================================================================
+youtube-transcript-api==1.2.3
+
+# =====================================================================
+# AI/ML — GEMINI (Direct REST API via `requests`, no SDK needed)
+# =====================================================================
+# google-generativeai removed — we call generativelanguage.googleapis.com
+# directly using the requests library with x-goog-api-key header.
+# This removes 12+ transitive dependencies (grpcio, protobuf, etc.)
+pydantic==2.12.5
+pydantic-core==2.41.5
+
+# =====================================================================
+# TEXT PROCESSING & CHUNKING
+# =====================================================================
+chonkie==1.5.2
+tiktoken==0.12.0
+numpy==2.4.1
+regex==2025.11.3
+
+# =====================================================================
+# JSON PROCESSING
+# =====================================================================
+json-repair==0.55.0
+
+# =====================================================================
+# RATE LIMITING & CACHING
+# =====================================================================
+Flask-Limiter==4.1.1
+limits==5.6.0
+Flask-Caching==2.3.1
+cachelib==0.13.0
+
+# =====================================================================
+# CORS
+# =====================================================================
+flask-cors==6.0.2
+
+# =====================================================================
+# PDF & IMAGE GENERATION (Certificates)
+# =====================================================================
+Pillow==12.1.0
+pypng==0.20220715.0
+PyQRCode==1.2.1
+qrcode==8.2
+
+# =====================================================================
+# PAYMENT GATEWAY
+# =====================================================================
+razorpay==2.0.0
+
+# =====================================================================
+# DATE/TIME UTILITIES
+# =====================================================================
+python-dateutil==2.9.0.post0
+pytz==2025.2
+isodate==0.7.2
+
+# =====================================================================
+# PRODUCTION WSGI SERVER
+# =====================================================================
+gunicorn==23.0.0
+gevent==24.11.1               # Greenlet concurrency (120+ concurrent requests)
+psutil==7.0.0                 # CPU monitoring for auto-scale trigger
+
+# =====================================================================
+# REMOVED GCP PACKAGES (kept here as documentation)
+# =====================================================================
+# google-cloud-secret-manager  → Cloudflare Workers Secrets (env vars)
+# google-cloud-kms             → Fernet (cryptography package, already included)
+# google-cloud-tasks           → Cloudflare Queues REST API (requests library)
+# google-cloud-storage         → Cloudflare R2 via boto3 (already included)
+# google-cloud-logging         → Cloudflare Logpush (stdout/stderr capture)
+# google-generativeai          → Direct Gemini REST API via requests
+# google-api-core              → No longer needed (removed with GCP SDKs)
+# googleapis-common-protos     → No longer needed (removed with GCP SDKs)
+# protobuf                     → No longer needed (removed with GCP SDKs)

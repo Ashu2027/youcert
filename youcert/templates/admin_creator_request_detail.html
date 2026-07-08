@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Request Details - {{ record.request_id }}</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME VARIABLES
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --status-pending-bg: #FEF3C7;
+            --status-pending-text: #B45309;
+            
+            --status-reviewed-bg: #DBEAFE;
+            --status-reviewed-text: #1D4ED8;
+            
+            --status-contacted-bg: #F3E8FF;
+            --status-contacted-text: #7E22CE;
+            
+            --status-approved-bg: #D1FAE5;
+            --status-approved-text: #059669;
+            
+            --status-rejected-bg: #FEE2E2;
+            --status-rejected-text: #B91C1C;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Detail Card --- */
+        .detail-container { 
+            background: var(--bg-light-secondary); 
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg); 
+            padding: 2.5rem; 
+            box-shadow: var(--glass-shadow);
+        }
+
+        /* --- Page Header Area --- */
+        .req-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #F1F5F9;
+            padding-bottom: 1.5rem;
+        }
+
+        .status-wrapper {
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.85rem; 
+            border-radius: 999px; 
+            font-size: 0.75rem;
+            font-weight: 600; 
+            display: inline-flex; 
+            align-items: center;
+            gap: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        /* Status Specifics */
+        .st-pending { background: var(--status-pending-bg); color: var(--status-pending-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .st-reviewed { background: var(--status-reviewed-bg); color: var(--status-reviewed-text); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .st-contacted { background: var(--status-contacted-bg); color: var(--status-contacted-text); border: 1px solid rgba(147, 51, 234, 0.2); }
+        .st-approved { background: var(--status-approved-bg); color: var(--status-approved-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .st-rejected { background: var(--status-rejected-bg); color: var(--status-rejected-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        .req-title { 
+            font-size: 2rem; 
+            font-weight: 700; 
+            margin-bottom: 0.5rem; 
+            color: var(--text-dark);
+            line-height: 1.2;
+        }
+        
+        .req-meta { 
+            color: var(--text-muted); 
+            font-size: 0.9rem; 
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* --- Info Grid --- */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        
+        .label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .value {
+            font-size: 1rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            word-break: break-all;
+        }
+        
+        .value a {
+            color: #4F46E5;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .value a:hover {
+            color: #4338ca;
+            text-decoration: underline;
+        }
+
+        /* --- Action Card --- */
+        .action-card {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .action-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .action-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-form {
+            flex: 1;
+            min-width: 180px;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Action Specific Colors */
+        .btn-reviewed { background-color: #3B82F6; }
+        .btn-reviewed:hover { background-color: #2563EB; }
+        
+        .btn-contacted { background-color: #8B5CF6; }
+        .btn-contacted:hover { background-color: #7C3AED; }
+        
+        .btn-approve { background: var(--cta-gradient); }
+        .btn-approve:hover { filter: brightness(1.1); }
+        
+        .btn-reject { background-color: white; color: #EF4444; border: 1px solid #FECACA; }
+        .btn-reject:hover { background-color: #FEF2F2; color: #DC2626; }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--status-approved-bg); color: var(--status-approved-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--status-rejected-bg); color: var(--status-rejected-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .alert-info { background: var(--status-reviewed-bg); color: var(--status-reviewed-text); border: 1px solid rgba(59, 130, 246, 0.2); }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+            .req-title { font-size: 1.5rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <div>
+            <a href="{{ url_for('sevak69.creator_requests_list') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Back to Requests
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% elif category == 'error' %}
+                            <i data-lucide="x-circle"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="detail-container">
+            <div class="req-header">
+                <div class="status-wrapper">
+                    {% if record.status == 'pending' %} 
+                        <span class="status-badge st-pending">
+                            <i data-lucide="clock" style="width: 12px; height: 12px;"></i> Pending Review
+                        </span>
+                    {% elif record.status == 'reviewed' %} 
+                        <span class="status-badge st-reviewed">
+                            <i data-lucide="eye" style="width: 12px; height: 12px;"></i> Reviewed
+                        </span>
+                    {% elif record.status == 'contacted' %} 
+                        <span class="status-badge st-contacted">
+                            <i data-lucide="phone-call" style="width: 12px; height: 12px;"></i> Contacted
+                        </span>
+                    {% elif record.status == 'approved' %} 
+                        <span class="status-badge st-approved">
+                            <i data-lucide="check-circle" style="width: 12px; height: 12px;"></i> Approved
+                        </span>
+                    {% elif record.status == 'rejected' %} 
+                        <span class="status-badge st-rejected">
+                            <i data-lucide="x-circle" style="width: 12px; height: 12px;"></i> Rejected
+                        </span>
+                    {% endif %}
+                </div>
+                <h1 class="req-title">{{ record.name }}</h1>
+                <p class="req-meta">
+                    <i data-lucide="hash" style="width: 14px; height: 14px;"></i> {{ record.request_id }}
+                    <span>•</span>
+                    <i data-lucide="calendar" style="width: 14px; height: 14px;"></i> {{ record.submitted_at }}
+                </p>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="label">YouTube Channel</span>
+                    <span class="value">{{ record.channel_name }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Channel Link</span>
+                    <span class="value">
+                        <a href="{{ record.channel_link }}" target="_blank" class="flex items-center gap-1">
+                            {{ record.channel_link }} 
+                            <i data-lucide="external-link" style="width: 12px; height: 12px; display: inline;"></i>
+                        </a>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Subscriber Count</span>
+                    <span class="value">{{ record.subscriber_count }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Content Type</span>
+                    <span class="value">{{ record.content_type }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Email Address</span>
+                    <span class="value">
+                        <a href="mailto:{{ record.email }}">{{ record.email }}</a>
+                    </span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Contact Number</span>
+                    <span class="value">{{ record.contact_number }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Visitor IP</span>
+                    <span class="value" style="font-family: monospace; color: var(--text-muted);">{{ record.visitor_ip or 'N/A' }}</span>
+                </div>
+                <div class="info-item">
+                    <span class="label">Last Updated</span>
+                    <span class="value">{{ record.updated_at }}</span>
+                </div>
+            </div>
+
+            <div class="action-card">
+                <div class="action-header">
+                    <h3 class="action-title">
+                        <i data-lucide="zap" style="width: 18px; height: 18px; color: #F59E0B;"></i>
+                        Perform Action
+                    </h3>
+                    <p class="action-desc">Update the status of this request to track onboarding progress.</p>
+                </div>
+                
+                <div class="action-buttons">
+                    {% if record.status != 'reviewed' and record.status != 'approved' and record.status != 'rejected' %}
+                    <form method="POST" class="action-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="mark_reviewed">
+                        <button type="submit" class="btn-action btn-reviewed">
+                            <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+                            Mark Reviewed
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    {% if record.status != 'contacted' and record.status != 'approved' and record.status != 'rejected' %}
+                    <form method="POST" class="action-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="mark_contacted">
+                        <button type="submit" class="btn-action btn-contacted">
+                            <i data-lucide="phone" style="width: 16px; height: 16px;"></i>
+                            Mark Contacted
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    {% if record.status != 'approved' %}
+                    <form method="POST" class="action-form" onsubmit="return confirm('Are you sure you want to APPROVE this creator?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="approve">
+                        <button type="submit" class="btn-action btn-approve">
+                            <i data-lucide="check" style="width: 16px; height: 16px;"></i>
+                            Approve Creator
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    {% if record.status != 'rejected' %}
+                    <form method="POST" class="action-form" onsubmit="return confirm('Are you sure you want to REJECT this request?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="action" value="reject">
+                        <button type="submit" class="btn-action btn-reject">
+                            <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+                            Reject Request
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Auto-dismiss Flash Messages
+        document.addEventListener('DOMContentLoaded', function() {
+             const alerts = document.querySelectorAll('.main-content > .alert');
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                 }, 4000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

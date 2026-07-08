@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Documents - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME VARIABLES
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            background: #F3F4F6;
+            border: 1px solid #E5E7EB;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            flex: 1;
+            justify-content: center;
+        }
+        .btn-small:hover {
+            background: #E5E7EB;
+            border-color: #D1D5DB;
+        }
+
+        .btn-delete {
+            background: var(--error-bg);
+            border-color: #FECACA;
+            color: var(--error-text);
+        }
+        .btn-delete:hover {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Filters --- */
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+            background: #F1F5F9;
+            padding: 0.35rem;
+            border-radius: var(--radius-lg);
+            width: fit-content;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab:hover {
+            color: var(--text-dark);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .filter-tab.active {
+            background: #FFFFFF;
+            color: #4F46E5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+
+        /* --- Document Grid --- */
+        .docs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .doc-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doc-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1);
+            border-color: #CBD5E1;
+        }
+
+        .doc-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .doc-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #F8FAFC;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .doc-icon-wrapper svg { width: 24px; height: 24px; }
+
+        .doc-info { flex: 1; overflow: hidden; }
+
+        .doc-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .doc-type-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: #F1F5F9;
+            color: var(--text-muted);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .doc-meta {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            display: grid;
+            gap: 0.5rem;
+            border-top: 1px solid #F1F5F9;
+            padding-top: 1rem;
+        }
+
+        .meta-row {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .meta-label { color: #9CA3AF; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; }
+        .meta-val { color: var(--text-dark); font-weight: 500; }
+
+        .doc-actions {
+            margin-top: auto;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 5rem 2rem;
+            background: var(--bg-light-secondary);
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--radius-lg);
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            color: #CBD5E1;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* Icon Colors */
+        .icon-pdf { color: #EF4444; background: #FEF2F2; }
+        .icon-img { color: #8B5CF6; background: #F3E8FF; }
+        .icon-doc { color: #3B82F6; background: #EFF6FF; }
+        .icon-xls { color: #10B981; background: #ECFDF5; }
+        .icon-def { color: #6B7280; background: #F3F4F6; }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .docs-grid { grid-template-columns: 1fr; }
+            .doc-meta { font-size: 0.8rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+            <a href="{{ url_for('sevak69.upload_document') }}" class="btn btn-primary">
+                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                <span style="display: none; @media(min-width: 640px){ display: inline; }">Upload</span>
+            </a>
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Back
+            </a>
+        </div>
+    </header>
+    
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="files" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                Document Library
+            </h1>
+            <p class="page-subtitle">Manage admin uploaded documents (Major+ Access)</p>
+        </div>
+        
+         {% with messages = get_flashed_messages(with_categories=true) %}
+             {% if messages %}
+                 {% for category, message in messages %}
+                     <div class="alert alert-{{ category }}">
+                         {% if category == 'success' %}
+                             <i data-lucide="check-circle-2"></i>
+                         {% elif category == 'error' %}
+                             <i data-lucide="alert-circle"></i>
+                         {% else %}
+                             <i data-lucide="info"></i>
+                         {% endif %}
+                         <span>{{ message }}</span>
+                     </div>
+                 {% endfor %}
+             {% endif %}
+         {% endwith %}
+         
+         <!-- Filter Tabs -->
+         <div class="filter-tabs">
+             <a href="{{ url_for('sevak69.documents', type='all') }}" class="filter-tab {% if target_type == 'all' %}active{% endif %}">All Types</a>
+             <a href="{{ url_for('sevak69.documents', type='user') }}" class="filter-tab {% if target_type == 'user' %}active{% endif %}">User Docs</a>
+             <a href="{{ url_for('sevak69.documents', type='creator') }}" class="filter-tab {% if target_type == 'creator' %}active{% endif %}">Creator Docs</a>
+             <a href="{{ url_for('sevak69.documents', type='admin') }}" class="filter-tab {% if target_type == 'admin' %}active{% endif %}">Admin Docs</a>
+         </div>
+
+        <div class="docs-grid">
+            {% if documents and documents|length > 0 %}
+                {% for doc in documents %}
+                 {% set filename_lower = doc.original_filename|lower if doc.original_filename else '' %}
+                 
+                 <!-- Icon Logic -->
+                 {% set icon_name = 'file' %}
+                 {% set icon_class = 'icon-def' %}
+                 
+                 {% if filename_lower.endswith('.pdf') %}
+                    {% set icon_name = 'file-text' %}
+                    {% set icon_class = 'icon-pdf' %}
+                 {% elif filename_lower.endswith(('.png', '.jpg', '.jpeg', '.gif', '.webp')) %}
+                    {% set icon_name = 'image' %}
+                    {% set icon_class = 'icon-img' %}
+                 {% elif filename_lower.endswith(('.doc', '.docx')) %}
+                    {% set icon_name = 'file-type-2' %}
+                    {% set icon_class = 'icon-doc' %}
+                 {% elif filename_lower.endswith(('.xls', '.xlsx', '.csv')) %}
+                    {% set icon_name = 'table' %}
+                    {% set icon_class = 'icon-xls' %}
+                 {% endif %}
+                 
+                <div class="doc-card">
+                     <div class="doc-header">
+                         <div class="doc-icon-wrapper {{ icon_class }}">
+                             <i data-lucide="{{ icon_name }}"></i>
+                         </div>
+                         <div class="doc-info">
+                             <div class="doc-name" title="{{ doc.original_filename }}">{{ doc.original_filename or 'Unknown File' }}</div>
+                             <span class="doc-type-badge">{{ doc.document_type or 'GENERAL' }}</span>
+                         </div>
+                     </div>
+                     
+                    <div class="doc-meta">
+                         <div class="meta-row">
+                             <span class="meta-label">Target</span>
+                             <span class="meta-val">{{ doc.target_type|capitalize }} • {{ doc.target_id }}</span>
+                         </div>
+                         <div class="meta-row">
+                             <span class="meta-label">Uploaded</span>
+                             <span class="meta-val">{{ doc.created_at.strftime('%Y-%m-%d') if doc.created_at else 'N/A' }}</span>
+                         </div>
+                         <div class="meta-row">
+                             <span class="meta-label">By</span>
+                             <span class="meta-val">{{ doc.uploaded_by_name or doc.uploaded_by }}</span>
+                         </div>
+                         {% if doc.description %}
+                         <div style="margin-top: 0.5rem; font-size: 0.8rem; line-height: 1.4; color: var(--text-muted);">
+                             {{ doc.description }}
+                         </div>
+                         {% endif %}
+                    </div>                    
+                    
+                    <div class="doc-actions">
+                        <a href="{{ url_for('sevak69.view_document', doc_id=doc.id) }}" class="btn-small" target="_blank">
+                            <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download
+                        </a>
+                        <form method="POST" action="{{ url_for('sevak69.delete_document', doc_id=doc.id) }}" style="display: contents;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn-small btn-delete" onclick="return confirm('Are you sure you want to permanently delete this document? This cannot be undone.');">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </form>                    
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i data-lucide="folder-open" class="empty-icon"></i>
+                <div style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem;">No documents found</div>
+                 {% if target_type == 'all' %}
+                 <p>No documents have been uploaded yet. Click "Upload" to add one.</p>
+                 {% else %}
+                  <p>No documents found matching the filter "<strong>{{ target_type|capitalize }}</strong>".</p>
+                 {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Auto-dismiss Flash Messages
+        document.addEventListener('DOMContentLoaded', function() {
+             const alerts = document.querySelectorAll('.main-content > .alert'); 
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                 }, 4000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

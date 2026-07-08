@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Violated - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --danger-gradient: linear-gradient(135deg, #EF4444, #F87171);
+            
+            /* --- Glass & UI Variables --- */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --glass-blur: blur(40px);
+            
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            padding-top: 80px;
+            overflow-x: hidden;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(60px);
+        }
+
+        /* --- Navigation --- */
+        .header-nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            display: flex; align-items: center;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: 99px;
+            transition: var(--transition-smooth);
+            opacity: 0.7;
+        }
+        
+        .nav-link.active, .nav-link:hover {
+            opacity: 1;
+            background: rgba(0,0,0,0.04);
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+        }
+
+        /* --- Central Card --- */
+        .content-wrapper {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .glass-card {
+            background: var(--glass-bg);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            padding: 3rem;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- Violation Visuals --- */
+        .violation-icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            background: var(--danger-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .violation-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        .violation-text {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+        }
+
+        /* --- Button --- */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.9rem 2rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        @media (max-width: 768px) {
+            .violation-title { font-size: 1.75rem; }
+            .glass-card { padding: 2rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <header class="header-nav">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center">
+            <a class="flex items-center gap-3" href="{{ url_for('user.index') }}" style="text-decoration: none;">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-bold text-primary-theme">Youcert</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-2">
+                <a class="nav-link" href="{{ url_for('user.index') }}">Home</a>
+                <a class="nav-link" href="{{ url_for('user.exams') }}">Exams</a>
+                <a class="nav-link" href="{{ url_for('user.completed_exams') }}">History</a>
+                <a class="nav-link" href="{{ url_for('user.user_profile') }}">Profile</a>
+            </nav>
+            <!-- Mobile Menu Trigger (Visual Only) -->
+            <div class="md:hidden text-xl text-dark"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <div class="content-wrapper">
+        <div class="glass-card">
+            <div class="violation-icon">
+                <i class="fas fa-ban"></i>
+            </div>
+            
+            <h1 class="violation-title">Exam Terminated</h1>
+            
+            <p class="violation-text">
+                Your exam session was automatically cancelled due to multiple security violations (fullscreen exit). To maintain academic integrity, this attempt has been invalidated.
+            </p>
+
+            <a href="{{ url_for('user.exams') }}" class="btn-primary-custom">
+                <i class="fas fa-arrow-left"></i>
+                Return to Exams
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

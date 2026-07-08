@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Registration Requests - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Filter Tabs --- */
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: #F1F5F9;
+            padding: 0.35rem;
+            border-radius: var(--radius-lg);
+            width: fit-content;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab:hover {
+            color: var(--text-dark);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .filter-tab.active {
+            background: #FFFFFF;
+            color: #4F46E5;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+
+        /* --- Requests Grid --- */
+        .requests-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        }
+
+        .request-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .request-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0,0,0,0.1);
+            border-color: #CBD5E1;
+        }
+        
+        /* Card Top Border based on status */
+        .request-card.status-pending { border-top: 4px solid #F59E0B; }
+        .request-card.status-approved { border-top: 4px solid #10B981; }
+        .request-card.status-rejected { border-top: 4px solid #EF4444; }
+
+        .request-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+            gap: 1rem;
+        }
+
+        .request-name {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .request-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .request-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* --- Badges --- */
+        .designation-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .badge-chief { background: linear-gradient(135deg, #EC4899, #F43F5E); }
+        .badge-major { background: linear-gradient(135deg, #3B82F6, #06B6D4); }
+        .badge-hero { background: linear-gradient(135deg, #10B981, #34D399); }
+        
+        .badge-approved { background: #D1FAE5; color: #065F46; border: 1px solid #34D399; box-shadow: none; }
+        .badge-rejected { background: #FEE2E2; color: #991B1B; border: 1px solid #F87171; box-shadow: none; }
+
+        /* --- Details List --- */
+        .request-details {
+            margin-bottom: 1.5rem;
+            font-size: 0.875rem;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 1rem;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        .detail-row:last-child { border-bottom: none; }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .reason-box {
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--text-dark);
+        }
+
+        /* --- Action Buttons --- */
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid #F1F5F9;
+        }
+        
+        .btn-approve, .btn-reject {
+            flex: 1;
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-md);
+            border: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-approve {
+            background: #10B981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+        .btn-approve:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35); }
+
+        .btn-reject {
+            background: white;
+            border: 1px solid #FECACA;
+            color: #EF4444;
+        }
+        .btn-reject:hover { background: #FEF2F2; border-color: #EF4444; }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-muted);
+            background: var(--bg-light-secondary);
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--radius-lg);
+            grid-column: 1 / -1;
+        }
+        .empty-icon { color: #CBD5E1; width: 64px; height: 64px; margin-bottom: 1rem; }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center; z-index: 9999;
+            padding: 1rem; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-content {
+            background: white; border-radius: var(--radius-lg);
+            width: 100%; max-width: 500px; padding: 2rem;
+            box-shadow: var(--glass-shadow); transform: scale(0.95); transition: transform 0.3s ease;
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); }
+
+        .modal-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--text-dark); }
+        
+        .form-group { margin-bottom: 1.25rem; }
+        .form-label { display: block; margin-bottom: 0.5rem; font-size: 0.875rem; font-weight: 500; color: var(--text-dark); }
+        .form-input, .form-textarea, .form-select {
+            width: 100%; padding: 0.75rem; border: 1px solid #E2E8F0; border-radius: var(--radius-md);
+            font-size: 0.9rem; background: #F8FAFC; color: var(--text-dark);
+        }
+        .form-textarea { min-height: 100px; resize: vertical; }
+        
+        .modal-footer {
+            margin-top: 2rem; display: flex; justify-content: flex-end; gap: 0.75rem;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .requests-grid { grid-template-columns: 1fr; }
+            .detail-row { grid-template-columns: 1fr; gap: 0.25rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <a href="/naanni/dashboard/" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Dashboard
+        </a>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="file-signature" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                Registration Requests
+            </h1>
+            <p class="page-subtitle">Review and approve admin registration requests (Supreme Only)</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% elif category == 'error' %}
+                            <i data-lucide="alert-circle"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Filter Tabs -->
+        <div class="filter-tabs">
+            <a href="{{ url_for('sevak69.registration_requests', status='pending') }}" class="filter-tab {% if status_filter == 'pending' %}active{% endif %}">
+                ⏳ Pending
+            </a>
+            <a href="{{ url_for('sevak69.registration_requests', status='approved') }}" class="filter-tab {% if status_filter == 'approved' %}active{% endif %}">
+                ✅ Approved
+            </a>
+            <a href="{{ url_for('sevak69.registration_requests', status='rejected') }}" class="filter-tab {% if status_filter == 'rejected' %}active{% endif %}">
+                ❌ Rejected
+            </a>
+        </div>
+
+        <!-- Stats -->
+        {% if requests %}
+        <div class="stats-row" style="margin-bottom: 2rem;">
+            <div style="background: white; padding: 1rem; border-radius: 12px; border: 1px solid #E2E8F0; display: inline-flex; align-items: center; gap: 1rem;">
+                <div style="font-size: 0.875rem; color: var(--text-muted);">Total {{ status_filter.capitalize() }} Requests</div>
+                <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-dark);">{{ requests|length }}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Requests List -->
+        <div class="requests-grid">
+            {% if requests and requests|length > 0 %}
+                {% for request in requests %}
+                <div class="request-card status-{{ request.status }}">
+                    <div class="request-header">
+                        <div class="request-info">
+                            <div class="request-name">{{ request.name }}</div>
+                            <div class="request-meta">
+                                <div class="request-meta-item">
+                                    <i data-lucide="mail" style="width: 14px; height: 14px;"></i>
+                                    <span>{{ request.email }}</span>
+                                </div>
+                                <div class="request-meta-item">
+                                    <i data-lucide="phone" style="width: 14px; height: 14px;"></i>
+                                    <span>{{ request.contact_number }}</span>
+                                </div>
+                            </div>
+                        </div>
+                         <!-- Display designation badge -->
+                         <div class="designation-badge 
+                             {% if request.status == 'approved' %}badge-approved
+                             {% elif request.status == 'rejected' %}badge-rejected
+                             {% elif request.requested_designation == 1 %}badge-chief
+                             {% elif request.requested_designation == 2 %}badge-major
+                             {% else %}badge-hero{% endif %}">
+                             
+                             {% if request.status == 'approved' %}Approved{% elif request.status == 'rejected' %}Rejected{% else %}{{ DESIGNATION_NAMES.get(request.requested_designation, 'Hero') }}{% endif %}
+                         </div>
+                    </div>
+
+                    <div class="request-details">
+                        <div class="detail-row">
+                            <div class="detail-label">Request ID</div>
+                            <div class="detail-value" style="font-family: monospace;">{{ request.request_id }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Requested By</div>
+                            <div class="detail-value">{{ request.requested_by_name or request.requested_by or 'N/A' }}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Date</div>
+                            <div class="detail-value">{{ request.created_at.strftime('%b %d, %Y') if request.created_at else 'N/A' }}</div>
+                        </div>
+                         {% if request.status != 'pending' %}
+                         <div class="detail-row">
+                              <div class="detail-label">Processed By</div>
+                              <div class="detail-value">{{ request.approved_by or 'N/A' }}</div>
+                         </div>
+                          {% if request.status == 'rejected' and request.rejection_reason %}
+                          <div class="detail-row">
+                              <div class="detail-label" style="color: #EF4444;">Reason</div>
+                              <div class="detail-value" style="color: #EF4444;">{{ request.rejection_reason }}</div>
+                          </div>
+                          {% endif %}
+                         {% endif %}
+                        <div class="detail-row" style="border-top: 1px dashed #E2E8F0; margin-top: 0.5rem; padding-top: 0.5rem;">
+                            <div class="detail-label">Reason</div>
+                            <div class="detail-value">
+                                <div class="reason-box">{{ request.reason }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if request.status == 'pending' %}
+                    <div class="action-buttons">
+                        <button class="btn-approve" onclick="openApproveModal('{{ request.request_id }}', '{{ request.name }}', '{{ request.email }}', '{{ request.requested_designation }}')">
+                           <i data-lucide="check-circle-2" style="width: 16px; height: 16px;"></i> Approve
+                        </button>
+                         <button class="btn-reject" onclick="openRejectModal('{{ request.request_id }}', '{{ request.name }}')">
+                            <i data-lucide="x-circle" style="width: 16px; height: 16px;"></i> Reject
+                         </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i data-lucide="inbox" class="empty-icon"></i>
+                <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark);">
+                    No {{ status_filter }} requests found
+                </div>
+                <p>There are no admin registration requests with this status currently.</p>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <!-- Approve Modal -->
+    <div class="modal-overlay" id="approveModal">
+        <div class="modal-content">
+            <h2 class="modal-title">Approve Admin Request</h2>
+            <form method="POST" id="approveForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="request_id" id="modal_approve_request_id">
+                
+                <div class="form-group">
+                    <label class="form-label">Admin Name</label>
+                    <input type="text" class="form-input" id="modal_approve_name" readonly>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-input" id="modal_approve_email" readonly>
+                </div>
+                
+                 <div class="form-group">
+                     <label for="modal_approve_designation" class="form-label">Assign Designation <span style="color: #EF4444;">*</span></label>
+                     <select id="modal_approve_designation" name="designation" class="form-select" required>
+                         <option value="">-- Select Designation --</option>
+                         <option value="1">Chief (Level 1)</option>
+                         <option value="2">Major (Level 2)</option>
+                         <option value="3">Hero (Level 3)</option>
+                     </select>
+                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Check designation limits before assigning.</div>
+                 </div>
+                 
+                <div class="form-group">
+                    <label for="modal_approve_password" class="form-label">Set Password <span style="color: #EF4444;">*</span></label>
+                    <input type="password" id="modal_approve_password" name="password" class="form-input" placeholder="Enter password for new admin" required minlength="8">
+                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Minimum 8 characters</div>
+                </div>
+                
+                <div class="form-group">
+                     <label for="current_admin_password_approve" class="form-label">Your Admin Password <span style="color: #EF4444;">*</span></label>
+                     <input type="password" id="current_admin_password_approve" name="current_admin_password" class="form-input" placeholder="Enter your password to confirm" required>
+                 </div>
+
+                 <div class="modal-footer">
+                     <button type="button" class="btn-secondary" onclick="closeApproveModal()">Cancel</button>
+                     <button type="submit" class="btn-primary">Approve & Create</button>
+                 </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Reject Modal -->
+    <div class="modal-overlay" id="rejectModal">
+         <div class="modal-content">
+             <h2 class="modal-title" style="color: #EF4444;">Reject Admin Request</h2>
+             <form method="POST" id="rejectForm">
+                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                 <input type="hidden" name="request_id" id="modal_reject_request_id">
+                 
+                 <p style="margin-bottom: 1.5rem; color: var(--text-muted);">
+                     You are rejecting the request for <strong id="modal_reject_name" style="color: var(--text-dark);"></strong>.
+                 </p>
+                 
+                 <div class="form-group">
+                     <label for="rejection_reason" class="form-label">Reason for Rejection <span style="color: #EF4444;">*</span></label>
+                     <textarea id="rejection_reason" name="rejection_reason" class="form-textarea" placeholder="Provide a clear reason for rejection..." required minlength="10"></textarea>
+                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">Minimum 10 characters</div>
+                 </div>
+
+                 <div class="modal-footer">
+                     <button type="button" class="btn-secondary" onclick="closeRejectModal()">Cancel</button>
+                     <button type="submit" class="btn-delete" style="padding: 0.75rem 1.5rem; border-radius: 12px; font-weight: 600; cursor: pointer;">Confirm Rejection</button>
+                 </div>
+             </form>
+         </div>
+     </div>
+
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // --- Approve Modal Logic ---
+        function openApproveModal(requestId, name, email, requestedDesignation) {
+            document.getElementById('modal_approve_request_id').value = requestId;
+            document.getElementById('modal_approve_name').value = name;
+            document.getElementById('modal_approve_email').value = email;
+            document.getElementById('modal_approve_designation').value = requestedDesignation; 
+            document.getElementById('approveForm').action = `/naanni/approve_registration/${requestId}`;
+            document.getElementById('approveModal').classList.add('active');
+        }
+
+        function closeApproveModal() {
+            document.getElementById('approveModal').classList.remove('active');
+            document.getElementById('approveForm').reset();
+        }
+
+        // Approve Form validation
+        document.getElementById('approveForm').addEventListener('submit', function(e) {
+            const password = this.querySelector('[name="password"]').value;
+             const adminPassword = this.querySelector('[name="current_admin_password"]').value;
+             const designation = this.querySelector('[name="designation"]').value;
+
+             if (!designation) {
+                 e.preventDefault();
+                 alert('Please select a designation to assign.');
+                 return false;
+             }
+
+            if (password.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+             
+             if (!adminPassword) {
+                 e.preventDefault();
+                 alert('Please enter your admin password to confirm approval.');
+                 return false;
+             }
+        });
+        
+        // --- Reject Modal Logic ---
+        function openRejectModal(requestId, name) {
+            document.getElementById('modal_reject_request_id').value = requestId;
+            document.getElementById('modal_reject_name').textContent = name;
+            document.getElementById('rejectForm').action = `/naanni/reject_registration/${requestId}`;
+            document.getElementById('rejectModal').classList.add('active');
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').classList.remove('active');
+            document.getElementById('rejectForm').reset();
+        }
+
+        // Reject Form validation
+        document.getElementById('rejectForm').addEventListener('submit', function(e) {
+            const reason = this.querySelector('[name="rejection_reason"]').value.trim();
+
+             if (!reason || reason.length < 10) {
+                 e.preventDefault();
+                 alert('Please provide a rejection reason (minimum 10 characters).');
+                 return false;
+             }
+        });
+
+
+        // Close modal on overlay click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if(this.id === 'approveModal') closeApproveModal();
+                    if(this.id === 'rejectModal') closeRejectModal();
+                }
+            });
+        });
+        
+         // Auto-dismiss Flask flash messages
+         document.addEventListener('DOMContentLoaded', function() {
+             const alerts = document.querySelectorAll('.main-content > .alert');
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.3s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                 }, 5000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

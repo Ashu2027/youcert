@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Bank Verifications - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for premium look (No Emojis) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            --cta-hover: linear-gradient(135deg, #4338ca 0%, #7e22ce 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors (Light Theme Optimized) */
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --success-text: #059669;
+            --warning-bg: rgba(245, 158, 11, 0.1);
+            --warning-text: #B45309;
+            --error-bg: rgba(239, 68, 68, 0.1);
+            --error-text: #B91C1C;
+            --info-bg: rgba(59, 130, 246, 0.1);
+            --info-text: #1D4ED8;
+            --frozen-bg: rgba(99, 102, 241, 0.1);
+            --frozen-text: #4F46E5;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+
+        /* --- Header (Glassmorphism Top Bar) --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        /* Primary / CTA Button */
+        .btn-primary, .btn-verify {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        .btn-primary:hover, .btn-verify:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        /* Secondary / Outline Button */
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+            letter-spacing: -0.025em;
+        }
+
+        .page-title svg {
+            color: #6366F1; /* Brand color icon */
+            width: 32px;
+            height: 32px;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+        }
+
+        .alert svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .alert-error {
+            background: var(--error-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--error-text);
+        }
+
+        .alert-success {
+            background: var(--success-bg);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success-text);
+        }
+        
+         .alert-info {
+            background: var(--info-bg);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--info-text);
+        }
+
+        /* --- Filter Tabs --- */
+        .filter-tabs {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.5);
+            padding: 0.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+            width: fit-content;
+        }
+
+        .filter-tab {
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-tab svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .filter-tab:hover {
+            background: rgba(255,255,255,0.8);
+            color: var(--text-dark);
+        }
+
+        .filter-tab.active {
+            background: #FFFFFF;
+            color: #4F46E5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+
+        /* --- Bank Cards Grid --- */
+        .banks-grid {
+            display: grid;
+            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+        }
+
+        .bank-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.75rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bank-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            border-color: rgba(99, 102, 241, 0.2); /* Brand color hint on hover */
+        }
+        
+        /* Glass effect top decoration */
+        .bank-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #E2E8F0, #F1F5F9);
+        }
+        
+        .bank-card:hover::before {
+            background: var(--brand-gradient);
+        }
+
+        .bank-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            gap: 1rem;
+        }
+
+        .bank-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .bank-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            word-break: break-word;
+        }
+
+        .bank-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            color: var(--text-muted);
+            font-size: 0.825rem;
+        }
+        
+        .bank-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bank-meta svg {
+            width: 14px;
+            height: 14px;
+            color: #94A3B8;
+        }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .status-pending { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .status-verified { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .status-rejected { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .status-frozen { background: var(--frozen-bg); color: var(--frozen-text); border: 1px solid rgba(99, 102, 241, 0.2); }
+
+        /* --- Details Grid --- */
+        .bank-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            background: #F8FAFC;
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #F1F5F9;
+        }
+        
+        .detail-item {
+            /* Clean layout */
+        }
+
+        .detail-label {
+            color: #94A3B8;
+            font-size: 0.7rem;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        /* --- Action Area --- */
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px solid #F1F5F9;
+        }
+        
+        .btn-verify {
+            flex: 2;
+            width: 100%;
+        }
+        
+        .btn-edit {
+            flex: 1;
+            justify-content: center;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-muted);
+            background: #FFFFFF;
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .empty-icon {
+            color: #CBD5E1;
+            width: 64px;
+            height: 64px;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin: 1rem auto; }
+            .bank-details { grid-template-columns: 1fr; }
+            .action-buttons { flex-direction: column; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to Dashboard
+        </a>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="landmark"></i>
+                Bank Account Verifications
+            </h1>
+            <p class="page-subtitle">Review and verify creator bank account information (Chief+ Access)</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'error' %}
+                            <i data-lucide="x-circle"></i>
+                        {% elif category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="filter-tabs">
+             <a href="{{ url_for('sevak69.bank_verifications', status='0') }}" class="filter-tab {% if status_filter == '0' %}active{% endif %}">
+                <i data-lucide="clock"></i> Pending 
+             </a>
+             <a href="{{ url_for('sevak69.bank_verifications', status='1') }}" class="filter-tab {% if status_filter == '1' %}active{% endif %}">
+                <i data-lucide="check-circle"></i> Verified 
+             </a>
+             <a href="{{ url_for('sevak69.bank_verifications', status='2') }}" class="filter-tab {% if status_filter == '2' %}active{% endif %}">
+                <i data-lucide="x-circle"></i> Rejected 
+             </a>
+              <a href="{{ url_for('sevak69.bank_verifications', status='frozen') }}" class="filter-tab {% if status_filter == 'frozen' %}active{% endif %}">
+                 <i data-lucide="lock"></i> Frozen 
+             </a>
+             <a href="{{ url_for('sevak69.bank_verifications', status='all') }}" class="filter-tab {% if status_filter == 'all' %}active{% endif %}">
+                 <i data-lucide="list"></i> All 
+             </a>
+        </div>
+
+        <div class="banks-grid">
+            {% if bank_accounts and bank_accounts|length > 0 %}
+                {% for account in bank_accounts %}
+                <div class="bank-card">
+                    <div class="bank-header">
+                        <div class="bank-info">
+                            <div class="bank-name">{{ account.account_holder_name or 'N/A' }}</div>
+                            <div class="bank-meta">
+                                <span><i data-lucide="map-pin"></i> {{ account.country_code or 'N/A' }}</span>
+                                <span><i data-lucide="building-2"></i> {{ account.bank_name or 'N/A' }}</span>
+                                <span><i data-lucide="user"></i> {{ account.creator_name or account.channel_id }} ({{ account.channel_id }})</span> 
+                            </div>
+                        </div>
+                        <div class="status-badge 
+                            {% if account.is_frozen %}status-frozen
+                            {% elif account.verification_status == 0 %}status-pending
+                            {% elif account.verification_status == 1 %}status-verified
+                            {% elif account.verification_status == 2 %}status-rejected
+                            {% else %}status-unknown{% endif %}">
+                            
+                            {% if account.is_frozen %}
+                                <i data-lucide="lock" style="width:12px;height:12px;"></i> Frozen
+                            {% elif account.verification_status == 0 %}
+                                <i data-lucide="clock" style="width:12px;height:12px;"></i> Pending
+                            {% elif account.verification_status == 1 %}
+                                <i data-lucide="check" style="width:12px;height:12px;"></i> Verified
+                            {% elif account.verification_status == 2 %}
+                                <i data-lucide="x" style="width:12px;height:12px;"></i> Rejected
+                            {% else %}
+                                Unknown
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="bank-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Account Type</span>
+                            <div class="detail-value">{{ account.account_type or 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                             <span class="detail-label">Currency</span>
+                             <div class="detail-value">{{ account.currency or 'N/A' }}</div>
+                        </div>
+                        <div class="detail-item">
+                             <span class="detail-label">Account No (Masked)</span>
+                            <div class="detail-value">{{ account.account_number_masked or '****' }}</div>
+                        </div>
+                         <div class="detail-item">
+                             <span class="detail-label">ID No (Masked)</span>
+                             <div class="detail-value">{{ account.id_number_masked or '****' }}</div>
+                         </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Active Status</span>
+                            <div class="detail-value">
+                                {% if account.is_active %}Active{% else %}Inactive{% endif %}
+                            </div>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Created At</span>
+                            <div class="detail-value">{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else 'N/A' }}</div>
+                        </div>
+                        {% if account.verified_at %}
+                        <div class="detail-item" style="grid-column: span 2;">
+                            <span class="detail-label">Processed By</span>
+                            <div class="detail-value" style="font-size: 0.8rem;">
+                                {{ account.verified_at.strftime('%Y-%m-%d') }} • {{ account.verified_by or 'Admin' }}
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="{{ url_for('sevak69.bank_verify_view', account_id=account.id ) }}" class="btn btn-verify">
+                           <i data-lucide="search" style="width: 16px; height: 16px;"></i>
+                           Verify Details
+                        </a>
+                         <a href="{{ url_for('sevak69.bank_details_edit', pk_value=account.id ) }}" class="btn btn-secondary btn-edit">
+                            <i data-lucide="edit-2" style="width: 16px; height: 16px;"></i>
+                            Edit
+                         </a>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+            <div class="empty-state">
+                <i data-lucide="inbox" class="empty-icon"></i>
+                <div style="font-size: 1.125rem; font-weight: 600; color: var(--text-dark);">
+                    No accounts found
+                </div>
+                 {% set display_status = status_map.get(status_filter, status_filter) %}
+                <div>There are no bank accounts with status: <strong>{{ display_status.capitalize() }}</strong></div>
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Auto-dismiss Flash Messages
+        document.addEventListener('DOMContentLoaded', function() {
+             const alerts = document.querySelectorAll('.main-content > .alert');
+             alerts.forEach(alert => {
+                 setTimeout(() => {
+                    if (alert) { 
+                        alert.style.transition = 'opacity 0.5s ease';
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500);
+                    }
+                 }, 4000);
+             });
+         });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

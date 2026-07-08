@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Results - Youcert</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+
+    <!-- Lucide Icons — preserved -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        /* ============================================================
+           YOUCERT — Exam Results / Answer Analysis
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:     #F0F0F5;
+            --c-dark:   #1A1A2E;
+            --c-muted:  #7C7C8E;
+            --c-soft:   #E8E8F0;
+            --c-indigo: #6366F1;
+            --c-purple: #9333EA;
+            --grad:     linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+            --t:        all 0.4s var(--spring);
+            --r:        24px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            background: var(--c-bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ── Navigation ── */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-link.active {
+            opacity: 1;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+            color: var(--c-indigo);
+        }
+
+        .text-primary-theme {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        /* ── Loading overlay ── */
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--c-bg);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(99, 102, 241, 0.12);
+            border-top-color: var(--c-indigo);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-overlay h2 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--c-dark);
+            margin-bottom: 0.4rem;
+        }
+
+        .loading-overlay p {
+            font-size: 0.875rem;
+            color: var(--c-muted);
+        }
+
+        /* ── Confetti canvas ── */
+        .confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99;
+        }
+
+        /* ── Main results wrapper ── */
+        .results-wrapper {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1.5rem 4rem;
+        }
+
+        /* ── Glass card ── */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: var(--r);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        /* ══════════════════════════════════════════
+           RESULTS HEADER — dark panel with orbs
+        ══════════════════════════════════════════ */
+        .results-header {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        .rh-orb-a {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            top: -140px;
+            right: -60px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 60%);
+            filter: blur(70px);
+            pointer-events: none;
+            animation: ho1 18s ease-in-out infinite;
+        }
+
+        .rh-orb-b {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            bottom: -80px;
+            left: 5%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent 60%);
+            filter: blur(65px);
+            pointer-events: none;
+            animation: ho2 22s ease-in-out infinite;
+        }
+
+        @keyframes ho1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-35px, 25px); }
+        }
+
+        @keyframes ho2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(25px, -18px); }
+        }
+
+        .exam-title {
+            position: relative;
+            z-index: 2;
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: #fff;
+            margin-bottom: 2rem;
+            line-height: 1.15;
+        }
+
+        /* ── Score circle ── */
+        .score-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 2rem;
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .score-circle {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            position: relative;
+        }
+
+        .score-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.05em;
+        }
+
+        .score-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--c-muted);
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .score-ring-bg {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            z-index: 1;
+            transition: background 1.5s ease-out;
+        }
+
+        /* Grade badge */
+        .grade-badge {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.25rem;
+            border-radius: 99px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .grade-excellent {
+            background: rgba(16, 185, 129, 0.15);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .grade-good {
+            background: rgba(59, 130, 246, 0.12);
+            color: #1D4ED8;
+            border: 1px solid rgba(59, 130, 246, 0.25);
+        }
+
+        .grade-average {
+            background: rgba(245, 158, 11, 0.12);
+            color: #B45309;
+            border: 1px solid rgba(245, 158, 11, 0.25);
+        }
+
+        .grade-poor {
+            background: rgba(239, 68, 68, 0.1);
+            color: #B91C1C;
+            border: 1px solid rgba(239, 68, 68, 0.22);
+        }
+
+        /* ══════════════════════════════════════════
+           CONTENT GRID — sidebar + stats
+        ══════════════════════════════════════════ */
+        .results-content {
+            display: grid;
+            grid-template-columns: 1fr 1.4fr;
+        }
+
+        @media (max-width: 900px) {
+            .results-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left sidebar */
+        .results-sidebar {
+            padding: 2.5rem;
+            border-right: 1px solid var(--c-soft);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #fff;
+        }
+
+        .message-box {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .message-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            color: var(--c-dark);
+        }
+
+        .message-text {
+            color: var(--c-muted);
+            line-height: 1.6;
+            font-size: 0.9rem;
+        }
+
+        .action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .btn-action {
+            padding: 0.875rem;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--t);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-action::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+            transition: left 0.45s var(--spring);
+        }
+
+        .btn-action:hover::before {
+            left: 160%;
+        }
+
+        .btn-primary-custom {
+            background: var(--c-dark);
+            color: #fff;
+        }
+
+        .btn-primary-custom:hover {
+            background: #000;
+            color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary-custom {
+            background: #fff;
+            color: var(--c-dark);
+            border: 1.5px solid var(--c-soft);
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--c-bg);
+            border-color: rgba(0, 0, 0, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .btn-certificate {
+            background: linear-gradient(135deg, #F59E0B, #FBBF24);
+            color: #fff;
+        }
+
+        .btn-certificate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        /* ── Stats section (right column) ── */
+        .stats-section {
+            padding: 2.5rem;
+            background: var(--c-bg);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: #fff;
+            padding: 1.3rem;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            text-align: center;
+            transition: var(--t);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.1);
+        }
+
+        .stat-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.75rem;
+        }
+
+        .stat-val {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--c-dark);
+            line-height: 1.1;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-key {
+            font-size: 0.68rem;
+            color: var(--c-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+        }
+
+        /* Icon background colors */
+        .bg-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+        }
+
+        .bg-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #DC2626;
+        }
+
+        .bg-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+        }
+
+        .bg-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: #2563EB;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-header {
+                padding: 2rem 1rem;
+            }
+
+            .score-container {
+                width: 160px;
+                height: 160px;
+            }
+
+            .score-value {
+                font-size: 3rem;
+            }
+
+            .results-sidebar {
+                border-right: none;
+                border-bottom: 1px solid var(--c-soft);
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <!-- Nav (inline nav preserved as-is from original) -->
+    <header class="header-nav" id="mainNav">
+        <div class="container mx-auto px-4 h-full flex justify-between items-center">
+            <a class="flex items-center gap-3" href="{{ url_for('user.index') }}">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                <span class="text-lg font-bold text-primary-theme">Youcert</span>
+            </a>
+            <nav class="hidden md:flex items-center gap-2">
+                <a class="nav-link" href="{{ url_for('user.index') }}">Home</a>
+                <a class="nav-link" href="{{ url_for('user.exams') }}">Exams</a>
+                <a class="nav-link active" href="{{ url_for('user.completed_exams') }}">History</a>
+                <a class="nav-link" href="{{ url_for('user.user_profile') }}">Profile</a>
+            </nav>
+            <div class="md:hidden text-dark">
+                <i data-lucide="menu"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Loading overlay -->
+    <div id="loadingScreen" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <h2>Calculating Results</h2>
+        <p>Analyzing your performance…</p>
+    </div>
+
+    <!-- Confetti canvas -->
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+
+    <!-- Results wrapper — opacity:0 until JS reveals it -->
+    <div id="resultsWrapper" class="results-wrapper" style="opacity: 0; transition: opacity 0.5s ease;">
+
+        <div class="glass-card">
+
+            <!-- Dark header panel with score circle -->
+            <div class="results-header">
+                <div class="rh-orb-a"></div>
+                <div class="rh-orb-b"></div>
+
+                <h1 class="exam-title" id="examTitle">Exam Results</h1>
+
+                <div class="score-container">
+                    <div class="score-ring-bg" id="scoreRing"></div>
+                    <div class="score-circle">
+                        <div class="score-value" id="scorePercentage">0%</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                </div>
+
+                <div id="gradeBadge" class="grade-badge">--</div>
+            </div>
+
+            <div class="results-content">
+
+                <!-- Left column: messaging & actions -->
+                <div class="results-sidebar">
+                    <div class="message-box">
+                        <h2 class="message-title" id="messageTitle">--</h2>
+                        <p class="message-text" id="messageText">--</p>
+                    </div>
+
+                    <div class="action-group">
+
+                        <!-- Success state actions -->
+                        <div id="successActions" style="display: none; flex-direction: column; gap: 0.75rem;">
+                            <a href="#" id="certificateLink" class="btn-action btn-certificate">
+                                <i data-lucide="award" style="width: 18px; height: 18px;"></i>
+                                Download Certificate
+                            </a>
+                            <a href="{{ url_for('user.exams') }}" class="btn-action btn-primary-custom">
+                                <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                                Next Exam
+                            </a>
+                        </div>
+
+                        <!-- Failure state actions -->
+                        <div id="failureActions" style="display: none; flex-direction: column; gap: 0.75rem;">
+                            <a href="#" id="reexamLink" class="btn-action btn-primary-custom">
+                                <i data-lucide="rotate-cw" style="width: 18px; height: 18px;"></i>
+                                Retake Exam
+                            </a>
+                            <a href="#" id="reviewLink" class="btn-action btn-secondary-custom">
+                                <i data-lucide="book-open" style="width: 18px; height: 18px;"></i>
+                                Review Answers
+                            </a>
+                        </div>
+
+                        <a href="{{ url_for('user.index') }}" class="btn-action btn-secondary-custom" style="margin-top: 0.5rem;">
+                            <i data-lucide="layout-dashboard" style="width: 18px; height: 18px;"></i>
+                            Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right column: stats grid -->
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper bg-success">
+                                <i data-lucide="check-circle" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="stat-val" id="correctAnswers">0</div>
+                            <div class="stat-key">Correct</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper bg-danger">
+                                <i data-lucide="x-circle" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="stat-val" id="incorrectAnswers">0</div>
+                            <div class="stat-key">Incorrect</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper bg-warning">
+                                <i data-lucide="clock" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="stat-val" id="timeTaken">0m</div>
+                            <div class="stat-key">Time</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon-wrapper bg-info">
+                                <i data-lucide="coins" style="width: 20px; height: 20px;"></i>
+                            </div>
+                            <div class="stat-val" id="amountPaid">₹0</div>
+                            <div class="stat-key">Value</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Nav scroll effect
+        const mainNav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            mainNav.classList.toggle('scrolled', scrollY > 6);
+        }, { passive: true });
+
+        // CSRF + exam ID — preserved exactly
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const examId = '{{ exam_id }}';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Slight delay for "Calculation" effect
+            setTimeout(loadResults, 800);
+        });
+
+        function loadResults() {
+            fetch(`/api/exam_analysis/${examId}`, {
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    renderResults(data.result);
+                } else {
+                    alert('Error loading results: ' + data.message);
+                    window.location.href = '{{ url_for("user.index") }}';
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
+        function renderResults(res) {
+            // Hide loader, reveal wrapper
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('resultsWrapper').style.opacity = '1';
+
+            // Calculations
+            const total     = res.total_marks || 1;
+            const obtained  = res.marks_obtained || 0;
+            const percent   = Math.round((obtained / total) * 100);
+            const passing   = res.passing_marks || 80;
+            const isPassed  = percent >= passing;
+            const incorrect = total - obtained;
+            const timeMins  = Math.round((res.time_taken || 0) / 60);
+
+            // Populate text fields
+            document.getElementById('examTitle').textContent        = res.exam_title || 'Exam Results';
+            document.getElementById('correctAnswers').textContent   = obtained;
+            document.getElementById('incorrectAnswers').textContent = incorrect;
+            document.getElementById('timeTaken').textContent        = `${timeMins}m`;
+            document.getElementById('amountPaid').textContent       = `₹${parseFloat(res.amount_paid || 0).toFixed(0)}`;
+
+            // Animated score counter
+            animateValue('scorePercentage', 0, percent, 1500);
+
+            const ring  = document.getElementById('scoreRing');
+            const badge = document.getElementById('gradeBadge');
+            const title = document.getElementById('messageTitle');
+            const text  = document.getElementById('messageText');
+
+            // Reset badge classes
+            badge.className = 'grade-badge';
+
+            if (isPassed) {
+                const color = percent >= 90 ? '#10B981' : '#3B82F6';
+                ring.style.background = `conic-gradient(from 0deg, ${color} ${percent}%, transparent ${percent}%)`;
+
+                badge.textContent = percent >= 90 ? 'Excellent' : 'Good';
+                badge.classList.add(percent >= 90 ? 'grade-excellent' : 'grade-good');
+
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', 'check');
+                badge.prepend(icon);
+
+                title.textContent = percent >= 90 ? 'Outstanding Performance!' : 'Great Job!';
+                text.textContent  = 'You have successfully mastered this module. Your hard work has paid off.';
+
+                document.getElementById('successActions').style.display = 'flex';
+                document.getElementById('certificateLink').href = `/generate_certificate/${examId}/`;
+
+                startConfetti();
+
+            } else {
+                ring.style.background = `conic-gradient(from 0deg, #EF4444 ${percent}%, transparent ${percent}%)`;
+
+                badge.textContent = 'Needs Improvement';
+                badge.classList.add('grade-poor');
+
+                const icon = document.createElement('i');
+                icon.setAttribute('data-lucide', 'alert-circle');
+                badge.prepend(icon);
+
+                title.textContent = "Don't Give Up!";
+                text.textContent  = 'This is a learning opportunity. Review the material and try again to improve your score.';
+
+                document.getElementById('failureActions').style.display = 'flex';
+                document.getElementById('reexamLink').href = `/exam_form/${examId}`;
+                document.getElementById('reviewLink').href = `/review_paper/${examId}`;
+            }
+
+            // Re-render icons for dynamically created ones
+            lucide.createIcons();
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const val = Math.floor(progress * (end - start) + start);
+                obj.innerHTML = val + '%';
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function startConfetti() {
+            const canvas = document.getElementById('confettiCanvas');
+            const ctx    = canvas.getContext('2d');
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const pieces = [];
+            const colors = ['#6366F1', '#10B981', '#F59E0B', '#3B82F6'];
+
+            for (let i = 0; i < 100; i++) {
+                pieces.push({
+                    x:     Math.random() * canvas.width,
+                    y:     Math.random() * canvas.height - canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    size:  Math.random() * 10 + 5,
+                    speed: Math.random() * 3 + 2
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                pieces.forEach(p => {
+                    ctx.fillStyle = p.color;
+                    ctx.fillRect(p.x, p.y, p.size, p.size);
+                    p.y += p.speed;
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+
+            // Stop after 5 seconds
+            setTimeout(() => { canvas.remove(); }, 5000);
+        }
+    </script>
+
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+

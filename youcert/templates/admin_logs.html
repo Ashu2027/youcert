@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Admin Logs - YOUCERT</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Filters --- */
+        .filter-bar {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-input, .filter-select {
+            padding: 0.75rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .filter-input:focus, .filter-select:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-filter {
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            background: var(--cta-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-on-brand);
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        .btn-filter:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+
+        /* --- Logs Table --- */
+        .logs-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+        }
+        
+        .table-wrapper { overflow-x: auto; }
+
+        .logs-table {
+            width: 100%;
+            border-collapse: collapse;
+            white-space: nowrap;
+        }
+
+        .logs-table th, .logs-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .logs-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #F8FAFC;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .logs-table td { color: var(--text-dark); vertical-align: middle; }
+        .logs-table tr:last-child td { border-bottom: none; }
+        .logs-table tr:hover { background: #F8FAFC; }
+        
+        .logs-table td.details-col { white-space: normal; word-break: break-word; min-width: 250px; }
+        .logs-table td.target-col { white-space: normal; word-break: break-word; }
+
+        /* --- Action Badges --- */
+        .action-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .badge-login { background: var(--success-bg); color: var(--success-text); }
+        .badge-logout { background: var(--error-bg); color: var(--error-text); }
+        .badge-create { background: var(--info-bg); color: var(--info-text); }
+        .badge-update { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-delete { background: var(--error-bg); color: var(--error-text); }
+        .badge-verify { background: var(--success-bg); color: var(--success-text); }
+        .badge-approve { background: var(--success-bg); color: var(--success-text); }
+        .badge-reject { background: var(--error-bg); color: var(--error-text); }
+        .badge-freeze { background: var(--warning-bg); color: var(--warning-text); }
+        .badge-default { background: #F3F4F6; color: var(--text-muted); }
+
+        .log-icon {
+            color: var(--text-muted);
+            margin-right: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            color: #CBD5E1;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Pagination --- */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1.5rem;
+            border-top: 1px solid #F1F5F9;
+            background: #F8FAFC;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .page-btn:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .page-btn.active {
+            background: var(--brand-gradient);
+            color: white;
+            border-color: transparent;
+        }
+        
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #F3F4F6;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .filter-grid { grid-template-columns: 1fr; }
+            .logs-table th, .logs-table td { padding: 0.75rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to Dashboard
+        </a>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="history" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                Admin Activity Logs
+            </h1>
+            <p class="page-subtitle">Monitor all admin actions and system activities</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+            <form method="GET" action="{{ url_for('sevak69.logs') }}">
+                 <input type="hidden" name="type" value="{{ log_type }}">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="admin_id_filter" class="filter-label">Admin ID / Name</label>
+                        <input type="text" id="admin_id_filter" name="admin_filter" class="filter-input" placeholder="Filter by admin..." value="{{ request.args.get('admin_filter', '') }}">
+                    </div>
+                    <div class="filter-group">
+                        <label for="action_code_filter" class="filter-label">Action Type</label>
+                        <select id="action_code_filter" name="action_code" class="filter-select">
+                            <option value="">All Actions</option>
+                             {% for code, num in action_codes.items()|sort %}
+                                 {% set code_prefix = num[:3] %}
+                                 {% set action_name = code.replace('_', ' ').capitalize() %}
+                                 <option value="{{ num }}" {% if request.args.get('action_code') == num %}selected{% endif %}>
+                                     {{ action_name }} ({{ num }})
+                                 </option>
+                             {% endfor %}
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="date_from_filter" class="filter-label">Date From</label>
+                        <input type="date" id="date_from_filter" name="start_date" class="filter-input" value="{{ start_date }}">
+                    </div>
+                    <div class="filter-group">
+                        <label for="date_to_filter" class="filter-label">Date To</label>
+                        <input type="date" id="date_to_filter" name="end_date" class="filter-input" value="{{ end_date }}">
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="btn-filter">
+                            <i data-lucide="filter" style="width: 16px; height: 16px;"></i>
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Logs Table Card -->
+        <div class="logs-card">
+             <div class="table-wrapper">
+                {% if logs and logs|length > 0 %}
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Admin</th>
+                                <th>Action</th>
+                                <th>Target</th>
+                                <th>Details</th>
+                                <th>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in logs %}
+                            <tr>
+                                <td style="font-family: monospace; font-size: 0.8rem;">{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') if log.timestamp else 'N/A' }}</td>
+                                <td>
+                                    <div style="font-weight: 500;">{{ log.admin_name or log.admin_id }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">{{ log.admin_id }}</div>
+                                </td>
+                                <td>
+                                     {% set code_prefix = log.action_code[:2] %}
+                                     {% set badge_class = 'default' %}
+                                     
+                                     {% if code_prefix == 'SK' %}
+                                         {% if log.action_code == 'SK01' %}{% set badge_class = 'login' %}
+                                         {% elif log.action_code == 'SK02' %}{% set badge_class = 'logout' %}
+                                         {% endif %}
+                                     {% elif code_prefix == 'US' %}
+                                         {% if '01' in log.action_code %}{% set badge_class = 'create' %}
+                                         {% elif '02' in log.action_code %}{% set badge_class = 'update' %}
+                                         {% elif '03' in log.action_code %}{% set badge_class = 'delete' %}
+                                         {% endif %}
+                                     {% elif code_prefix == 'CR' %}
+                                         {% if '01' in log.action_code %}{% set badge_class = 'create' %}
+                                         {% elif '02' in log.action_code %}{% set badge_class = 'update' %}
+                                         {% endif %}
+                                     {% elif code_prefix == 'BN' %}
+                                         {% if log.action_code == 'BNK01' %}{% set badge_class = 'verify' %}
+                                         {% elif log.action_code == 'BNK02' %}{% set badge_class = 'reject' %}
+                                         {% elif log.action_code == 'BNK04' %}{% set badge_class = 'freeze' %}
+                                         {% endif %}
+                                     {% elif code_prefix == 'AD' %}
+                                          {% if '01' in log.action_code %}{% set badge_class = 'create' %}
+                                          {% elif '04' in log.action_code %}{% set badge_class = 'approve' %}
+                                          {% else %}{% set badge_class = 'update' %} {% endif %}
+                                     {% elif code_prefix == 'PA' %}{% set badge_class = 'verify' %}
+                                     {% elif code_prefix == 'DO' %}{% set badge_class = 'update' %}
+                                     {% endif %}
+                                     
+                                     <span class="action-badge badge-{{ badge_class }}">
+                                         {{ log.action_code }}
+                                     </span>
+                                </td>
+                                <td class="target-col">
+                                    {% if log.target_type %}
+                                        <div style="text-transform: capitalize; font-weight: 500;">{{ log.target_type.replace('_', ' ') }}</div>
+                                        {% if log.target_id %}
+                                            <div style="font-family: monospace; font-size: 0.75rem; color: var(--text-muted);">{{ log.target_id }}</div>
+                                        {% endif %}
+                                    {% else %}
+                                        <span style="color: var(--text-muted);">-</span>
+                                    {% endif %}
+                                </td>
+                                <td class="details-col">{{ log.details or '-' }}</td>
+                                <td><code style="font-size: 0.75rem; background: #F1F5F9; padding: 2px 6px; border-radius: 4px;">{{ log.ip_address or '-' }}</code></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                 {% else %}
+                     <div class="empty-state"> 
+                         <i data-lucide="inbox" class="empty-icon"></i>
+                         <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark);">
+                             No logs found
+                         </div>
+                         <p>No admin activity logs match your current filters for the selected date range.</p>
+                     </div>
+                 {% endif %}
+            </div>
+
+            {% if total > per_page %}
+                 {% set num_pages = (total / per_page)|round(0, 'ceil')|int %}
+                 {% if num_pages > 1 %}
+                 <div class="pagination">
+                     {% if page > 1 %}
+                          {% set prev_page = page - 1 %}
+                          <a href="{{ url_for('sevak69.logs', page=prev_page, type=log_type, admin_filter=request.args.get('admin_filter', ''), action_code=request.args.get('action_code', ''), start_date=start_date, end_date=end_date) }}" class="page-btn">
+                              <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Previous
+                          </a>
+                     {% else %}
+                          <span class="page-btn disabled">
+                              <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Previous
+                          </span>
+                     {% endif %}
+                     
+                     {% set page_start = [1, page - 2]|max %}
+                     {% set page_end = [num_pages, page + 2]|min %}
+                     
+                     {% if page_start > 1 %}
+                         <a href="{{ url_for('sevak69.logs', page=1, type=log_type, admin_filter=request.args.get('admin_filter', ''), action_code=request.args.get('action_code', ''), start_date=start_date, end_date=end_date) }}" class="page-btn">1</a>
+                         {% if page_start > 2 %}<span style="padding: 0.5rem; color: var(--text-muted);">...</span>{% endif %}
+                     {% endif %}
+                     
+                     {% for page_num in range(page_start, page_end + 1) %}
+                         <a href="{{ url_for('sevak69.logs', page=page_num, type=log_type, admin_filter=request.args.get('admin_filter', ''), action_code=request.args.get('action_code', ''), start_date=start_date, end_date=end_date) }}" class="page-btn {% if page_num == page %}active{% endif %}">
+                             {{ page_num }}
+                         </a>
+                     {% endfor %}
+                     
+                      {% if page_end < num_pages %}
+                          {% if page_end < num_pages - 1 %}<span style="padding: 0.5rem; color: var(--text-muted);">...</span>{% endif %}
+                          <a href="{{ url_for('sevak69.logs', page=num_pages, type=log_type, admin_filter=request.args.get('admin_filter', ''), action_code=request.args.get('action_code', ''), start_date=start_date, end_date=end_date) }}" class="page-btn">{{ num_pages }}</a>
+                      {% endif %}
+
+                     {% if page < num_pages %}
+                          {% set next_page = page + 1 %}
+                          <a href="{{ url_for('sevak69.logs', page=next_page, type=log_type, admin_filter=request.args.get('admin_filter', ''), action_code=request.args.get('action_code', ''), start_date=start_date, end_date=end_date) }}" class="page-btn">
+                              Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                          </a>
+                     {% else %}
+                          <span class="page-btn disabled">
+                              Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                          </span>
+                     {% endif %}
+                 </div>
+                 {% endif %}
+            {% endif %}
+
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

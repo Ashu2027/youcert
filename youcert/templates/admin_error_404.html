@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Spacing & Radius */
+            --radius-lg: 20px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .error-container {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            max-width: 600px;
+            width: 100%;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            animation: slideUp 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Top decorative line */
+        .error-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: var(--brand-gradient);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .icon-wrapper {
+            width: 100px;
+            height: 100px;
+            background: #EEF2FF;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: #4F46E5;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .error-code {
+            font-size: 3rem;
+            font-weight: 800;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            line-height: 1;
+        }
+
+        .error-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+        }
+
+        .error-message {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 2.5rem;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+            background: #F8FAFC;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            background: #FFFFFF;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .quick-links {
+            background: #F8FAFC;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #F1F5F9;
+        }
+
+        .quick-links h4 {
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .quick-links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .quick-link {
+            padding: 0.75rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .quick-link:hover {
+            border-color: #6366F1;
+            color: #4F46E5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: #FFFFFF;
+            border-color: #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .help-text {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: monospace;
+            background: #F1F5F9;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+        
+         @media (max-width: 640px) {
+             .error-container { padding: 2rem 1.5rem; }
+             .actions { flex-direction: column; }
+             .btn { width: 100%; }
+             .quick-links-grid { grid-template-columns: 1fr 1fr; }
+         }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="error-container">
+        <div class="icon-wrapper">
+            <i data-lucide="search" style="width: 48px; height: 48px;"></i>
+        </div>
+        
+        <div class="error-code">404</div>
+        <h1 class="error-title">Page Not Found</h1>
+        <p class="error-message">
+            Oops! The page you're looking for doesn't exist. It might have been moved, deleted, or the URL might be incorrect.
+        </p>
+
+        <div class="search-box">
+            <i data-lucide="search" class="search-icon" style="width: 18px; height: 18px;"></i>
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input"
+                placeholder="Search admin panel..." 
+                onkeypress="handleSearch(event)"
+            />
+        </div>
+
+        <div class="quick-links">
+            <h4>Quick Links</h4>
+            <div class="quick-links-grid">
+                <a href="{{ url_for('sevak69.dashboard') }}" class="quick-link">
+                    <i data-lucide="layout-dashboard" style="width: 16px; height: 16px;"></i> Dashboard
+                </a>
+                <a href="{{ url_for('sevak69.user') }}" class="quick-link">
+                    <i data-lucide="users" style="width: 16px; height: 16px;"></i> Users
+                </a>
+                <a href="{{ url_for('sevak69.creator') }}" class="quick-link">
+                    <i data-lucide="palette" style="width: 16px; height: 16px;"></i> Creators
+                </a>
+                <a href="{{ url_for('sevak69.exam') }}" class="quick-link">
+                    <i data-lucide="file-text" style="width: 16px; height: 16px;"></i> Exams
+                </a>
+                <a href="{{ url_for('sevak69.documents') }}" class="quick-link">
+                    <i data-lucide="folder" style="width: 16px; height: 16px;"></i> Docs
+                </a>
+                <a href="{{ url_for('sevak69.logs') }}" class="quick-link">
+                    <i data-lucide="history" style="width: 16px; height: 16px;"></i> Logs
+                </a>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-primary">
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                Back to Dashboard
+            </a>
+            <a href="javascript:history.back()" class="btn btn-secondary">
+                Go Back
+            </a>
+        </div>
+
+        <div class="help-text">
+            URL: {{ request.path }}
+        </div>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('searchInput').value.toLowerCase();
+                
+                // Simple routing based on keywords (Expand as needed)
+                const routes = {
+                    'dashboard': "{{ url_for('sevak69.dashboard') }}",
+                    'user': "{{ url_for('sevak69.user') }}",
+                    'users': "{{ url_for('sevak69.user') }}",
+                    'creator': "{{ url_for('sevak69.creator') }}",
+                    'creators': "{{ url_for('sevak69.creator') }}",
+                    'exam': "{{ url_for('sevak69.exam') }}",
+                    'exams': "{{ url_for('sevak69.exam') }}",
+                    'bank': "{{ url_for('sevak69.bank_details') }}",
+                    'document': "{{ url_for('sevak69.documents') }}",
+                    'documents': "{{ url_for('sevak69.documents') }}",
+                    'log': "{{ url_for('sevak69.logs') }}",
+                    'logs': "{{ url_for('sevak69.logs') }}",
+                    'payout': "{{ url_for('sevak69.payout') }}",
+                    'earnings': "{{ url_for('sevak69.earnings_overview') }}",
+                    'admin': "{{ url_for('sevak69.admin') }}",
+                    'registration': "{{ url_for('sevak69.registration_requests') }}"
+                };
+
+                for (const [keyword, url] of Object.entries(routes)) {
+                    if (query.includes(keyword)) {
+                        window.location.href = url;
+                        return;
+                    }
+                }
+
+                alert('No specific page found for "' + query + '". Try: dashboard, users, creators, exams, documents, logs');
+            }
+        }
+
+        // Focus search input on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchInput').focus();
+        });
+
+        // Log 404 error
+        console.error('404 Error:', window.location.pathname);
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

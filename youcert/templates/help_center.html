@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        /* --- Buttons --- */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: auto;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            font-size: 0.95rem; /* Smaller size for header button */
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Content Typography (Preserved for Help Center) --- */
+        .terms-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em; margin-bottom: 1rem; text-align: center;
+        }
+        .terms-content .page-intro {
+            font-size: 1.15rem; text-align: center; max-width: 700px;
+            margin-left: auto; margin-right: auto; margin-bottom: 3rem; color: var(--text-muted);
+        }
+        .terms-content h2 {
+            font-size: 1.75rem; font-weight: 700; color: var(--text-dark);
+            margin-top: 3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color-alpha); display: flex; align-items: center;
+        }
+        .terms-content h3 {
+            font-size: 1.35rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 2rem; margin-bottom: 1rem;
+        }
+        .terms-content p { margin-bottom: 1rem; color: var(--text-muted); line-height: 1.6; }
+        .terms-content ul { margin-left: 1.5rem; list-style-type: disc; margin-bottom: 1rem; color: var(--text-muted); }
+        .terms-content li { margin-bottom: 0.5rem; line-height: 1.6; }
+
+        /* --- FAQ Accordion Styles (PRESERVED) --- */
+        .faq-item {
+            border: 1px solid var(--border-color-alpha);
+            border-radius: var(--card-radius);
+            margin-bottom: 1rem; overflow: hidden;
+            background-color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+        .faq-question {
+            width: 100%; display: flex; justify-content: space-between; align-items: center;
+            text-align: left; padding: 1.25rem 1.5rem;
+            font-size: 1.1rem; font-weight: 600; color: var(--text-dark);
+            background: transparent; border: none; cursor: pointer; transition: color 0.3s ease;
+        }
+        .faq-question:hover { color: #6366F1; }
+        .faq-question i { transition: transform 0.3s ease; font-size: 0.9rem; color: var(--text-muted); }
+        .faq-answer {
+            padding: 0 1.5rem; max-height: 0; overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s ease;
+            background-color: rgba(255, 255, 255, 0.5);
+        }
+        /* Active State */
+        .faq-item.active {
+            background-color: #ffffff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        .faq-item.active .faq-question { color: #6366F1; }
+        .faq-item.active .faq-question i { transform: rotate(180deg); color: #6366F1; }
+        .faq-item.active .faq-answer { max-height: 800px; }
+        
+        .icon-premium {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        /* --- Animations --- */
+        .animate-on-scroll {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .glitter {
+            position: absolute; background-color: #A855F7; width: 4px; height: 4px; border-radius: 50%;
+            opacity: 0; pointer-events: none; transition: transform 0.8s, opacity 0.8s; z-index: 9999;
+        }
+    </style>
+
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body class="flex flex-col">
+    <div class="animated-background"></div>
+
+    <!-- Header (Base Theme) -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-primary-custom header-btn" href="{{ url_for('user.oauth_login') }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 max-w-[1000px] py-10 flex-grow">
+        <div class="glass-card p-8 md:p-12 terms-content">
+            
+            <h1>Help Center & FAQ</h1>
+            <p class="page-intro">Welcome to the Youcert Help Center. Find answers to common questions about our platform. We've divided this guide into sections for Learners and Creators.</p>
+            
+            <!-- ======================= -->
+            <!-- == LEARNERS SECTION == -->
+            <!-- ======================= -->
+            <h2><i data-lucide="graduation-cap" class="mr-3 icon-premium" style="width: 24px; height: 24px;"></i>For Learners</h2>
+
+            <h3>Account & Getting Started</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I create an account?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Creating an account is simple and secure. We use Google OAuth, which means you just click the "Sign In" button and log in with your existing Google account. There are no new passwords to remember, and we never see your Google password.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Is it free to sign up for Youcert?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, signing up for a Youcert account as a Learner is completely free. You only pay for the exams you choose to enroll in. Many Creators may also offer free exams!</p>
+                </div>
+            </div>
+
+            <h3>Finding & Purchasing Exams</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I find an exam for a specific YouTube video?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>After logging in, you can use the search bar on your dashboard. You can search by the Creator's name, the YouTube video title, or the YouTube playlist title. If a Creator has created an exam for that content, it will appear in the search results.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What if I can't find an exam for a video I watched?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>If you can't find an exam, it means the Creator of that video has not created one on our platform yet. We recommend contacting the Creator on their YouTube channel or social media and letting them know you'd love for them to offer certified exams on Youcert!</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I pay for an exam?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We use a secure third-party payment gateway (like Razorpay or Stripe) to handle all transactions. Once you click "Enroll," you will be guided through a secure checkout process where you can use various payment methods like credit/debit cards, UPI, or net banking, depending on your region.</p>
+                </div>
+            </div>
+            
+            <h3>Taking Exams</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What is the passing score for an exam?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>The passing score is set by the Creator for each individual exam. It is usually displayed on the exam enrollment page before you purchase. A common passing score is 70% or 80%, but it can vary.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Are the exams timed?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, most exams have a time limit. The time limit is set by the system at 45 seconds per question once you start the exam, a timer will be visible on your screen.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Can I retake an exam if I fail?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>This also depends on the settings chosen by the Creator. Some exams may allow one or more retakes, while others may require you to re-purchase the exam to try again. This policy will be stated on the exam details page.</p>
+                </div>
+            </div>
+            
+            <h3>Certificates & Refunds</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I get my certificate after I pass?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Instantly! As soon as you pass the exam, your verifiable certificate will be generated and available in your Learner Dashboard. You can download it as a PDF or share it directly to platforms like LinkedIn.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I get a refund?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Our general policy is that all sales are final. However, we offer an exception for accidental purchases. If you have <strong>not</strong> started or attempted the exam, you can request a full refund within <strong>12 hours</strong> of your purchase. Please see our full <a href="/cancellation-and-refund/">Cancellation & Refund Policy</a> for details on how to submit a request.</p>
+                </div>
+            </div>
+            
+            <!-- ======================= -->
+            <!-- == CREATORS SECTION == -->
+            <!-- ======================= -->
+            <h2><i data-lucide="palette" class="mr-3 icon-premium" style="width: 24px; height: 24px;"></i>For Creators</h2>
+            
+            <h3>Account & Verification</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How does the YouTube channel verification work?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We use the official Google OAuth 2.0 system. When you sign up as a Creator, we will ask you to log in with the Google account that manages your YouTube channel. This is a secure process handled by Google. You are simply giving us permission to confirm that you are the owner of the channel. <strong>We never see your password</strong>, and we only request the minimum permissions needed to verify your channel ownership.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Why is channel verification mandatory?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>This is our most important security feature. Verification is mandatory to protect your intellectual property. It ensures that <strong>only you</strong>, the actual owner of your YouTube channel, can create and sell exams based on your content. This prevents fraud and protects your revenue stream.</p>
+                </div>
+            </div>
+            
+            <h3>Creating Exams</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What are the requirements for a video to be processed?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>For our AI to generate a high-quality exam, the YouTube video must have clear and accurate transcripts or captions. Auto-generated captions from YouTube work well if the audio is clear, but manually reviewed or uploaded captions are always better. If a video has no captions or very poor ones, the AI will not be able to create a relevant exam.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>Can I edit the AI-generated questions?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>NO, as a startup we dont have that feature right now for constrains but yes we are likely to add it in future</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>What happens if I update my YouTube video?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Youcert does not automatically detect changes to your YouTube video. If you update a video in a way that significantly changes its content, you should either:
+                    <br><br>
+                    1. Manually edit the corresponding exam questions in your Youcert dashboard.
+                    <br>
+                    2. (Recommended) Re-process the video link to generate a new set of questions based on the updated transcript, and then publish this new version.</p>
+                </div>
+            </div>
+
+            <h3>Payments & Revenue</h3>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>How do I set up my payment details?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>You can securely add your bank account or other payout details in the "Payouts" or "Settings" section of your Creator Dashboard. All information is encrypted and handled in compliance with financial regulations.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>When and how do I get paid?</span>
+                    <i data-lucide="chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>We process Creator payouts on a monthly basis (e.g., Net-30, meaning you are paid 30 days after the end of the month in which you earned the revenue). Payouts are typically sent directly to your registered bank account. All details about revenue share and payout schedules are available in your Creator Agreement.</p>
+                </div>
+            </div>
+            
+        </div>
+    </main>
+
+    <!-- Footer (Base Theme) -->
+    <footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+
+        // NEW JAVASCRIPT FOR FAQ ACCORDION
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                
+                question.addEventListener('click', () => {
+                    // Check if this item is already active
+                    const wasActive = item.classList.contains('active');
+                    
+                    // Optional: Close all other items for a "one at a time" accordion
+                    // This creates the clean accordion behavior.
+                    faqItems.forEach(i => {
+                       if (i !== item) i.classList.remove('active');
+                    });
+                    
+                    // Toggle the current item
+                    if (!wasActive) {
+                        item.classList.add('active');
+                    } else {
+                        item.classList.remove('active');
+                    }
+                });
+            });
+        });
+        // Remove the unused bootstrap script link if it was external, 
+        // but since it was in the original code, I'll remove it from the JS block for cleanup, 
+        // but leave the one that was loaded on the server.
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

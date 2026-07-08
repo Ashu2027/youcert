@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Not Found - YOUCERT</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        :root {
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #86868b;
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            --btn-radius: 14px;
+            --card-radius: 16px;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(60px);
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: white;
+            border: none;
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid rgba(0,0,0,0.1);
+            padding: 0.875rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background: #F5F5F7;
+            transform: translateY(-2px);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: var(--btn-radius);
+            font-size: 1rem;
+            transition: var(--transition-smooth);
+            background: white;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .exam-card {
+            background: white;
+            border: 1px solid rgba(0,0,0,0.06);
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .exam-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+        }
+
+        .exam-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(99, 102, 241, 0.2);
+            border-top-color: #6366F1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <a href="/" class="inline-flex items-center justify-center gap-3 mb-8">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="h-12 w-auto" />
+                <span class="text-2xl font-bold text-primary-theme">YOUCERT</span>
+            </a>
+        </div>
+
+        <!-- Error Message -->
+        <div class="text-center mb-10">
+            <div class="text-7xl mb-6">
+                <i class="fas fa-search text-gray-300"></i>
+            </div>
+            <h1 class="text-3xl font-bold mb-4">Exam Not Found</h1>
+            <p class="text-gray-500 mb-6 max-w-md mx-auto">
+                {{ message or "The exam you're looking for doesn't exist or has been removed." }}
+            </p>
+            <a href="/" class="btn-secondary">
+                <i class="fas fa-home"></i>
+                Go to Home
+            </a>
+        </div>
+
+        <!-- Search Section -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-8">
+            <h2 class="text-lg font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-search text-indigo-500"></i>
+                Search for Exams
+            </h2>
+            <div class="relative">
+                <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input
+                    type="text"
+                    id="search-input"
+                    class="search-input"
+                    placeholder="Search by exam title, creator name, or topic..."
+                    autocomplete="off"
+                >
+            </div>
+            <p class="text-xs text-gray-400 mt-2">
+                Enter at least 3 characters to search
+            </p>
+        </div>
+
+        <!-- Search Results -->
+        <div id="search-results" class="hidden">
+            <h3 class="text-lg font-semibold mb-4" id="results-title">Search Results</h3>
+            <div id="results-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Results will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loading-state" class="hidden text-center py-8">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-500">Searching...</p>
+        </div>
+
+        <!-- No Results State -->
+        <div id="no-results" class="hidden text-center py-8">
+            <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+            <p class="text-gray-500">No exams found matching your search.</p>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const searchResults = document.getElementById('search-results');
+        const resultsContainer = document.getElementById('results-container');
+        const resultsTitle = document.getElementById('results-title');
+        const loadingState = document.getElementById('loading-state');
+        const noResults = document.getElementById('no-results');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        let searchTimeout = null;
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+
+            // Clear previous timeout
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+
+            // Hide all states initially
+            searchResults.classList.add('hidden');
+            loadingState.classList.add('hidden');
+            noResults.classList.add('hidden');
+
+            // Only search if query is at least 3 characters
+            if (query.length < 3) {
+                return;
+            }
+
+            // Show loading state
+            loadingState.classList.remove('hidden');
+
+            // Debounce search
+            searchTimeout = setTimeout(() => {
+                searchExams(query);
+            }, 300);
+        });
+
+        async function searchExams(query) {
+            try {
+                const response = await fetch(`/api/public/search-exams?q=${encodeURIComponent(query)}`, {
+                    method: 'GET',
+                    headers: {
+                        'X-CSRFToken': csrfToken
+                    }
+                });
+
+                const data = await response.json();
+
+                loadingState.classList.add('hidden');
+
+                if (data.success && data.exams && data.exams.length > 0) {
+                    displayResults(data.exams);
+                } else {
+                    noResults.classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Search error:', error);
+                loadingState.classList.add('hidden');
+                noResults.classList.remove('hidden');
+            }
+        }
+
+        function displayResults(exams) {
+            resultsTitle.textContent = `Found ${exams.length} exam${exams.length > 1 ? 's' : ''}`;
+            resultsContainer.innerHTML = exams.map(exam => `
+                <a href="/exam/${exam.unique_exam_number}/" class="exam-card">
+                    <img
+                        src="${exam.thumbnail_url || 'https://placehold.co/400x225/F5F5F7/6E6E73?text=No+Thumbnail'}"
+                        alt="${escapeHtml(exam.exam_title)}"
+                        class="exam-thumbnail"
+                        onerror="this.src='https://placehold.co/400x225/F5F5F7/6E6E73?text=No+Thumbnail'"
+                    >
+                    <div class="p-4">
+                        <h4 class="font-semibold text-base mb-1 line-clamp-2">${escapeHtml(exam.exam_title)}</h4>
+                        <p class="text-sm text-gray-500 mb-2">${escapeHtml(exam.channel_name)}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs text-gray-400">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                ${exam.question_count || 0} questions
+                            </span>
+                            <span class="font-bold text-indigo-600">&#8377;${(parseFloat(exam.exam_price) || 0).toFixed(2)}</span>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+
+            searchResults.classList.remove('hidden');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

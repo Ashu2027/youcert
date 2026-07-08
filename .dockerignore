@@ -1,0 +1,233 @@
+# =====================================================================
+# DOCKER IGNORE FILE FOR YOUCERT PROJECT
+# Optimizes Docker build by excluding unnecessary files
+# =====================================================================
+
+# =====================================================================
+# PYTHON & VIRTUAL ENVIRONMENTS
+# =====================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+.virtualenv/
+
+# =====================================================================
+# ENVIRONMENT & SECRETS (CRITICAL - NEVER INCLUDE IN DOCKER IMAGE)
+# =====================================================================
+.env
+.env.*
+*.env
+.env.local
+.env.production
+.env.development
+
+# Google Cloud Service Account Keys
+*.json
+!requirements.json
+client_secret_*.json
+youcert-*.json
+
+# =====================================================================
+# GIT & VERSION CONTROL
+# =====================================================================
+.git/
+.gitignore
+.gitattributes
+.gitmodules
+
+# =====================================================================
+# IDE & EDITOR FILES
+# =====================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+.settings/
+*.code-workspace
+
+# =====================================================================
+# DOCUMENTATION & MARKDOWN FILES
+# =====================================================================
+*.md
+!README.md
+README.md
+CLOUD_DEPLOYMENT_GUIDE.md
+CONFIG_STATUS.md
+DASHBOARD_PERFORMANCE_FIX.md
+deploy_instructions.txt
+cloud_upload.txt
+
+# =====================================================================
+# DEPLOYMENT & BUILD SCRIPTS
+# =====================================================================
+deploy.sh
+deploy.ps1
+Dockerfile
+.dockerignore
+docker-compose.yml
+docker-compose*.yml
+cloudrun.yaml
+DEPLOYMENT_DOCS/
+
+# =====================================================================
+# DATABASE FILES (Don't include in image)
+# =====================================================================
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+final_schema.sql
+migration_*.sql
+
+# =====================================================================
+# TESTING & DEVELOPMENT
+# =====================================================================
+test.py
+tests/
+test_*.py
+*_test.py
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+pytest.ini
+tox.ini
+
+# =====================================================================
+# LOGS & TEMPORARY FILES
+# =====================================================================
+*.log
+logs/
+*.tmp
+*.temp
+.cache/
+.pytest_cache/
+
+# =====================================================================
+# USER UPLOADS & RUNTIME DATA
+# =====================================================================
+uploads/
+temp/
+tmp/
+cache/
+*.pkl
+*.pickle
+
+# =====================================================================
+# BACKUP & MIGRATION FILES
+# =====================================================================
+*.bak
+*.backup
+*.old
+backup/
+backups/
+upgrade_*.py
+migration_*.py
+
+# =====================================================================
+# OS-SPECIFIC FILES
+# =====================================================================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# =====================================================================
+# MISC FILES
+# =====================================================================
+*.csv
+*.xlsx
+*.xls
+
+# Large assets (if not needed in production)
+# Uncomment if you don't need these in the Docker image
+# *.png
+# *.jpg
+# *.jpeg
+# *.gif
+# *.svg
+# *.ttf
+# *.woff
+# *.woff2
+
+# =====================================================================
+# NODE MODULES (if using npm/yarn for frontend)
+# =====================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# =====================================================================
+# WHAT GETS INCLUDED (Should NOT be in .dockerignore)
+# =====================================================================
+# ✅ youcert/ directory (main application code)
+# ✅ requirements.txt (pip dependencies)
+# ✅ run.py (Flask entry point)
+# ✅ config.py (configuration - sanitize secrets!)
+# ✅ Static assets (.png, .jpg, .ttf if needed)
+# ✅ Templates (HTML files)
+# =====================================================================
+
+# =====================================================================
+# NOTES FOR DEPLOYMENT
+# =====================================================================
+# 1. Secrets should ALWAYS be loaded from environment variables
+# 2. Never include .env files in Docker images
+# 3. Use Cloud Secret Manager for production secrets
+# 4. Keep images small by excluding development/test files
+# 5. Service account keys should be mounted at runtime, not baked in
+# =====================================================================

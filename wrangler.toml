@@ -1,0 +1,73 @@
+# =====================================================================
+# YOUCERT — Cloudflare Containers Deployment Config
+# Docs: https://developers.cloudflare.com/containers/
+# =====================================================================
+# Deploy:  wrangler deploy
+# Secrets: wrangler secret put <KEY>
+# =====================================================================
+
+name = "youcert-app"
+main = "worker.js"                    # CF requires a JS Worker entry point
+compatibility_date = "2026-02-24"
+
+# ── Container Definition ─────────────────────────────────────────────
+# class_name must match the exported class in worker.js
+[[containers]]
+class_name = "YoucertContainer"
+image = "./Dockerfile"
+max_instances = 200                 # Up to 200 concurrent container instances (10k requests)
+
+# Use predefined basic instance: 1/4 vCPU, 1 GB RAM, 4 GB disk
+# Use predefined basic instance: 1/4 vCPU, 1 GB RAM, 4 GB disk
+instance_type = "basic"
+
+
+# ── Durable Object Binding ───────────────────────────────────────────
+# Each container instance is backed by a Durable Object (CF internals)
+[[durable_objects.bindings]]
+class_name = "YoucertContainer"
+name = "YOUCERT_APP"                 # env.YOUCERT_APP in worker.js
+
+# ── DO Migration (required first deploy) ─────────────────────────────
+[[migrations]]
+new_sqlite_classes = ["YoucertContainer"]
+tag = "v1"
+
+# ── R2 Storage Binding ───────────────────────────────────────────────
+# The Flask app uses boto3 (S3-compatible) — this binding is optional.
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "youcert-buc-main"
+
+# ── Cloudflare Queues (replaces Cloud Tasks) ─────────────────────────
+[[queues.producers]]
+binding = "VIDEO_QUEUE"
+queue = "video-processing-queue"
+
+[[queues.producers]]
+binding = "CHUNK_QUEUE"
+queue = "chunk-generation-queue"
+
+# ── Non-Secret Environment Variables ────────────────────────────────
+# Sensitive values MUST use: wrangler secret put <KEY>
+[vars]
+IS_DEVELOPMENT = "false"
+MYSQL_PORT = "4000"
+R2_BUCKET_NAME = "youcert-buc-main"
+R2_ENDPOINT_URL = "https://random_account_id_hash.r2.cloudflarestorage.com"
+GEMINI_MODEL = "gemini-2.5-flash-lite"
+
+# ── Custom Domain ────────────────────────────────────────────────────
+[[routes]]
+pattern = "youcert.com/*"
+zone_name = "youcert.com"
+
+[[routes]]
+pattern = "www.youcert.com/*"
+zone_name = "youcert.com"
+
+# ── Observability (Container + Worker Logs) ──────────────────────────
+# Required for live log tailing: wrangler tail / Dashboard logs
+# Docs: https://developers.cloudflare.com/containers/faq/#how-do-container-logs-work
+[observability]
+enabled = true

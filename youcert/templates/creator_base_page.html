@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youcert - For Creators</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            
+            /* Page Specific Colors */
+            --color-red: #EF4444;
+            --color-green: #10B981;
+            --color-indigo: #6366F1;
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        .glass-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.06);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* --- Buttons (Standardized) --- */
+        .btn-primary-custom, .btn-primary {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            font-size: 0.95rem;
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover, .btn-primary:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        /* Secondary CTA */
+        .btn-secondary-cta {
+             background-color: white; 
+             color: var(--text-dark);
+             border: 1px solid #E5E7EB;
+             border-radius: var(--btn-radius);
+             transition: all 0.2s;
+             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+             display: inline-flex;
+             align-items: center; justify-content: center;
+        }
+        .btn-secondary-cta:hover {
+            background-color: #F3F4F6;
+            transform: translateY(-1px);
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+        .footer h5, .footer h6 { font-weight: 700; color: var(--text-dark); }
+        .footer a { transition: color 0.3s ease; text-decoration: none; color: var(--text-muted); }
+        .footer a:hover { color: var(--text-dark); }
+
+        /* --- Animations & Text Utilities --- */
+        .text-gradient {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .section-padding { padding-top: 5rem; padding-bottom: 5rem; }
+        @media (min-width: 1024px) { .section-padding { padding-top: 7rem; padding-bottom: 7rem; } }
+        
+        .animate-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .animate-in.visible { opacity: 1; transform: translateY(0); }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+        
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .floating { animation: float 6s ease-in-out infinite; }
+        .floating-delayed { animation: float 7s ease-in-out infinite 1s; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* FAQ & Extras */
+        .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease; }
+        .faq-item.active .faq-content { max-height: 300px; padding-top: 1rem; }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+        
+        .back-to-top {
+            position: fixed; bottom: 30px; right: 30px; background: white;
+            border: 1px solid var(--border-color-alpha); width: 48px; height: 48px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); cursor: pointer; opacity: 0;
+            pointer-events: none; transition: all 0.3s ease; z-index: 90;
+        }
+        .back-to-top.show { opacity: 1; pointer-events: all; }
+        .back-to-top:hover { transform: translateY(-5px); }
+        
+        .glitter {
+            position: absolute; background-color: #A855F7; width: 4px; height: 4px; border-radius: 50%;
+            opacity: 0; pointer-events: none; transition: transform 0.8s, opacity 0.8s; z-index: 9999;
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+    <div class="animated-background"></div>
+
+    <!-- Navigation -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            
+            <div class="flex items-center gap-6">
+                <nav class="hidden md:flex gap-8 text-sm font-medium">
+                    <a href="#how-it-works" class="text-dark hover:text-indigo-600 transition-colors no-underline">How It Works</a>
+                    <a href="#benefits" class="text-dark hover:text-indigo-600 transition-colors no-underline">Benefits</a>
+                    <a href="#faq" class="text-dark hover:text-indigo-600 transition-colors no-underline">FAQ</a>
+                </nav>
+                
+                <a class="btn-primary-custom header-btn" href="/join-as-creator/">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Become a Creator
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- A) HERO SECTION -->
+        <section class="section-padding px-6 pt-24 pb-20 min-h-[90vh] flex items-center">
+            <div class="container mx-auto max-w-[1200px]">
+                <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                    <!-- Left: Copy -->
+                    <div class="w-full lg:w-1/2 text-center lg:text-left animate-in visible">
+                        
+                        <h1 class="text-5xl lg:text-6xl xl:text-7xl font-extrabold text-text-dark mb-8 leading-[1.1] tracking-tight">
+                            Imagine what if you could turn<br>
+                            <span class="text-gradient"> your YouTube tutorial into a certification program
+                            </span>
+                        </h1>
+                        <p class="text-xl text-muted mb-10 leading-relaxed max-w-lg mx-auto lg:mx-0 font-light">
+                            You link your Google account for content ownership verification, process a video or playlist link, let AI generate the exam, set a price, and your audience can earn certificates on behalf your channel.
+                        </p>
+                        <div class="flex flex-col items-center lg:items-start gap-4">
+                            <a href="/join-as-creator/" class="btn-primary text-lg px-10 py-4">
+                                Start Listing Exam (Free)
+                            </a>
+                            <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 gap-y-2 text-xs font-medium text-muted mt-2">
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: var(--color-green);"></i> Takes about 2 minutes
+                                </span>
+                                <span class="mx-1 hidden sm:inline">•</span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: var(--color-green);"></i> No subscription
+                                </span>
+                                <span class="mx-1 hidden sm:inline">•</span>
+                                <span class="flex items-center gap-1">
+                                    <i data-lucide="check-circle" style="width: 14px; height: 14px; color: var(--color-green);"></i> Learners pay for exams
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Visual (Identity) -->
+                    <div class="w-full lg:w-1/2 flex justify-center animate-in visible delay-200">
+                        <div class="relative w-full max-w-md aspect-square flex items-center justify-center">
+                            <!-- Parallax/Rotate Background -->
+                            <div class="absolute inset-0 bg-gradient-to-tr from-indigo-50 via-white to-purple-50 rounded-full border border-white/50 shadow-2xl opacity-80" style="animation: spin 60s linear infinite;"></div>
+                            <div class="absolute inset-4 bg-white/50 backdrop-blur-3xl rounded-full"></div>
+                            
+                            <!-- Main Icon -->
+                            <div class="relative z-10 text-center glass-card p-6 floating w-52 border-white/80">
+                                <div class="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center shadow-lg mx-auto mb-3 border border-indigo-100">
+                                    <i data-lucide="user-check" style="width: 40px; height: 40px; color: var(--color-indigo);"></i>
+                                </div>
+                                <div class="text-md font-bold text-dark">Your Brand Name</div>
+                                <div class="text-xs text-muted">Certified Educator</div>
+                            </div>
+
+                            <!-- Floating Badges -->
+                            <div class="absolute top-12 right-0 glass-card px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 floating-delayed border-white/60">
+                                <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center text-yellow-600 flex-shrink-0">
+                                    <i data-lucide="award" style="width: 16px; height: 16px;"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-gray-400 uppercase">Issued By</div>
+                                    <div class="text-sm font-bold text-dark">Your Channel</div>
+                                </div>
+                            </div>
+
+                            <div class="absolute bottom-16 left-0 glass-card px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 floating border-white/60">
+                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center text-green-600 flex-shrink-0">
+                                    <i data-lucide="check-circle" style="width: 16px; height: 16px;"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs font-bold text-gray-400 uppercase">Status</div>
+                                    <div class="text-sm font-bold text-dark">Passed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- B) PROBLEM SECTION -->
+        <section class="py-24 px-6 relative z-10 animate-in">
+            <div class="container mx-auto max-w-[800px] text-center">
+                <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-50 text-red-500 mb-8 shadow-sm">
+                    <i data-lucide="alert-triangle" style="width: 24px; height: 24px;"></i>
+                </div>
+                <h2 class="text-4xl font-bold text-text-dark mb-12">The Problem With Teaching on YouTube</h2>
+                <div class="space-y-6 text-left">
+                    <div class="glass-card p-6 flex items-start gap-5 hover:bg-white transition-colors">
+                        <div class="mt-1 min-w-[24px]"><i data-lucide="volume-x" style="width: 20px; height: 20px; color: var(--color-red);"></i></div>
+                        <div>
+                            <h4 class="font-bold text-dark text-lg mb-1">Background Noise</h4>
+                            <p class="text-muted leading-relaxed">You teach deeply, but people often treat it like background noise. They watch, but they don't finish or truly commit.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 flex items-start gap-5 hover:bg-white transition-colors">
+                        <div class="mt-1 min-w-[24px]"><i data-lucide="shield-off" style="width: 20px; height: 20px; color: var(--color-red);"></i></div>
+                        <div>
+                            <h4 class="font-bold text-dark text-lg mb-1">The Unprovability Curve</h4>
+                            <p class="text-muted leading-relaxed">Your learners can't prove on an interview what they have learned from You, as they don't have any Proof or certificate to show in interviews.</p>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 flex items-start gap-5 hover:bg-white transition-colors">
+                        <div class="mt-1 min-w-[24px]"><i data-lucide="graduation-cap" style="width: 20px; height: 20px; color: var(--color-red);"></i></div>
+                        <div>
+                            <h4 class="font-bold text-dark text-lg mb-1">No Simple Certification</h4>
+                            <p class="text-muted leading-relaxed">You don’t have a simple way to certify your dedicated YouTube audience, who spends hours learning from you.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- C) NEW SECTION: THE CREATOR JOURNEY -->
+        <section class="py-32 px-6 bg-gradient-to-b from-transparent to-white/50 animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="text-center mb-20">
+                    <h2 class="text-3xl font-bold text-dark mb-4">Your Journey From Channel to Education Brand</h2>
+                </div>
+
+                <div class="relative">
+                    <!-- Desktop horizontal line -->
+                    <div class="hidden md:block absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-indigo-200 to-transparent"></div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 relative z-10">
+                        <!-- Step 1 -->
+                        <div class="text-center group">
+                            <div class="w-24 h-24 mx-auto bg-white border border-indigo-100 rounded-full flex items-center justify-center text-3xl shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300">
+                                <i data-lucide="video" style="width: 40px; height: 40px; color: #3B82F6;"></i>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Upload Videos</h4>
+                            <p class="text-sm text-muted">Your audience already trusts your content to learn.</p>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="text-center group">
+                            <div class="w-24 h-24 mx-auto bg-white border border-indigo-100 rounded-full flex items-center justify-center text-3xl shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300 delay-100">
+                                <i data-lucide="link" style="width: 40px; height: 40px; color: #9333ea;"></i>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Connect & Create</h4>
+                            <p class="text-sm text-muted">You sign in with Google, pick a playlist, and AI builds questions.</p>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="text-center group">
+                            <div class="w-24 h-24 mx-auto bg-indigo-600 border border-indigo-600 rounded-full flex items-center justify-center text-3xl shadow-xl mb-6 text-white group-hover:scale-110 transition-transform duration-300 delay-200 ring-4 ring-indigo-100">
+                                <i data-lucide="graduation-cap" style="width: 40px; height: 40px;"></i>
+                            </div>
+                            <h4 class="font-bold text-lg text-indigo-600 mb-2">Audience Certifies</h4>
+                            <p class="text-sm text-muted">They pay for the exam, pass it, and earn your certificate.</p>
+                        </div>
+
+                        <!-- Step 4 -->
+                        <div class="text-center group">
+                            <div class="w-24 h-24 mx-auto bg-white border border-indigo-100 rounded-full flex items-center justify-center text-3xl shadow-lg mb-6 group-hover:scale-110 transition-transform duration-300 delay-300">
+                                <i data-lucide="briefcase" style="width: 40px; height: 40px; color: #F59E0B;"></i>
+                            </div>
+                            <h4 class="font-bold text-lg mb-2">Education Brand</h4>
+                            <p class="text-sm text-muted">Your channel appears on real certificates, not just video titles.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- D) HOW IT WORKS (STRICT 3-STEP FLOW) -->
+        <section id="how-it-works" class="section-padding px-6 animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="text-center mb-16">
+                    <span class="text-indigo-600 font-bold tracking-wider text-xs uppercase mb-2 block">A Simple 3-Step Plan</span>
+                    <h2 class="text-4xl font-bold text-text-dark mb-4">How You Create an Exam in Minutes</h2>
+                    <p class="text-muted max-w-2xl mx-auto">We handle the tech. You handle the quality.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="glass-card p-10 flex flex-col items-center text-center h-full group hover:border-indigo-200">
+                        <!-- Icon Container - Removed hover background change -->
+                        <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl font-bold mb-8 transition-colors">
+                            <!-- Icon - Removed hover text color change -->
+                            <i data-lucide="user-check" style="width: 32px; height: 32px; color: var(--color-indigo);"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Sign In With Google</h3>
+                        <p class="text-muted leading-relaxed">
+                            You connect using your Google account so we can safely link to your YouTube content. And to ensure only you can list your exam.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass-card p-10 flex flex-col items-center text-center h-full group hover:border-purple-200">
+                         <!-- Icon Container - Removed hover background change -->
+                        <div class="w-16 h-16 rounded-2xl bg-purple-50 flex items-center justify-center text-2xl font-bold mb-8 transition-colors">
+                             <!-- Icon - Removed hover text color change -->
+                            <i data-lucide="clapperboard" style="width: 32px; height: 32px; color: #9333ea;"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Pick a Video or Playlist</h3>
+                        <p class="text-muted leading-relaxed">
+                            You select a YouTube video or playlist, and our AI processes it to generate relevant exam questions for you.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-card p-10 flex flex-col items-center text-center h-full group hover:border-green-200">
+                         <!-- Icon Container - Removed hover background change -->
+                        <div class="w-16 h-16 rounded-2xl bg-green-50 flex items-center justify-center text-2xl font-bold mb-8 transition-colors">
+                            <!-- Icon - Removed hover text color change -->
+                            <i data-lucide="dollar-sign" style="width: 32px; height: 32px; color: var(--color-green);"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Set Price & Activate</h3>
+                        <p class="text-muted leading-relaxed">
+                            You choose the exam price, turn it on, and your audience can start taking it and earning certificates with your channel name on the certificate.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- E) NEW SECTION: USE CASES BY CREATOR TYPE -->
+        <section class="py-24 px-6 bg-white/40 border-y border-border-color-alpha animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold mb-4">Built for Different Types of Educational Creators</h2>
+                    <p class="text-muted">If your content teaches something, you can turn it into an exam.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Card 1 -->
+                    <div class="glass-card p-8 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-4 text-blue-500"><i data-lucide="code-square" style="width: 40px; height: 40px; color: #3B82F6;"></i></div>
+                        <h4 class="font-bold text-lg mb-2">Tech Educators</h4>
+                        <p class="text-sm text-muted">Turn your coding tutorials into practical skill checks. Prove they actually learned to code from you.</p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="glass-card p-8 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-4 text-green-500"><i data-lucide="trending-up" style="width: 40px; height: 40px; color: var(--color-green);"></i></div>
+                        <h4 class="font-bold text-lg mb-2">Business & Finance</h4>
+                        <p class="text-sm text-muted">Let viewers prove they understand the strategies before they apply them in real life.</p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="glass-card p-8 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-4 text-purple-500"><i data-lucide="palette" style="width: 40px; height: 40px; color: #9333ea;"></i></div>
+                        <h4 class="font-bold text-lg mb-2">Design & Creative</h4>
+                        <p class="text-sm text-muted">Validate understanding of design principles and creative workflows.</p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="glass-card p-8 hover:-translate-y-2 transition-transform duration-300">
+                        <div class="text-4xl mb-4 text-orange-500"><i data-lucide="message-square-text" style="width: 40px; height: 40px; color: #F97316;"></i></div>
+                        <h4 class="font-bold text-lg mb-2">Language Teachers</h4>
+                        <p class="text-sm text-muted">After your lessons, offer an exam that checks real comprehension and fluency.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- F) LEARNER BENEFITS (30% FOCUS) -->
+        <section class="section-padding px-6 bg-gradient-to-b from-white to-transparent animate-in">
+            <div class="container mx-auto max-w-[1200px]">
+                <div class="flex flex-col md:flex-row items-center gap-16">
+                    <div class="w-full md:w-1/2">
+                        <span class="text-indigo-600 font-bold tracking-wider text-xs uppercase mb-2 block">For Your Audience</span>
+                        <h2 class="text-4xl font-bold text-text-dark mb-6">What Your Learners Get From You</h2>
+                        
+                        <p class="text-lg text-text-dark italic mb-8 border-l-4 border-indigo-200 pl-4">
+                            "Your viewers stop just watching and start earning something real."
+                        </p>
+                        
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs flex-shrink-0"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Tangible Proof</h5>
+                                    <p class="text-sm text-muted">A verifiable certificate that proves they learned from your content.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs flex-shrink-0"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Your Seal of Approval</h5>
+                                    <p class="text-sm text-muted">A certificate visibly signed or approved by you.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs flex-shrink-0"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Motivation</h5>
+                                    <p class="text-sm text-muted">Motivation to finish your playlists instead of only watching halfway.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <div class="mt-1 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs flex-shrink-0"><i data-lucide="check" style="width: 16px; height: 16px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Career Capital</h5>
+                                    <p class="text-sm text-muted">Something proud to share on LinkedIn, resumes, or with employers.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="w-full md:w-1/2 flex justify-center">
+                        <!-- Abstract Visual of Learner Success -->
+                        <div class="glass-card p-8 w-full max-w-md rotate-2 hover:rotate-0 transition-transform duration-500 shadow-2xl border-white/60">
+                            <div class="flex justify-between items-start mb-8">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-full bg-gray-200"></div>
+                                    <div>
+                                        <div class="h-3 w-32 bg-gray-200 rounded mb-2"></div>
+                                        <div class="h-2 w-20 bg-gray-100 rounded"></div>
+                                    </div>
+                                </div>
+                                <i data-lucide="award" style="width: 32px; height: 32px; color: #F59E0B;"></i>
+                            </div>
+                            <div class="text-center py-10 bg-gray-50/50 rounded-xl border border-gray-100 mb-6">
+                                <h4 class="font-serif text-2xl text-dark mb-2">Certificate of Mastery</h4>
+                                <p class="text-xs text-muted uppercase tracking-widest">Verified by Youcert</p>
+                            </div>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <div class="h-2 w-24 bg-gray-200 rounded mb-1"></div>
+                                    <div class="text-[10px] text-muted">Date Issued</div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-indigo-600 text-xl font-bold">Your Signature</div>
+                                    <div class="text-[10px] text-muted border-t border-gray-300 pt-1 mt-1">Instructor</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- G) NEW SECTION: YOU AS THE GUIDE -->
+        <section class="py-24 px-6 bg-[#1D1D1F] animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="flex flex-col md:flex-row gap-16">
+                    <div class="md:w-1/2">
+                        <h3 class="text-3xl font-bold text-white mb-6">We Support Your Mission as a Teacher.</h3>
+                        <p class="text-gray-400 text-lg leading-relaxed">
+                            You care about changing lives with what you teach. Our job is to quietly handle the exam and certification system so you can stay focused on your videos and your community.
+                        </p>
+                    </div>
+                    <div class="md:w-1/2 space-y-6">
+                        <div class="flex gap-4">
+                            <i data-lucide="star" style="width: 24px; height: 24px; color: #8B5CF6;" class="mt-1"></i>
+                            <p class="text-gray-300">You stay the face and teacher your audience trusts.</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <i data-lucide="settings" style="width: 24px; height: 24px; color: #8B5CF6;" class="mt-1"></i>
+                            <p class="text-gray-300">We stay behind the scenes, powering the exam and certificate engine.</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <i data-lucide="heart" style="width: 24px; height: 24px; color: #8B5CF6;" class="mt-1"></i>
+                            <p class="text-gray-300">Together, your content becomes a turning point in your learners’ stories.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- H) STAKES SECTION (GAIN VS MISS) -->
+        <section id="benefits" class="section-padding px-6 animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Gain -->
+                    <div class="glass-card p-10 border-t-4 border-indigo-500 animate-in delay-100">
+                        <h3 class="text-3xl font-bold mb-8">What You Gain as a Creator</h3>
+                        <ul class="space-y-5">
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="plus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Authority</h5>
+                                    <p class="text-sm text-muted">You become a recognized education brand, not just a channel.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="plus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Revenue</h5>
+                                    <p class="text-sm text-muted">You earn from every exam your audience registers.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="plus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Promote Self Learning</h5>
+                                    <p class="text-sm text-muted">Now you will be able to promote self learning a step further.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0"><i data-lucide="plus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-dark">Loyalty</h5>
+                                    <p class="text-sm text-muted">You deepen loyalty from your most serious learners.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Miss -->
+                    <div class="p-10 border border-border-color-alpha rounded-[16px] bg-gray-50/50 animate-in delay-200">
+                        <h3 class="text-3xl font-bold mb-8 text-gray-700">What You Might Miss</h3>
+                        <ul class="space-y-5">
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0"><i data-lucide="minus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-gray-700">Lost Momentum</h5>
+                                    <p class="text-sm text-muted">Your viewers keep learning, but have nothing to show for it.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0"><i data-lucide="minus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-gray-700">Just Content</h5>
+                                    <p class="text-sm text-muted">Your teaching remains just content, not a milestone in people’s lives.</p>
+                                </div>
+                            </li>
+                            <li class="flex gap-4">
+                                <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 flex-shrink-0"><i data-lucide="minus" style="width: 18px; height: 18px;"></i></div>
+                                <div>
+                                    <h5 class="font-bold text-gray-700">Someone Else</h5>
+                                    <p class="text-sm text-muted">Someone else may become the ‘certified’ voice in your niche.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- I) NEW SECTION: A VERY SHORT STORY -->
+        <section class="py-24 px-6 animate-in">
+            <div class="container mx-auto max-w-[600px] text-center">
+                <div class="w-12 h-1 bg-indigo-500 mx-auto mb-8 rounded-full"></div>
+                <h4 class="text-sm font-bold text-muted uppercase tracking-widest mb-6">A Quick Story</h4>
+                <p class="text-2xl font-serif text-dark leading-relaxed italic">
+                    "Imagine you’ve been teaching for years. 
+                    Your viewers watch, learn, and disappear.
+                    <br><br>
+                    Then you launch exams. Suddenly, learners start sharing certificates with your channel's name and your signature on them.
+                    You’re part of their success story. Your teaching truly counts."
+                </p>
+            </div>
+        </section>
+
+        <!-- J) FAQ SECTION (ACCORDION) -->
+        <section id="faq" class="section-padding px-6 bg-white/50 animate-in">
+            <div class="container mx-auto max-w-[800px]">
+                <h3 class="text-4xl font-bold text-center mb-16">Common Questions</h3>
+                
+                <div class="space-y-4">
+                    <!-- Q1 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg text-dark">Is it free for me as a creator?</h4>
+                            <i data-lucide="chevron-down" class="text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">Yes. You don’t pay subscriptions or setup fees. Your learners only pay when they registers for an exam.</p>
+                        </div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg text-dark">How do I create an exam?</h4>
+                            <i data-lucide="chevron-down" class="text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">It's a simple 3-step process: 1) Sign in with Google, 2) paste a YouTube video or playlist link and let AI generate questions, 3) Set a price and activate the exam.</p>
+                        </div>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg text-dark">Can I edit the AI-generated questions?</h4>
+                            <i data-lucide="chevron-down" class="text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">For now, NO.
+                                As this is a beta version, you can't do it right now due to our limitation. but later the feature will be available.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-lg text-dark">How do I get paid?</h4>
+                            <i data-lucide="chevron-down" class="text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">You earn a share from each exam purchased. We handle the infrastructure.
+                                You will receive 65%, while we will keep 35% to run the entire operation and development smoothly.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- K) FINAL CTA -->
+        <section class="py-32 px-6 text-center bg-gradient-to-br from-indigo-900 to-purple-900 text-white relative overflow-hidden animate-in">
+            <div class="absolute inset-0 bg-repeat opacity-10" style="background-image: url('/static/pattern.svg');"></div>
+            <div class="container mx-auto max-w-[900px] relative z-10">
+                <h2 class="text-4xl lg:text-5xl font-extrabold mb-6">Ready to Become an Education Brand,<br>Not Just a Channel?</h2>
+                <p class="text-xl text-indigo-100 mb-12 max-w-2xl mx-auto font-light">
+                    Apply, get verified, and sign up. Then pick a video or playlist, let AI build your exam, set the price, and start certifying your learners.
+                </p>
+                <div class="flex flex-col items-center gap-4">
+                    <a href="/join-as-creator/" class="btn-secondary-cta text-xl px-12 py-5 shadow-2xl">
+                        Become a Creator (Free)
+                    </a>
+                    <span class="text-sm font-medium text-indigo-200 mt-2">No subscription • Learners only pay for registration • You can stop anytime</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer animate-in">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-in">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your teaching should create a massive impact.
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-in">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-in">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for creators worldwide.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i data-lucide="arrow-up" style="width: 20px; height: 20px; color: #4F46E5;"></i>
+    </div>
+
+    <script>
+        // CRITICAL: Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    // observer.unobserve(entry.target); // Optional: keep observing or stop
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-in').forEach(section => {
+            observer.observe(section);
+        });
+
+        // FAQ Accordion Logic
+        function toggleFaq(element) {
+            const isActive = element.classList.contains('active');
+            
+            // Close all
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Toggle clicked
+            if (!isActive) {
+                element.classList.add('active');
+            }
+        }
+
+        // Back to top visibility
+        window.addEventListener('scroll', () => {
+            const btn = document.querySelector('.back-to-top');
+            if(btn) {
+                if (window.scrollY > 500) {
+                    btn.classList.add('show');
+                } else {
+                    btn.classList.remove('show');
+                }
+            }
+        });
+
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

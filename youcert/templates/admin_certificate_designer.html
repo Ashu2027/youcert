@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Certificate Designer - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Load Phosphor Icons (Kept for Designer Functionality) -->
+    <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+
+    <style>
+        /* =========================================
+           THEME VARIABLES (Matches Base.html)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-app: #F5F5F7;
+            --bg-panel: rgba(255, 255, 255, 0.85);
+            --bg-panel-solid: #FFFFFF;
+            
+            /* Text */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Borders & Shadows */
+            --border-light: rgba(0, 0, 0, 0.06);
+            --border-active: #6366F1;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-glass: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --glass-blur: blur(20px);
+            
+            /* Gradients & Brands */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Functional Colors */
+            --color-primary: #4F46E5;
+            --color-error: #EF4444;
+            --color-warning: #F59E0B;
+            --guide-color: #D946EF;
+            
+            /* Radius */
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+
+        /* Base Reset */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-dark);
+            overflow: hidden; /* App-like feel */
+        }
+        
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+
+        /* --- Glass Header --- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            z-index: 50;
+            padding: 0 1.5rem;
+            background: var(--bg-panel);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-text {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: white;
+            border-color: var(--border-light);
+            color: var(--text-dark);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+        }
+        
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+        }
+        .btn-ghost:hover {
+            background: rgba(0,0,0,0.05);
+            color: var(--text-dark);
+        }
+
+        /* --- Inputs --- */
+        .input-field {
+            width: 100%;
+            padding: 0.6rem 0.875rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 8px;
+            background: #FFFFFF;
+            font-size: 0.875rem;
+            color: var(--text-dark);
+            transition: all 0.2s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        /* --- Layout --- */
+        .main-container {
+            display: flex;
+            height: 100vh;
+            padding-top: 64px; /* Header height */
+        }
+
+        /* Sidebars */
+        .sidebar, .settings-panel {
+            width: 300px;
+            background: var(--bg-panel-solid);
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border-light);
+            overflow-y: auto;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+        .settings-panel {
+            border-right: none;
+            border-left: 1px solid var(--border-light);
+        }
+        
+        .panel-section {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .panel-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        /* Canvas Area */
+        .canvas-area {
+            flex-grow: 1;
+            background-color: var(--bg-app);
+            background-image: 
+                radial-gradient(#E2E8F0 1px, transparent 1px);
+            background-size: 20px 20px;
+            overflow: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Center initially */
+            padding: 2rem;
+            position: relative;
+        }
+
+        #canvas-container {
+            position: relative;
+            background-color: white;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-light);
+            border-radius: 4px; /* Crisp edges for certificate */
+            overflow: hidden;
+            transform-origin: top left;
+            transition: box-shadow 0.3s ease;
+        }
+
+        /* --- Drag & Drop Elements --- */
+        .upload-zone {
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--radius-md);
+            padding: 2rem 1rem;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            background: #F8FAFC;
+        }
+        .upload-zone:hover, .upload-zone.drag-over {
+            border-color: var(--color-primary);
+            background: #EEF2FF;
+        }
+
+        /* --- Field Tools in Sidebar --- */
+        .tool-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            width: 100%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            background: white;
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tool-btn:hover {
+            border-color: var(--color-primary);
+            background: #F8FAFC;
+            color: var(--color-primary);
+            transform: translateX(2px);
+        }
+        .tool-btn i { font-size: 1.1rem; }
+
+        /* --- On-Canvas Fields --- */
+        .text-field {
+            position: absolute;
+            background: rgba(79, 70, 229, 0.05);
+            border: 1px dashed var(--color-primary);
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            padding: 0;
+            transition: background 0.2s, border 0.2s;
+        }
+        .text-field:hover {
+            background: rgba(79, 70, 229, 0.1);
+            border-style: solid;
+        }
+        .text-field:active { cursor: grabbing; }
+        
+        .text-field.active {
+            border: 2px solid var(--color-primary);
+            background: rgba(79, 70, 229, 0.08);
+            z-index: 100;
+        }
+        
+        /* Out of bounds warning */
+        .text-field.out-of-bounds {
+            border-color: var(--color-warning);
+            background: rgba(245, 158, 11, 0.1);
+        }
+
+        .field-label-tag {
+            position: absolute;
+            top: -24px;
+            left: -2px;
+            background: var(--color-primary);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .text-field:hover .field-label-tag,
+        .text-field.active .field-label-tag { opacity: 1; }
+        
+        .text-field.out-of-bounds .field-label-tag { background: var(--color-warning); }
+
+        .field-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            user-select: none;
+            overflow: hidden;
+        }
+
+        /* Controls */
+        .close-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 20px;
+            height: 20px;
+            background: var(--color-error);
+            color: white;
+            border-radius: 50%;
+            display: none; /* Show only on active */
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 20;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .text-field.active .close-btn { display: flex; }
+
+        .resize-handle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: white;
+            border: 1px solid var(--color-primary);
+            border-radius: 50%;
+            z-index: 15;
+            display: none;
+        }
+        .text-field.active .resize-handle { display: block; }
+        
+        /* Specific handle positions */
+        .nw { top: -4px; left: -4px; cursor: nw-resize; }
+        .ne { top: -4px; right: -4px; cursor: ne-resize; }
+        .sw { bottom: -4px; left: -4px; cursor: sw-resize; }
+        .se { bottom: -4px; right: -4px; cursor: se-resize; }
+        .n { top: -4px; left: 50%; transform: translateX(-50%); cursor: n-resize; }
+        .s { bottom: -4px; left: 50%; transform: translateX(-50%); cursor: s-resize; }
+        .w { top: 50%; left: -4px; transform: translateY(-50%); cursor: w-resize; }
+        .e { top: 50%; right: -4px; transform: translateY(-50%); cursor: e-resize; }
+
+        /* QR/Sig specific: hide side handles */
+        .text-field.is-qr .resize-handle.n, .text-field.is-qr .resize-handle.s, 
+        .text-field.is-qr .resize-handle.w, .text-field.is-qr .resize-handle.e,
+        .text-field.is-signature .resize-handle.n, .text-field.is-signature .resize-handle.s, 
+        .text-field.is-signature .resize-handle.w, .text-field.is-signature .resize-handle.e 
+        { display: none; }
+
+        /* --- Settings Panel Cards --- */
+        .field-card-item {
+            background: white;
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .field-card-item:hover {
+            border-color: #CBD5E1;
+            box-shadow: var(--shadow-sm);
+        }
+        .field-card-item.active {
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 1px var(--color-primary);
+            background: #F8FAFC;
+        }
+
+        /* --- Guides --- */
+        .guide-line {
+            position: absolute;
+            background: var(--guide-color);
+            display: none;
+            z-index: 90;
+            pointer-events: none;
+        }
+        .guide-line.active { display: block; }
+        .guide-v { width: 1px; height: 100%; top: 0; }
+        .guide-h { height: 1px; width: 100%; left: 0; }
+
+        /* --- Modal --- */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .modal-backdrop.show { display: flex; opacity: 1; }
+        
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 800px;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--glass-shadow);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+        
+        pre {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            overflow-x: auto;
+        }
+
+        /* --- Toast --- */
+        #toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            background: #10B981;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            transform: translateX(200%);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 2000;
+        }
+
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="flex items-center gap-4">
+            <!-- Back Button for Admin Context -->
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+                <i class="ph-bold ph-arrow-left"></i>
+                <span class="hidden md:inline">Exit Designer</span>
+            </a>
+            <div class="h-6 w-px bg-gray-200"></div>
+            <div class="flex items-center gap-2">
+                <i class="ph-fill ph-certificate text-indigo-600 text-xl"></i>
+                <span class="brand-text">Certificate Designer</span>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <input type="text" id="templateName" class="input-field" placeholder="Template Name" style="width: 200px;">
+            <button class="btn btn-secondary" onclick="showPillowCode()">
+                <i class="ph-bold ph-code"></i>
+                <span class="hidden md:inline">Code</span>
+            </button>
+            <button class="btn btn-primary" onclick="saveTemplate()">
+                <i class="ph-bold ph-floppy-disk"></i>
+                <span>Save Template</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="main-container">
+        
+        <!-- Left Sidebar: Tools -->
+        <aside class="sidebar">
+            <!-- Upload -->
+            <div class="panel-section">
+                <h3 class="panel-title">Base Template</h3>
+                <label for="imageUpload" class="block">
+                    <div id="uploadArea" class="upload-zone">
+                        <i class="ph-duotone ph-image text-3xl text-indigo-400 mb-2"></i>
+                        <p id="uploadText" class="text-sm font-medium text-gray-600">Upload Image</p>
+                        <p class="text-xs text-gray-400 mt-1">PNG or JPG</p>
+                    </div>
+                </label>
+                <input type="file" id="imageUpload" accept="image/*" class="hidden">
+            </div>
+
+            <!-- Fields -->
+            <div class="panel-section flex-grow">
+                <h3 class="panel-title">Insert Fields</h3>
+                <div class="space-y-2">
+                    <button class="tool-btn" onclick="addTextField('name')">
+                        <i class="ph-fill ph-user text-indigo-500"></i> Student Name
+                    </button>
+                    <button class="tool-btn" onclick="addTextField('youtube_title')">
+                        <i class="ph-fill ph-youtube-logo text-red-500"></i> Video Title
+                    </button>
+                    <button class="tool-btn" onclick="addTextField('course_length')">
+                        <i class="ph-fill ph-timer text-orange-500"></i> Duration
+                    </button>
+                    <button class="tool-btn" onclick="addTextField('score')">
+                        <i class="ph-fill ph-exam text-green-500"></i> Score
+                    </button>
+                    <button class="tool-btn" onclick="addTextField('channel_name')">
+                        <i class="ph-fill ph-broadcast text-purple-500"></i> Channel Name
+                    </button>
+                    <div class="h-px bg-gray-100 my-2"></div>
+                    <button class="tool-btn" onclick="addTextField('qr_code')">
+                        <i class="ph-fill ph-qr-code text-gray-700"></i> QR Code
+                    </button>
+                    <button class="tool-btn" onclick="addTextField('signature')">
+                        <i class="ph-fill ph-signature text-blue-500"></i> Signature
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-4 text-xs text-gray-400 text-center">
+                Drag fields to position • Drag edges to resize
+            </div>
+        </aside>
+
+        <!-- Center: Canvas -->
+        <main class="canvas-area">
+            <div id="canvas-container">
+                <img id="certificateImage" alt="" style="display: block; width: 100%; height: auto;">
+                
+                <!-- Guides -->
+                <div class="guide-line guide-v" style="left: 50%;"></div> <!-- V Center -->
+                <div class="guide-line guide-h" style="top: 50%;"></div> <!-- H Center -->
+                <div class="guide-line guide-v" style="left: 0;"></div> <!-- Left -->
+                <div class="guide-line guide-v" style="right: 0;"></div> <!-- Right -->
+                <div class="guide-line guide-h" style="top: 0;"></div> <!-- Top -->
+                <div class="guide-line guide-h" style="bottom: 0;"></div> <!-- Bottom -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div class="bg-white p-8 rounded-2xl shadow-xl text-center border border-gray-100 max-w-sm mx-auto">
+                    <div class="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="ph-fill ph-upload-simple text-2xl text-indigo-600"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Start Designing</h3>
+                    <p class="text-gray-500 text-sm">Upload a blank certificate template image from the left panel to begin.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Properties -->
+        <aside class="settings-panel">
+            <div class="panel-section">
+                <h3 class="panel-title">Layer Properties</h3>
+                <div id="fieldList" class="space-y-2 min-h-[200px]">
+                    <!-- Items injected via JS -->
+                    <div id="settingsEmptyState" class="text-center py-10 text-gray-400">
+                        <i class="ph-duotone ph-sliders-horizontal text-3xl mb-2"></i>
+                        <p class="text-sm">Select a field to edit</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Code Modal -->
+    <div class="modal-backdrop" id="pillowModal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold text-gray-800">Generated Python Logic</h2>
+                <button onclick="closeModal()" class="p-2 hover:bg-gray-100 rounded-full">
+                    <i class="ph-bold ph-x"></i>
+                </button>
+            </div>
+            <p class="text-sm text-gray-500 mb-4">
+                Use this logic in your backend `certificate_generator.py` to replicate this design programmatically.
+            </p>
+            <pre id="pillowCodeEl"></pre>
+            <div class="mt-6 flex justify-end gap-3">
+                <button class="btn btn-secondary" onclick="copyCode()">
+                    <i class="ph-bold ph-copy"></i> Copy
+                </button>
+                <button class="btn btn-primary" onclick="closeModal()">Done</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toast -->
+    <div id="toast"></div>
+
+    <script>
+        // --- State ---
+        let imageFile = null;
+        let imageScale = 1;
+        let originalWidth = 0;
+        let originalHeight = 0;
+        let fields = [];
+        let fieldCounter = 0;
+        let activeFieldId = null;
+        
+        // Drag state
+        let isDragging = false;
+        let isResizing = false;
+        let resizeDirection = '';
+        let startX, startY, startLeft, startTop, startWidth, startHeight;
+
+        // Elements
+        const canvasContainer = document.getElementById('canvas-container');
+        const certificateImage = document.getElementById('certificateImage');
+        const emptyState = document.getElementById('emptyState');
+        const guideLines = document.querySelectorAll('.guide-line');
+
+        // Font Map
+        const pillowFontMap = {
+            'Poppins': 'Poppins-Regular.ttf', 
+            'Inter': 'Inter-Regular.ttf',
+            'Arial': 'arial.ttf',
+            'Times New Roman': 'times.ttf',
+            'Courier New': 'cour.ttf',
+        };
+
+        // --- Init ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setupDragDrop();
+            
+            // Image Upload
+            document.getElementById('imageUpload').addEventListener('change', handleFileSelect);
+            
+            // Canvas Click (Deselect)
+            document.querySelector('.canvas-area').addEventListener('mousedown', (e) => {
+                if(e.target.classList.contains('canvas-area')) setActiveField(null);
+            });
+            
+            // Keyboard
+            document.addEventListener('keydown', handleKeyDown);
+        });
+
+        // --- File Handling ---
+        function setupDragDrop() {
+            const dropZone = document.getElementById('uploadArea');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+                document.body.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(name => dropZone.classList.add('drag-over'));
+            ['dragleave', 'drop'].forEach(name => dropZone.classList.remove('drag-over'));
+            
+            dropZone.addEventListener('drop', (e) => {
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) loadImage(file);
+            });
+        }
+        
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if(file) loadImage(file);
+        }
+
+        function loadImage(file) {
+            imageFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                certificateImage.onload = () => {
+                    originalWidth = certificateImage.naturalWidth;
+                    originalHeight = certificateImage.naturalHeight;
+                    fitCanvas();
+                    
+                    canvasContainer.style.display = 'block';
+                    emptyState.style.display = 'none';
+                    document.getElementById('uploadText').textContent = file.name;
+                    
+                    // Reset fields
+                    fields = [];
+                    document.querySelectorAll('.text-field').forEach(el => el.remove());
+                    updatePropertiesPanel();
+                };
+                certificateImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function fitCanvas() {
+            const area = document.querySelector('.canvas-area');
+            const padding = 64; 
+            const availW = area.clientWidth - padding;
+            const availH = area.clientHeight - padding;
+            
+            const scaleW = availW / originalWidth;
+            const scaleH = availH / originalHeight;
+            
+            imageScale = Math.min(scaleW, scaleH, 1); // Max scale 1 (no pixelation)
+            
+            canvasContainer.style.width = `${originalWidth * imageScale}px`;
+            canvasContainer.style.height = `${originalHeight * imageScale}px`;
+        }
+        
+        window.addEventListener('resize', () => {
+            if(imageFile) fitCanvas();
+        });
+
+        // --- Field Creation ---
+        function addTextField(type) {
+            if(!imageFile) {
+                showToast('Upload a template first', 'error');
+                return;
+            }
+
+            fieldCounter++;
+            const id = `field_${fieldCounter}`;
+            const isVisual = (type === 'qr_code' || type === 'signature');
+            
+            // Defaults (unscaled)
+            let defW = isVisual ? 150 : 300;
+            let defH = isVisual ? 150 : 60;
+            if(type === 'signature') { defW = 200; defH = 80; }
+
+            const field = {
+                id, type,
+                name: type.replace(/_/g, ' '),
+                x: 50, y: 50, // Original coords
+                width: defW, height: defH,
+                fontSize: 40,
+                fontFamily: 'Poppins',
+                color: '#1D1D1F',
+                align: 'center'
+            };
+            
+            fields.push(field);
+            createFieldElement(field);
+            setActiveField(id);
+            updatePropertiesPanel();
+        }
+
+        function createFieldElement(data) {
+            const el = document.createElement('div');
+            el.className = `text-field ${data.type === 'qr_code' ? 'is-qr' : ''} ${data.type === 'signature' ? 'is-signature' : ''}`;
+            el.id = data.id;
+            
+            // Positioning (scaled)
+            updateElementVisuals(el, data);
+
+            el.innerHTML = `
+                <div class="field-label-tag">${data.name}</div>
+                <div class="close-btn"><i class="ph-bold ph-x"></i></div>
+                <div class="field-content font-poppins">
+                    ${getFieldPreviewContent(data)}
+                </div>
+                <!-- Handles -->
+                <div class="resize-handle nw"></div><div class="resize-handle n"></div>
+                <div class="resize-handle ne"></div><div class="resize-handle e"></div>
+                <div class="resize-handle se"></div><div class="resize-handle s"></div>
+                <div class="resize-handle sw"></div><div class="resize-handle w"></div>
+            `;
+            
+            canvasContainer.appendChild(el);
+            
+            // Events
+            el.addEventListener('mousedown', startDrag);
+            el.querySelector('.close-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                removeField(data.id);
+            });
+            el.querySelectorAll('.resize-handle').forEach(h => {
+                h.addEventListener('mousedown', startResize);
+            });
+        }
+
+        function getFieldPreviewContent(data) {
+            if(data.type === 'qr_code') return `<i class="ph-fill ph-qr-code text-4xl opacity-50"></i>`;
+            if(data.type === 'signature') return `<i class="ph-fill ph-signature text-4xl opacity-50"></i>`;
+            
+            const samples = {
+                'name': 'Alex Smith',
+                'youtube_title': 'Python Mastery',
+                'course_length': '12 Hrs',
+                'score': '98%',
+                'channel_name': 'CodeChannel'
+            };
+            return `<span style="font-size:${data.fontSize * imageScale}px; color:${data.color}; font-family:${data.fontFamily}">${samples[data.type] || 'Text'}</span>`;
+        }
+
+        function updateElementVisuals(el, data) {
+            el.style.left = `${data.x * imageScale}px`;
+            el.style.top = `${data.y * imageScale}px`;
+            el.style.width = `${data.width * imageScale}px`;
+            el.style.height = `${data.height * imageScale}px`;
+            
+            const content = el.querySelector('.field-content span');
+            if(content) {
+                content.style.fontSize = `${data.fontSize * imageScale}px`;
+                content.style.color = data.color;
+                content.style.fontFamily = data.fontFamily;
+            }
+        }
+
+        function removeField(id) {
+            const idx = fields.findIndex(f => f.id === id);
+            if(idx > -1) fields.splice(idx, 1);
+            document.getElementById(id)?.remove();
+            if(activeFieldId === id) setActiveField(null);
+            updatePropertiesPanel();
+        }
+
+        function setActiveField(id) {
+            activeFieldId = id;
+            document.querySelectorAll('.text-field').forEach(el => {
+                el.classList.toggle('active', el.id === id);
+            });
+            updatePropertiesPanel(); // Highlight active card
+        }
+
+        // --- Interaction Logic (Drag/Resize) ---
+        function startDrag(e) {
+            if(e.target.classList.contains('resize-handle') || e.target.classList.contains('close-btn')) return;
+            e.preventDefault();
+            
+            const el = e.currentTarget;
+            setActiveField(el.id);
+            isDragging = true;
+            
+            const rect = el.getBoundingClientRect();
+            startX = e.clientX - rect.left;
+            startY = e.clientY - rect.top;
+            
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', endInteraction);
+        }
+
+        function onDrag(e) {
+            if(!isDragging || !activeFieldId) return;
+            e.preventDefault();
+            
+            const el = document.getElementById(activeFieldId);
+            const containerRect = canvasContainer.getBoundingClientRect();
+            
+            let x = e.clientX - containerRect.left - startX;
+            let y = e.clientY - containerRect.top - startY;
+            
+            // Allow slight overflow for UX
+            // x = Math.max(-20, Math.min(x, containerRect.width - el.offsetWidth + 20));
+            
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            
+            checkGuides(el, containerRect);
+        }
+
+        function startResize(e) {
+            e.preventDefault(); e.stopPropagation();
+            isResizing = true;
+            resizeDirection = e.target.className.split(' ').find(c => ['nw','n','ne','e','se','s','sw','w'].includes(c));
+            
+            const el = e.target.parentElement;
+            setActiveField(el.id);
+            
+            const rect = el.getBoundingClientRect();
+            const containerRect = canvasContainer.getBoundingClientRect();
+            
+            startX = e.clientX;
+            startY = e.clientY;
+            startLeft = rect.left - containerRect.left;
+            startTop = rect.top - containerRect.top;
+            startWidth = rect.width;
+            startHeight = rect.height;
+            
+            document.addEventListener('mousemove', onResize);
+            document.addEventListener('mouseup', endInteraction);
+        }
+
+        function onResize(e) {
+            if(!isResizing || !activeFieldId) return;
+            e.preventDefault();
+            
+            const el = document.getElementById(activeFieldId);
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            
+            let w = startWidth, h = startHeight, l = startLeft, t = startTop;
+            
+            if(resizeDirection.includes('e')) w = startWidth + dx;
+            if(resizeDirection.includes('s')) h = startHeight + dy;
+            if(resizeDirection.includes('w')) { w = startWidth - dx; l = startLeft + dx; }
+            if(resizeDirection.includes('n')) { h = startHeight - dy; t = startTop + dy; }
+            
+            // Constraints
+            w = Math.max(20, w);
+            h = Math.max(20, h);
+
+            // Aspect Ratio for QR
+            if(el.classList.contains('is-qr')) {
+                const maxDim = Math.max(w, h);
+                w = maxDim; h = maxDim;
+                if(resizeDirection.includes('w')) l = startLeft + (startWidth - w);
+                if(resizeDirection.includes('n')) t = startTop + (startHeight - h);
+            }
+
+            el.style.width = `${w}px`; el.style.height = `${h}px`;
+            el.style.left = `${l}px`; el.style.top = `${t}px`;
+        }
+
+        function endInteraction() {
+            if(!activeFieldId) return;
+            
+            const el = document.getElementById(activeFieldId);
+            const field = fields.find(f => f.id === activeFieldId);
+            
+            // Sync Data (Unscaled)
+            field.x = Math.round(parseFloat(el.style.left) / imageScale);
+            field.y = Math.round(parseFloat(el.style.top) / imageScale);
+            field.width = Math.round(parseFloat(el.style.width) / imageScale);
+            field.height = Math.round(parseFloat(el.style.height) / imageScale);
+            
+            isDragging = false;
+            isResizing = false;
+            
+            // Hide Guides
+            guideLines.forEach(g => g.style.display = 'none');
+            
+            // Check Bounds
+            const bounds = canvasContainer.getBoundingClientRect();
+            const elBounds = el.getBoundingClientRect();
+            const isOut = (el.offsetLeft < 0 || el.offsetTop < 0 || 
+                          (el.offsetLeft + el.offsetWidth) > bounds.width || 
+                          (el.offsetTop + el.offsetHeight) > bounds.height);
+            el.classList.toggle('out-of-bounds', isOut);
+            
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mousemove', onResize);
+            document.removeEventListener('mouseup', endInteraction);
+            
+            updatePropertiesPanel(); // Size might have changed
+        }
+
+        function checkGuides(el, containerRect) {
+            // Simplified Guide Logic
+            const centerX = el.offsetLeft + (el.offsetWidth/2);
+            const centerY = el.offsetTop + (el.offsetHeight/2);
+            const contCenterX = containerRect.width / 2;
+            const contCenterY = containerRect.height / 2;
+            
+            const tol = 5;
+            
+            // V Center
+            if(Math.abs(centerX - contCenterX) < tol) {
+                document.querySelectorAll('.guide-v')[0].style.display = 'block'; // Assumes first is center
+            } else {
+                document.querySelectorAll('.guide-v')[0].style.display = 'none';
+            }
+            // Add more guide logic as needed...
+        }
+        
+        function handleKeyDown(e) {
+            if(!activeFieldId || e.target.tagName === 'INPUT') return;
+            if(e.key === 'Delete' || e.key === 'Backspace') {
+                removeField(activeFieldId);
+            }
+        }
+
+        // --- Properties Panel ---
+        function updatePropertiesPanel() {
+            const list = document.getElementById('fieldList');
+            const empty = document.getElementById('settingsEmptyState');
+            
+            if(fields.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+            
+            empty.style.display = 'none';
+            list.innerHTML = fields.map(f => {
+                const isActive = activeFieldId === f.id;
+                const isText = (f.type !== 'qr_code' && f.type !== 'signature');
+                
+                return `
+                <div class="field-card-item ${isActive ? 'active' : ''}" onclick="setActiveField('${f.id}')">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold uppercase text-indigo-500">${f.name}</span>
+                        <button class="text-red-400 hover:text-red-600" onclick="event.stopPropagation(); removeField('${f.id}')">
+                            <i class="ph-bold ph-trash"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="text-xs text-gray-400 mb-2">
+                        Position: ${f.x}, ${f.y} | Size: ${f.width}x${f.height}
+                    </div>
+
+                    ${isText ? `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold">Size</label>
+                            <input type="number" class="input-field py-1" value="${f.fontSize}"
+                                onchange="updateProp('${f.id}', 'fontSize', this.value)" onclick="event.stopPropagation()">
+                        </div>
+                        <div>
+                            <label class="text-[10px] uppercase text-gray-500 font-bold">Color</label>
+                            <div class="flex gap-1">
+                                <input type="color" value="${f.color}" class="h-7 w-8 rounded border-none p-0 cursor-pointer"
+                                    onchange="updateProp('${f.id}', 'color', this.value)" onclick="event.stopPropagation()">
+                            </div>
+                        </div>
+                    </div>
+                    ` : `
+                    <div class="bg-gray-50 p-2 rounded text-center text-xs text-gray-500">
+                        Visual Element (Resize on Canvas)
+                    </div>
+                    `}
+                </div>
+                `;
+            }).join('');
+        }
+
+        function updateProp(id, prop, val) {
+            const field = fields.find(f => f.id === id);
+            if(field) {
+                field[prop] = val;
+                updateElementVisuals(document.getElementById(id), field);
+            }
+        }
+
+        // --- Code Gen & Save ---
+        function saveTemplate() {
+            if(!imageFile) return showToast('No template loaded', 'error');
+            
+            // Log for demo
+            console.log("Saving:", {
+                name: document.getElementById('templateName').value,
+                originalDims: { w: originalWidth, h: originalHeight },
+                fields: fields
+            });
+            showToast('Template Configuration Saved!', 'success');
+        }
+
+        function showPillowCode() {
+            if(fields.length === 0) return showToast('Add fields first', 'error');
+            
+            const code = generatePythonCode();
+            document.getElementById('pillowCodeEl').textContent = code;
+            
+            const modal = document.getElementById('pillowModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('pillowModal');
+            modal.classList.remove('show');
+            setTimeout(() => modal.style.display = 'none', 200);
+        }
+
+        function generatePythonCode() {
+            return `from PIL import Image, ImageDraw, ImageFont
+import qrcode
+
+def generate_cert(data):
+    img = Image.open("template.png").convert("RGBA")
+    draw = ImageDraw.Draw(img)
+
+${fields.map(f => {
+    if(f.type === 'qr_code') {
+        return `    # QR Code
+    if data.get('qr_url'):
+        qr = qrcode.make(data['qr_url'])
+        qr = qr.resize((${f.width}, ${f.height}))
+        img.paste(qr, (${f.x}, ${f.y}))`;
+    }
+    if(f.type === 'signature') {
+        return `    # Signature
+    if data.get('sig_path'):
+        sig = Image.open(data['sig_path'])
+        sig.thumbnail((${f.width}, ${f.height}))
+        img.paste(sig, (${f.x}, ${f.y}), sig)`;
+    }
+    return `    # ${f.name}
+    font = ImageFont.truetype("${pillowFontMap[f.fontFamily] || 'arial.ttf'}", ${f.fontSize})
+    draw.text((${f.x}, ${f.y}), data.get('${f.type}', ''), fill="${f.color}", font=font)`;
+}).join('\n\n')}
+
+    img.save("output.png")`;
+        }
+
+        function copyCode() {
+            const code = document.getElementById('pillowCodeEl').textContent;
+            navigator.clipboard.writeText(code);
+            showToast('Copied to clipboard', 'success');
+        }
+
+        function showToast(msg, type='success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.style.backgroundColor = type === 'success' ? '#10B981' : '#EF4444';
+            t.style.transform = 'translateX(0)';
+            setTimeout(() => t.style.transform = 'translateX(200%)', 3000);
+        }
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

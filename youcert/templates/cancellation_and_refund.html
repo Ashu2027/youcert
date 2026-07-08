@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancellation & Refund Policy - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM USER'S SAVED THEME) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized opacity */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            --input-radius: 16px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Scrollbar */
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: transparent; }
+        body::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        body::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        /* --- Buttons --- */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: auto;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            font-size: 0.95rem; /* Smaller size for header button */
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Content Typography (Preserved for this file) --- */
+        .terms-content { color: var(--text-muted); }
+        .terms-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            text-align: center; margin-bottom: 2.5rem; letter-spacing: -0.02em;
+        }
+        .terms-content h2 {
+            font-size: 1.75rem; font-weight: 700; color: var(--text-dark);
+            margin-top: 3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .terms-content h3 {
+            font-size: 1.25rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 2rem; margin-bottom: 1rem;
+        }
+        .terms-content p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1.05rem; }
+        .terms-content ul, .terms-content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; line-height: 1.7; }
+        .terms-content ul { list-style-type: disc; }
+        .terms-content ol { list-style-type: decimal; }
+        .terms-content li { margin-bottom: 0.5rem; }
+        .terms-content strong { font-weight: 600; color: var(--text-dark); }
+        .terms-content a { color: #6366F1; transition: color 0.2s; font-weight: 500; text-decoration: none; }
+        .terms-content a:hover { color: #4338CA; text-decoration: underline; }
+        .terms-content hr { margin: 3rem 0; border: 0; border-top: 1px solid rgba(0,0,0,0.05); }
+
+        /* Alert Boxes */
+        .alert-box {
+            background-color: #FEF2F2;
+            border: 1px solid #FCA5A5;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+        .alert-box p { color: #991B1B !important; margin-bottom: 0; }
+        .alert-box strong { color: #7F1D1D; }
+        .alert-box ol { color: #991B1B; margin-top: 1rem; }
+
+        /* --- Animations --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .glitter {
+            position: absolute;
+            background-color: #A855F7;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.8s, opacity 0.8s;
+            z-index: 9999;
+        }
+        
+        @media (max-width: 768px) {
+            .header-nav { padding: 0 1rem; }
+            .terms-content { padding: 2rem; }
+            .terms-content h1 { font-size: 2rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <!-- Header -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-primary-custom header-btn" href="{{ url_for('user.oauth_login') }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 max-w-[900px] py-12 min-h-screen animate-on-scroll">
+        <div class="glass-card p-8 md:p-12 terms-content">
+            
+            <h1>Cancellation & Refund Policy</h1>
+            <p class="text-center !mb-8 text-sm uppercase tracking-widest"><strong>Effective Date:</strong> October 21, 2025</p>
+            
+            <p>This Cancellation & Refund Policy describes how Youcert ("we," "us," or "our") handles requests for cancellations and refunds for purchases made on our Service. This policy is part of our <a href="/terms-and-conditions">Terms of Service</a> and is binding on all Learners.</p>
+            <p>Our policy is designed to be clear and fair, balancing the interests of our Learners with the digital nature of our products and our revenue-sharing commitments to our Creators.</p>
+            
+            <hr>
+
+            <h2>1. General Policy: All Sales Are Final</h2>
+            
+            <p>Due to the immediate, digital nature of our products (access to Exams and Certificates) and our contractual obligations to pay Creators for their intellectual property, our general policy is that <strong>all sales are final and non-refundable.</strong></p>
+            
+            <div class="alert-box">
+                <p class="font-bold text-lg mb-2 flex items-center gap-2">
+                    <i data-lucide="alert-circle" style="width: 20px; height: 20px;"></i>
+                    No Refunds After Accessing Content
+                </p>
+                <p>A refund <strong>will not</strong> be issued, for any reason, if a Learner has:</p>
+                <ol class="list-decimal pl-5 mt-4 space-y-2">
+                    <li><strong>Started the Exam:</strong> This includes clicking the "Start Exam" button or otherwise beginning the assessment process.</li>
+                    <li><strong>Attempted the Exam:</strong> This includes answering one or more questions.</li>
+                    <li><strong>Completed the Exam:</strong> This includes submitting the Exam for grading, regardless of the score.</li>
+                </ol>
+                <p class="mt-4 text-sm">Once an Exam has been accessed, the service is considered "used," and you are no longer eligible for a refund.</p>
+            </div>
+
+            <p>We encourage all Learners to carefully read the Exam details, description, and ensure they are purchasing the correct Exam from the correct Creator before completing the transaction.</p>
+
+            <hr>
+
+            <h2>2. Exception: Accidental Purchases</h2>
+            
+            <p>We understand that accidents can happen. We provide a limited exception for clear, accidental purchases, such as:</p>
+            <ul>
+                <li>A duplicate purchase of the same Exam.</li>
+                <li>Purchasing the wrong Exam by mistake.</li>
+                <li>An accidental click or unauthorized purchase by a minor.</li>
+            </ul>
+
+            <h3>Eligibility for an Accidental Purchase Refund</h3>
+            <p>To be eligible for a full refund under this exception, you <strong>must</strong> meet all of the following conditions:</p>
+            <ol>
+                <li>You <strong>must not</strong> have started, attempted, or accessed the Exam in any way (as defined in Section 1).</li>
+                <li>You <strong>must</strong> raise a complaint by contacting our support team at <a href="mailto:support@youcert.com">support@youcert.com</a>.</li>
+                <li>Your complaint <strong>must</strong> be raised within <strong>twelve (12) hours</strong> of the time of purchase.</li>
+            </ol>
+
+            <p>If your request meets all three of these conditions, we will process a full refund of the entire fund to your original payment method. Requests received after the 12-hour window will not be eligible.</p>
+            
+            <hr>
+
+            <h2>3. How to Request a Refund</h2>
+            
+            <p>To request a refund for an accidental purchase, you must send an email to our support team at <a href="mailto:support@youcert.com">support@youcert.com</a> within 12 hours of your purchase.</p>
+            
+            <p>Your email <strong>must</strong> include the following information:</p>
+            <ul>
+                <li><strong>Subject Line:</strong> "Refund Request - Accidental Purchase"</li>
+                <li><strong>Your Account Email:</strong> The email address associated with your Youcert account.</li>
+                <li><strong>Order/Transaction ID:</strong> This can be found in your payment confirmation email.</li>
+                <li><strong>Name of the Exam:</strong> The full name of the Exam you accidentally purchased.</li>
+                <li><strong>Reason for Refund:</strong> A brief explanation (e.g., "Duplicate purchase," "Clicked the wrong exam").</li>
+            </ul>
+            
+            <p>Our team will review your request to verify that the Exam has not been accessed and that the request is within the 12-hour window. We reserve the right, at our sole discretion, to deny any request that does not meet these criteria or appears to be an abuse of this policy.</p>
+
+            <hr>
+            
+            <h2>4. Other Refund Scenarios</h2>
+            
+            <h3>4.1 Technical Issues</h3>
+            <p>If you are unable to start or complete an Exam due to a verifiable technical failure *of the Youcert platform* (not an issue with your local internet, device, or browser), please contact our support team immediately. We will investigate the issue. At our discretion, we may offer you a credit or a chance to retake the Exam. We do not offer cash refunds for technical issues but will work to ensure you receive the service you paid for.</p>
+
+            <h3>4.2 Banned or Terminated Accounts</h3>
+            <p>As stated in our <a href="/terms-and-conditions">Terms of Service</a>, if your account is suspended, banned, or terminated due to a violation of our policies (including, but not limited to, academic misconduct or fraud), you will <strong>not</strong> be eligible for any refunds for any purchases, regardless of when they were made or whether the Exams were attempted.</p>
+            
+            <h3>4.3 Creator Exam Removal</h3>
+            <p>If a Creator removes an Exam from our platform *after* you have purchased it but *before* you have attempted it, you will be eligible for a full refund or a credit towards another Exam, at your option. We will notify you in such an event.</p>
+
+            <h3>4.4 Dissatisfaction with Content</h3>
+            <p>We do not offer refunds for dissatisfaction with the content, quality, or difficulty of an Exam. The Creator is responsible for the content, and we provide the platform for assessment. We encourage you to review all available information before making a purchase.</p>
+
+            <hr>
+            
+            <h2>5. Refund Processing</h2>
+            
+            <p>If your refund request is approved, we will initiate the refund to your original method of payment. Please note that it may take <strong>5-10 business days</strong> for the refund to appear in your account or on your card statement, depending on your bank or payment provider. We are not responsible for delays caused by payment processors or banks.</p>
+
+            <hr>
+
+            <h2>6. Contact Us</h2>
+            <p>If you have any questions about this Cancellation & Refund Policy, please contact us before making a purchase.</p>
+            
+            <div class="mt-8 p-6 bg-gray-50 rounded-xl border border-gray-100">
+                <div class="mb-4">
+                    <div class="text-sm text-muted uppercase tracking-wider font-bold mb-1">General Support & Refunds</div>
+                    <a href="mailto:support@youcert.com" class="text-lg font-medium flex items-center gap-2">
+                        <i data-lucide="mail" style="width: 18px;"></i> support@youcert.com
+                    </a>
+                </div>
+                <div>
+                    <div class="text-sm text-muted uppercase tracking-wider font-bold mb-1">Grievance Officer</div>
+                    <a href="mailto:copyright@youcert.com" class="text-lg font-medium flex items-center gap-2">
+                        <i data-lucide="shield" style="width: 18px;"></i> copyright@youcert.com
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+<footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Scroll Animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Glitter Effect
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

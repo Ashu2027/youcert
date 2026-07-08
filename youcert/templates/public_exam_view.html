@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ exam.exam_title }} - YOUCERT</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="{{ exam.exam_description[:160] if exam.exam_description else 'Take this exam on YOUCERT' }}">
+    <meta property="og:title" content="{{ exam.exam_title }} - YOUCERT">
+    <meta property="og:description"
+        content="{{ exam.exam_description[:160] if exam.exam_description else 'Take this exam on YOUCERT' }}">
+    <meta property="og:image" content="{{ thumbnail_url }}">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- Razorpay SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        :root {
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #86868b;
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+            --glass-blur: blur(40px);
+
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(60px);
+        }
+
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+            height: 80px;
+            transition: background 0.3s ease;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .exam-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+        }
+
+        .exam-thumbnail {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            background: linear-gradient(135deg, #e0e0e0, #f5f5f5);
+        }
+
+        .creator-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-secondary:hover {
+            background: #F5F5F7;
+            transform: translateY(-2px);
+        }
+
+        .stat-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 99px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6366F1;
+        }
+
+        .price-tag {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-type-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 99px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-link {
+            padding: 0.6rem 1.2rem;
+            color: var(--text-dark);
+            font-weight: 500;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: 99px;
+            transition: var(--transition-smooth);
+            opacity: 0.7;
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        /* Loading state for buttons */
+        .btn-loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-loading::after {
+            content: '';
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top-color: currentColor;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 1rem 2rem;
+            background: var(--text-dark);
+            color: white;
+            border-radius: var(--btn-radius);
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: #EF4444;
+        }
+
+        .toast.success {
+            background: #10B981;
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body class="antialiased">
+    <div class="animated-background"></div>
+
+    <!-- Header Navigation -->
+    <header class="header-nav flex items-center justify-between px-6 lg:px-10">
+        <a href="/" class="flex items-center gap-3">
+            <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="h-10 w-auto" />
+            <span class="text-xl font-bold text-primary-theme hidden sm:inline">YOUCERT</span>
+        </a>
+
+        <nav class="flex items-center gap-2">
+            <a href="/login/" class="nav-link">Log In</a>
+            <a href="/login/" class="btn-primary" style="width: auto; padding: 0.6rem 1.2rem; font-size: 0.9rem;">
+                Sign Up
+            </a>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid lg:grid-cols-5 gap-8">
+            <!-- Left Column - Exam Details -->
+            <div class="lg:col-span-3">
+                <div class="exam-card">
+                    <!-- Thumbnail -->
+                    <div class="relative">
+                        <img src="{{ thumbnail_url }}" alt="{{ exam.exam_title }}" class="exam-thumbnail"
+                            onerror="this.onerror=null;this.src='https://placehold.co/640x360/F5F5F7/6E6E73?text=No+Thumbnail'">
+                        <span class="content-type-badge">
+                            <i class="fab fa-youtube mr-1"></i>
+                            {{ content_type | capitalize }}
+                        </span>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="p-6 lg:p-8">
+                        <h1 class="text-2xl lg:text-3xl font-bold mb-4 leading-tight">
+                            {{ exam.exam_title }}
+                        </h1>
+
+                        <!-- Creator Info -->
+                        <div class="flex items-center gap-4 mb-6 pb-6 border-b border-gray-100">
+                            <img src="{{ creator_photo or 'https://placehold.co/56x56/F5F5F7/6E6E73?text=?' }}"
+                                alt="{{ exam.channel_name }}" class="creator-avatar"
+                                onerror="this.onerror=null;this.src='https://placehold.co/56x56/F5F5F7/6E6E73?text=?'">
+                            <div>
+                                <h3 class="font-semibold text-lg">{{ exam.channel_name }}</h3>
+                                <p class="text-sm text-gray-500">
+                                    <i class="fas fa-users mr-1"></i>
+                                    {{ formatted_subscribers }} subscribers
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="flex flex-wrap gap-3 mb-6">
+                            <span class="stat-badge">
+                                <i class="fas fa-question-circle"></i>
+                                {{ question_count }} Questions
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-clock"></i>
+                                ~{{ (question_count * 1.5) | int }} mins
+                            </span>
+                            <span class="stat-badge">
+                                <i class="fas fa-certificate"></i>
+                                Certificate Included
+                            </span>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="prose prose-gray max-w-none">
+                            <h4 class="font-semibold text-lg mb-3">About this Exam</h4>
+                            <p class="text-gray-600 leading-relaxed whitespace-pre-line">
+                                {{ exam.exam_description or 'Test your knowledge with this comprehensive exam based on
+                                the course content.' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Purchase Card -->
+            <div class="lg:col-span-2">
+                <div class="exam-card p-6 lg:p-8 sticky top-24">
+                    <!-- Price -->
+                    <div class="text-center mb-6">
+                        <p class="text-sm text-gray-500 mb-1">Exam Price</p>
+                        <p class="price-tag">&#8377;{{ "%.2f" | format(exam.exam_price) }}</p>
+                        <p class="text-xs text-gray-400 mt-1">One-time payment</p>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="space-y-3">
+                        <button id="enroll-btn" onclick="handleEnroll()" class="btn-primary">
+                            <i class="fas fa-graduation-cap"></i>
+                            Enroll Now
+                        </button>
+
+                        <a href="{{ youtube_url }}" target="_blank" rel="noopener noreferrer" class="btn-secondary">
+                            <i class="fab fa-youtube"></i>
+                            View on YouTube
+                        </a>
+                    </div>
+
+                    <!-- Features -->
+                    <div class="mt-8 pt-6 border-t border-gray-100">
+                        <h4 class="font-semibold mb-4">What's Included</h4>
+                        <ul class="space-y-3 text-sm text-gray-600">
+                            <li class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                {{ question_count }} Practice Questions
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                Instant Results & Analysis
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                Digital Certificate on Pass
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fas fa-check-circle text-green-500"></i>
+                                Lifetime Access
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Share -->
+                    <div class="mt-6 pt-6 border-t border-gray-100">
+                        <button onclick="shareExam()"
+                            class="w-full py-3 text-sm font-medium text-gray-600 hover:text-gray-900 transition flex items-center justify-center gap-2">
+                            <i class="fas fa-share-alt"></i>
+                            Share this Exam
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const examId = "{{ exam.unique_exam_number }}";
+        const examTitle = "{{ exam.exam_title | e }}";
+        const examPrice = parseFloat('{{ exam.exam_price | default(0) }}') || 0;
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        function showToast(message, type = 'info') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type} show`;
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        async function checkLoginStatus() {
+            try {
+                const response = await fetch('/api/check-auth', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                return data.authenticated === true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function handleEnroll() {
+            const btn = document.getElementById('enroll-btn');
+            btn.classList.add('btn-loading');
+            btn.disabled = true;
+
+            try {
+                // Check if user is logged in
+                const isLoggedIn = await checkLoginStatus();
+
+                if (!isLoggedIn) {
+                    // Redirect to login with return URL
+                    const returnUrl = encodeURIComponent(window.location.pathname);
+                    window.location.href = `/login/?next=${returnUrl}`;
+                    return;
+                }
+
+                // User is logged in - initiate payment
+                await initiatePayment();
+
+            } catch (error) {
+                console.error('Enroll error:', error);
+                showToast('Something went wrong. Please try again.', 'error');
+            } finally {
+                btn.classList.remove('btn-loading');
+                btn.disabled = false;
+            }
+        }
+
+        async function initiatePayment() {
+            try {
+                // Create order
+                const response = await fetch('/api/create_order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        exam_id: examId
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    if (data.message && data.message.includes('already purchased')) {
+                        showToast('You have already purchased this exam!', 'success');
+                        setTimeout(() => {
+                            window.location.href = `/exam_form/${examId}`;
+                        }, 1500);
+                        return;
+                    }
+                    throw new Error(data.message || 'Failed to create order');
+                }
+
+                // Open Razorpay checkout
+                const options = {
+                    key: data.key_id,
+                    amount: data.amount,
+                    currency: data.currency,
+                    name: 'YOUCERT',
+                    description: examTitle,
+                    order_id: data.order_id,
+                    handler: async function (response) {
+                        await verifyPayment(response, examId);
+                    },
+                    prefill: {},
+                    theme: {
+                        color: '#1D1D1F'
+                    },
+                    modal: {
+                        ondismiss: function () {
+                            showToast('Payment cancelled', 'error');
+                        }
+                    }
+                };
+
+                const razorpay = new Razorpay(options);
+                razorpay.open();
+
+            } catch (error) {
+                console.error('Payment initiation error:', error);
+                showToast(error.message || 'Failed to initiate payment', 'error');
+            }
+        }
+
+        async function verifyPayment(response, examId) {
+            try {
+                const verifyResponse = await fetch('/api/verify_payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id,
+                        razorpay_signature: response.razorpay_signature,
+                        exam_id: examId
+                    })
+                });
+
+                const data = await verifyResponse.json();
+
+                if (data.success) {
+                    showToast('Payment successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || `/exam_form/${examId}`;
+                    }, 1500);
+                } else {
+                    throw new Error(data.message || 'Payment verification failed');
+                }
+
+            } catch (error) {
+                console.error('Payment verification error:', error);
+                showToast(error.message || 'Payment verification failed', 'error');
+            }
+        }
+
+        function shareExam() {
+            const url = window.location.href;
+            const title = examTitle;
+
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    text: `Check out this exam: ${title}`,
+                    url: url
+                }).catch(() => { });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(url).then(() => {
+                    showToast('Link copied to clipboard!', 'success');
+                }).catch(() => {
+                    showToast('Failed to copy link', 'error');
+                });
+            }
+        }
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

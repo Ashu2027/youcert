@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="user-id" content="{{ session.get('user_id', '') }}" />
+    <meta name="session-id" content="{{ session.sid if session.sid else '' }}" />
+    <title>youcert-creator Dashboard</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM
+           ========================================= */
+        :root {
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+            --color-green: #059669;
+            --color-yellow: #F59E0B;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+        
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img { width: 32px; height: 32px; object-fit: contain; }
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+        
+        .nav-link svg {
+            width: 20px; 
+            height: 20px;
+            color: var(--text-muted);
+        }
+        .nav-link.active svg { color: #4F46E5; }
+
+        .btn-cta {
+            background: #000000;
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content { margin-left: 0; padding: 1rem; }
+        }
+
+        /* --- Header & Greeting --- */
+        .page-title {
+            font-size: 2.25rem;
+            font-weight: 800;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.05em;
+            margin-bottom: 0.5rem;
+        }
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        
+        .profile-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 99px;
+            padding: 0.4rem 1rem 0.4rem 0.4rem;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .profile-btn:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        /* --- Stats Grid --- */
+        .stat-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            box-shadow: var(--glass-shadow);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-top: 0.5rem;
+            letter-spacing: -0.05em;
+        }
+
+        .icon-box {
+            width: 36px; height: 36px;
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+        }
+        .icon-green { background: #D1FAE5; color: var(--color-green); }
+        .icon-indigo { background: #EEF2FF; color: #4F46E5; }
+        .icon-blue { background: #DBEAFE; color: #3B82F6; }
+        .icon-orange { background: #FEF3C7; color: #F59E0B; }
+
+        /* --- Exam List Table --- */
+        .list-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+            overflow: hidden;
+        }
+
+        /* STRICT FLEXBOX TABLE LAYOUT (Desktop) */
+        .desktop-row {
+            display: flex;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            border-top: 1px solid #F1F5F9;
+            text-decoration: none;
+            color: inherit;
+            transition: background-color 0.2s;
+        }
+        .desktop-row:hover {
+            background-color: #F8FAFC;
+        }
+        .desktop-row:first-child { border-top: none; }
+
+        .list-header {
+             background-color: #F8FAFC;
+             color: var(--text-muted);
+             font-size: 0.75rem;
+             font-weight: 600;
+             text-transform: uppercase;
+             letter-spacing: 0.05em;
+             border-bottom: 1px solid #E2E8F0;
+             padding: 1rem 1.5rem;
+             display: flex; /* Flex header */
+             align-items: center;
+        }
+
+        /* Fixed Column Widths for Desktop */
+        .col-title-group {
+            flex: 1; /* Takes remaining space */
+            min-width: 0; /* Allows text truncation */
+            padding-right: 1.5rem;
+        }
+        .col-price-fixed {
+            width: 140px;
+            flex-shrink: 0;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .col-status-fixed {
+            width: 140px;
+            flex-shrink: 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+        .col-actions-fixed {
+            width: 120px;
+            flex-shrink: 0;
+            text-align: right;
+        }
+
+        .exam-title-text {
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            font-size: 1rem;
+        }
+        
+        .exam-id {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Badges */
+        .badge-published { 
+            background: #D1FAE5; 
+            color: var(--color-green); 
+            padding: 0.35rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-draft { 
+            background: #FEF3C7; 
+            color: var(--color-yellow); 
+            padding: 0.35rem 0.85rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .list-action-link {
+            font-weight: 500;
+            color: #4F46E5;
+            transition: color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.85rem;
+        }
+        .list-action-link:hover {
+            color: #6366F1;
+            text-decoration: underline;
+        }
+        
+        /* Mobile Layout Overrides */
+        @media (max-width: 768px) {
+             .list-header { display: none; } /* Hide table header */
+             
+             .desktop-row {
+                 display: block; /* Stack content */
+                 padding: 1rem;
+             }
+             
+             .col-title-group {
+                 padding-right: 0;
+                 margin-bottom: 0.75rem;
+             }
+             .exam-title-text {
+                 white-space: normal; /* Wrap title on mobile */
+                 line-height: 1.4;
+             }
+             
+             /* Hide the fixed columns in desktop mode */
+             .col-price-fixed, .col-status-fixed, .col-actions-fixed {
+                 display: none; 
+             }
+             
+             /* Show Mobile specific containers */
+             .mobile-meta-row {
+                 display: flex;
+                 justify-content: space-between;
+                 align-items: center;
+                 padding-top: 0.75rem;
+                 border-top: 1px solid #F1F5F9;
+                 margin-top: 0.5rem;
+             }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+
+    <!-- Secure Local Storage Cache -->
+    <script src="/static/js/secure-cache.js"></script>
+</head>
+<body class="flex h-screen">
+
+    <!-- SIDEBAR -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- MAIN CONTENT -->
+    <div id="main-content-area" class="main-content flex-1 overflow-y-auto relative z-30">
+        <main class="p-8">
+            <div class="max-w-7xl mx-auto">
+
+                <header class="flex justify-between items-start mb-10">
+                    <div>
+                        <h1 class="page-title">Hello, {{ creator_name }}!</h1>
+                        <p class="page-subtitle">Here's a summary of your channel's performance.</p>
+                    </div>
+                    <div class="relative">
+                        <button class="profile-btn flex items-center gap-3">
+                            <img id="profile-picture-desktop" src="{{ profile_image_path or 'https://placehold.co/100x100/F5F5F7/6E6E73?text=P' }}" class="h-10 w-10 rounded-full object-cover" alt="User avatar">
+                            <div>
+                                <p class="text-sm font-semibold text-dark text-left">{{ creator_name }}</p>
+                                <p class="text-xs text-muted">Creator</p>
+                            </div>
+                        </button>
+                    </div>
+                </header>
+
+                <!-- Stats Cards -->
+                <section class="mb-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="stat-label">Total Income</p>
+                                <div class="icon-box icon-green">
+                                    <i data-lucide="indian-rupee" style="width: 20px; height: 20px;"></i>
+                                </div>
+                            </div>
+                            <p id="total-income" class="stat-value">₹{{ '{:,.2f}'.format(total_income) }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="stat-label">Monthly Income</p>
+                                <div class="icon-box icon-indigo">
+                                     <i data-lucide="calendar-check" style="width: 20px; height: 20px;"></i>
+                                </div>
+                            </div>
+                            <p id="monthly-income" class="stat-value">₹{{ '{:,.2f}'.format(monthly_income) }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="stat-label">Total Sales</p>
+                                <div class="icon-box icon-blue">
+                                    <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
+                                </div>
+                            </div>
+                            <p id="total-sales" class="stat-value">{{ total_sales }}</p>
+                        </div>
+                        <div class="stat-card">
+                            <div class="flex items-center justify-between mb-4">
+                                <p class="stat-label">Monthly Sales</p>
+                                <div class="icon-box icon-orange">
+                                    <i data-lucide="shopping-cart" style="width: 20px; height: 20px;"></i>
+                                </div>
+                            </div>
+                            <p id="monthly-sales" class="stat-value">{{ monthly_sales }}</p>
+                        </div>
+                    </div>
+                </section>
+    
+                <!-- Recent Exams Table -->
+                <section>
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-dark">Recent Exams</h2>
+                        <a class="text-sm font-semibold text-indigo-600 hover:underline" href="/creator/listed_exams">View All <i data-lucide="arrow-right" style="width: 14px; height: 14px; display: inline-block;"></i></a>
+                    </div>
+                    
+                    <div id="exams-list-container" class="list-card">
+                        
+                        <!-- Table Header (Strict Flex Layout) -->
+                        <div class="list-header hidden md:flex">
+                            <div class="col-title-group">Exam Title & ID</div>
+                            <div class="col-price-fixed">Price</div>
+                            <div class="col-status-fixed">Status</div>
+                            <div class="col-actions-fixed">Actions</div>
+                        </div>
+
+                        <!-- Rows will be injected here via JS -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Data holders -->
+    <div id="exam-data" style="display: none;">{{ exams|tojson|safe }}</div>
+    <div id="profile-data" data-profile-image-path="{{ profile_image_path or '' }}" style="display: none;"></div>
+    <div id="earnings-data" style="display: none;">
+        <span id="total-income-value">{{ total_income }}</span>
+        <span id="monthly-income-value">{{ monthly_income }}</span>
+        <span id="total-sales-value">{{ total_sales }}</span>
+        <span id="monthly-sales-value">{{ monthly_sales }}</span>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', async function() {
+
+            // 1. Currency Formatter
+            const formatCurrency = (value) => {
+                if (value === undefined || value === null) return '0.00';
+                try {
+                    const num = parseFloat(value);
+                    return new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
+                } catch { return '0.00'; }
+            };
+
+            // 2. Load Earnings from API with caching
+            async function loadEarningsData() {
+                if (!window.SecureCache) {
+                    console.warn('SecureCache not available, loading directly from API');
+                }
+
+                // Check cache first
+                let earningsData = null;
+                if (window.SecureCache) {
+                    try {
+                        earningsData = window.SecureCache.get('dashboard_earnings');
+                    } catch (e) {
+                        console.warn('Cache read failed:', e);
+                    }
+                }
+
+                // If not in cache, fetch from API
+                if (!earningsData) {
+                    try {
+                        const response = await fetch('/creator/api/dashboard_stats/');
+                        if (response.ok) {
+                            const result = await response.json();
+                            if (result.success) {
+                                earningsData = result.data;
+                                // Cache for 5 minutes
+                                if (window.SecureCache) {
+                                    try {
+                                        window.SecureCache.set('dashboard_earnings', earningsData, 300);
+                                    } catch (e) {
+                                        console.warn('Cache write failed:', e);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Failed to fetch earnings:', e);
+                        return;
+                    }
+                }
+
+                // Update DOM with earnings data
+                if (earningsData) {
+                    try {
+                        document.getElementById('total-income').textContent = '₹' + formatCurrency(earningsData.total_income);
+                        document.getElementById('monthly-income').textContent = '₹' + formatCurrency(earningsData.monthly_income);
+                        document.getElementById('total-sales').textContent = earningsData.total_sales || 0;
+                        document.getElementById('monthly-sales').textContent = earningsData.monthly_sales || 0;
+                    } catch (e) {
+                        console.error('Failed to update earnings UI:', e);
+                    }
+                }
+            }
+
+            // 3. Load Exams from API with caching
+            async function loadExamsData() {
+                const examsContainer = document.getElementById('exams-list-container');
+                if (!examsContainer) {
+                    console.error('Exams container not found');
+                    return;
+                }
+
+                // Check cache first
+                let examsData = null;
+                if (window.SecureCache) {
+                    try {
+                        examsData = window.SecureCache.get('dashboard_exams');
+                        if (examsData) {
+                            console.log('Loaded exams from cache:', examsData.length, 'exams');
+                        }
+                    } catch (e) {
+                        console.warn('Cache read failed:', e);
+                    }
+                }
+
+                // If not in cache, fetch from API
+                if (!examsData) {
+                    try {
+                        console.log('Fetching exams from API...');
+                        const response = await fetch('/creator/api/dashboard_exams/');
+                        console.log('API response status:', response.status);
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            console.log('API result:', result);
+
+                            if (result.success) {
+                                examsData = result.data;
+                                console.log('Fetched', examsData.length, 'exams from API');
+
+                                // Cache for 5 minutes
+                                if (window.SecureCache) {
+                                    try {
+                                        window.SecureCache.set('dashboard_exams', examsData, 300);
+                                        console.log('Cached exams data');
+                                    } catch (e) {
+                                        console.warn('Cache write failed:', e);
+                                    }
+                                }
+                            } else {
+                                console.error('API returned success=false:', result.message);
+                            }
+                        } else {
+                            console.error('API request failed with status:', response.status);
+                        }
+                    } catch (e) {
+                        console.error('Failed to fetch exams:', e);
+                        return;
+                    }
+                }
+
+                // Render exams
+                if (examsData) {
+                    console.log('Rendering', examsData.length, 'exams');
+                    renderExamList(examsData);
+                } else {
+                    console.warn('No exams data to render');
+                    renderExamList([]);
+                }
+            }
+
+            // Load data from APIs
+            await Promise.all([loadEarningsData(), loadExamsData()]);
+
+            function renderExamList(examsData) {
+                const examsContainer = document.getElementById('exams-list-container');
+                if (!examsContainer) {
+                    console.error('Exams container not found in renderExamList');
+                    return;
+                }
+
+                if (Array.isArray(examsData) && examsData.length > 0) {
+                    // Clear existing content except the header
+                    const header = examsContainer.querySelector('.list-header');
+                    examsContainer.innerHTML = '';
+                    if (header) {
+                        examsContainer.appendChild(header);
+                    }
+
+                    examsData.slice(0, 5).forEach(exam => {
+                        const examDiv = document.createElement('a');
+                        examDiv.className = 'desktop-row';
+                        examDiv.href = `/creator/exam/${exam.unique_exam_number}/`;
+
+                        const formattedPrice = '₹' + formatCurrency(exam.exam_price);
+                        const statusBadge = exam.is_active
+                            ? `<span class="badge-published">Active</span>`
+                            : `<span class="badge-draft">Draft</span>`;
+
+                        examDiv.innerHTML = `
+                            <div class="col-title-group">
+                                <h3 class="exam-title-text" title="${exam.exam_title}">${exam.exam_title}</h3>
+                                <p class="exam-id">ID: ${exam.unique_exam_number}</p>
+
+                                <div class="md:hidden mobile-meta-row">
+                                    <div class="flex flex-col">
+                                        <span class="text-xs text-muted uppercase font-bold">Price</span>
+                                        <span class="text-dark font-bold">${formattedPrice}</span>
+                                    </div>
+                                    <div>
+                                        ${statusBadge}
+                                    </div>
+                                </div>
+                                <div class="md:hidden text-right mt-2">
+                                    <span class="text-indigo-600 text-sm font-medium">View Details &rarr;</span>
+                                </div>
+                            </div>
+
+                            <div class="col-price-fixed hidden md:block">
+                                ${formattedPrice}
+                            </div>
+
+                            <div class="col-status-fixed hidden md:flex">
+                                ${statusBadge}
+                            </div>
+
+                            <div class="col-actions-fixed hidden md:block">
+                                <span class="list-action-link">
+                                    View Details <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                                </span>
+                            </div>
+                        `;
+                        examsContainer.appendChild(examDiv);
+                    });
+
+                    // Re-initialize Lucide icons for the new content
+                    lucide.createIcons();
+                } else {
+                    examsContainer.innerHTML = `
+                        <div class="p-6 text-center">
+                            <i data-lucide="book-open" style="width: 48px; height: 48px; color: #CBD5E1; margin-bottom: 1rem;"></i>
+                            <p class="text-dark font-semibold mb-2">No exams listed yet.</p>
+                            <p class="text-muted text-sm mb-4">Add a new one to generate income.</p>
+                            <a href="/creator/list_new_exam" class="btn-cta inline-flex text-sm py-2 px-4">
+                                <i data-lucide="plus" style="width: 16px; height: 16px;"></i>
+                                List New Exam
+                            </a>
+                        </div>
+                    `;
+                    lucide.createIcons();
+                }
+            }
+
+            // 4. Load Profile Picture with Caching
+            const profileImagePath = document.getElementById('profile-data')?.dataset?.profileImagePath;
+            const desktopProfileImageElement = document.getElementById('profile-picture-desktop');
+
+            if (desktopProfileImageElement) {
+                let imageSrc = null;
+
+                // Check cache for profile picture
+                if (window.SecureCache) {
+                    try {
+                        const cachedProfilePic = window.SecureCache.get('profile_picture');
+                        if (cachedProfilePic) {
+                            desktopProfileImageElement.src = cachedProfilePic;
+                            imageSrc = cachedProfilePic; // Mark as loaded from cache
+                        }
+                    } catch (e) {
+                        console.warn('Failed to read profile picture from cache:', e);
+                    }
+                }
+
+                // If not in cache, load from data attribute
+                if (!imageSrc) {
+                    if (profileImagePath && profileImagePath !== 'None' && profileImagePath !== 'null' && profileImagePath.trim() !== '') {
+                        imageSrc = profileImagePath;
+                    } else {
+                        imageSrc = 'https://placehold.co/100x100/F5F5F7/6E6E73?text=P';
+                    }
+                    desktopProfileImageElement.src = imageSrc;
+
+                    // Cache for 30 minutes
+                    if (window.SecureCache) {
+                        try {
+                            window.SecureCache.set('profile_picture', imageSrc, 1800);
+                        } catch (e) {
+                            console.warn('Failed to cache profile picture:', e);
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

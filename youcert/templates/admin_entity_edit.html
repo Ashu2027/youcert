@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>{{ 'Create' if is_create else 'Edit' }} {{ entity_config.display_name }} - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Form Card --- */
+        .form-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-label .required {
+            color: #EF4444;
+            margin-left: 0.25rem;
+        }
+
+        .readonly-badge {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            background: #F3F4F6;
+            color: var(--text-muted);
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            border: 1px solid #E5E7EB;
+            text-transform: uppercase;
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input:disabled, .form-input[readonly], .form-select[disabled] {
+            background: #F9FAFB;
+            color: var(--text-muted);
+            cursor: not-allowed;
+            border-color: #E5E7EB;
+        }
+
+        .field-hint {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+
+        /* --- File Upload --- */
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: #F8FAFC;
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .file-input-label:hover {
+            border-color: #6366F1;
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .image-preview-container {
+            margin-top: 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            padding: 0.5rem;
+            display: inline-block;
+            background: white;
+        }
+
+        .image-preview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 8px;
+            cursor: zoom-in;
+            display: block;
+        }
+
+        /* --- Password/Verify Section --- */
+        .password-section {
+            margin-top: 2.5rem;
+            padding: 2rem;
+            background: #FEF2F2;
+            border: 1px solid #FECACA;
+            border-radius: var(--radius-md);
+        }
+
+        .password-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #991B1B;
+        }
+
+        .password-section p {
+            font-size: 0.875rem;
+            color: #7F1D1D;
+            margin-bottom: 1.5rem;
+        }
+
+        /* --- Form Actions --- */
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #F1F5F9;
+        }
+
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .modal-image {
+            max-width: 95%;
+            max-height: 90vh;
+            border-radius: var(--radius-md);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .modal-close {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            color: var(--text-dark);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: #F3F4F6; }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .alert-warning { background: var(--warning-bg); color: var(--warning-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 0 1rem; margin-top: 80px; }
+            .form-card { padding: 1.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-actions { flex-direction: column-reverse; } 
+            .btn-primary, .btn-secondary { width: 100%; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <a href="{{ url_for('sevak69.' + entity_key) }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to List
+        </a>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                {% if is_create %}
+                    <i data-lucide="plus-circle" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                {% else %}
+                    <i data-lucide="edit-3" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                {% endif %}
+                {{ 'Create' if is_create else 'Edit' }} {{ entity_config.display_name }}
+            </h1>
+            <p class="page-subtitle">
+                {% if is_create %}Create a new record{% else %}Update existing record (ID: {{ record.get(entity_config.pk_column, 'N/A') }}){% endif %}
+            </p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'error' %}
+                            <i data-lucide="alert-circle"></i>
+                        {% elif category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% elif category == 'warning' %}
+                            <i data-lucide="alert-triangle"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-card">
+            <form method="POST" enctype="multipart/form-data" id="entityForm"
+                  action="{{ url_for('sevak69.' + entity_key + '_create') if is_create else url_for('sevak69.' + entity_key + '_edit', pk_value=record.get(entity_config.pk_column)) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-grid">
+                    {% for col in schema %}
+                         {% set col_name = col.COLUMN_NAME %}
+                         {# Exclude hidden fields and password_hash #}
+                         {% set show_field = col_name not in entity_config.hidden_fields and col_name != 'password_hash' %}
+                         {% set is_readonly = col_name in entity_config.readonly_fields %}
+                         
+                         {% if show_field %}
+                             {# Render only if NOT read-only OR if it's CREATE mode #}
+                             {% if not is_readonly or is_create %}
+                                <div class="form-group">
+                                    <label for="{{ col_name }}" class="form-label">
+                                        {{ col_name|replace('_', ' ')|title }}
+                                        {% if col.IS_NULLABLE == 'NO' and col.COLUMN_DEFAULT is none and col.COLUMN_KEY != 'PRI' %}
+                                            <span class="required">*</span>
+                                        {% endif %}
+                                        {% if col_name in entity_config.encrypted_fields %}
+                                            <i data-lucide="lock" style="width: 12px; height: 12px; color: #F59E0B; display: inline; margin-left: 4px;"></i>
+                                        {% endif %}
+                                    </label>
+                                    
+                                    {# --- INPUT TYPE LOGIC --- #}
+                                    {% if col_name in entity_config.image_fields %}
+                                        <div class="file-input-wrapper">
+                                            <label for="{{ col_name }}" class="file-input-label" id="{{ col_name }}_label">
+                                                 <i data-lucide="camera" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                                                 <div class="font-medium">Click or Drag to upload image</div>
+                                                 <div class="text-xs text-gray-400 mt-1">JPG, PNG, max 5MB</div>
+                                            </label>
+                                            <input type="file" id="{{ col_name }}" name="{{ col_name }}" 
+                                                   class="file-input" accept="image/jpeg, image/png">
+                                        </div>
+                                         <small id="{{ col_name }}_error" style="color: #EF4444; display: none; margin-top: 0.5rem;">File size exceeds 5MB limit.</small>
+                                         {% if not is_create and record and record.get(col_name + '_url') %}
+                                        <div class="image-preview-container">
+                                            <img src="{{ record[col_name + '_url'] }}" 
+                                                 alt="Current {{ col_name|replace('_', ' ')|title }}" 
+                                                 class="image-preview"
+                                                 onclick="openImageModal('{{ record[col_name + '_url'] }}')">
+                                            <div class="field-hint">Current image. Upload new to replace.</div>
+                                        </div>
+                                         {% endif %}
+                                    
+                                    {% elif col.DATA_TYPE in ['text', 'longtext', 'mediumtext'] %}
+                                        <textarea id="{{ col_name }}" name="{{ col_name }}" 
+                                                  class="form-textarea"
+                                                  {% if col.IS_NULLABLE == 'NO' and col.COLUMN_DEFAULT is none %}required{% endif %}
+                                                  >{% if not is_create and record %}{{ record.get(col_name, '') }}{% endif %}</textarea>
+                                    
+                                    {% elif col.DATA_TYPE == 'tinyint' and col.COLUMN_TYPE == 'tinyint(1)' %}
+                                        <select id="{{ col_name }}" name="{{ col_name }}" class="form-select">
+                                             {% set current_value = record.get(col_name) if not is_create else (1 if col.COLUMN_DEFAULT == '1' else 0) %}
+                                            <option value="1" {% if current_value == 1 %}selected{% endif %}>Yes / Active</option>
+                                            <option value="0" {% if current_value == 0 %}selected{% endif %}>No / Inactive</option>
+                                        </select>
+                                    
+                                    {% elif col_name == 'designation' and entity_key == 'admin' %}
+                                        <select id="{{ col_name }}" name="{{ col_name }}" class="form-select" required>
+                                             {% for num, name in designation_names.items()|sort if designation_names %}
+                                                 {% if g.admin_designation == 0 or num > g.admin_designation %}
+                                                    <option value="{{ num }}" {% if not is_create and record and record.get(col_name) == num %}selected{% endif %}>{{ name }} ({{ num }})</option>
+                                                 {% endif %}
+                                             {% endfor %}
+                                        </select>
+                                         <div class="field-hint">Select the admin role. Approval might be required.</div>
+                                    
+                                    {% elif col.DATA_TYPE in ['date', 'datetime', 'timestamp'] %}
+                                         {% set current_dt_value = record.get(col_name, '') if not is_create else '' %}
+                                        <input type="{{ 'date' if col.DATA_TYPE == 'date' else 'datetime-local' }}" 
+                                               id="{{ col_name }}" name="{{ col_name }}" 
+                                               class="form-input"
+                                                value="{{ (current_dt_value|string)[:16]|replace(' ', 'T') if current_dt_value else '' }}" 
+                                               {% if col.IS_NULLABLE == 'NO' and col.COLUMN_DEFAULT is none %}required{% endif %}>
+                                    
+                                    {% elif col.DATA_TYPE in ['int', 'bigint', 'decimal', 'float', 'double'] %}
+                                        <input type="number" step="{{ '0.01' if col.DATA_TYPE in ['decimal', 'float', 'double'] else '1' }}"
+                                               id="{{ col_name }}" name="{{ col_name }}" 
+                                               class="form-input"
+                                               value="{{ record.get(col_name, '') if not is_create else '' }}"
+                                               {% if col.IS_NULLABLE == 'NO' and col.COLUMN_DEFAULT is none %}required{% endif %}>
+                                    
+                                    {% elif col_name == 'email' %}
+                                        <input type="email" id="{{ col_name }}" name="{{ col_name }}" 
+                                               class="form-input" placeholder="e.g., user@example.com"
+                                               value="{{ record.get(col_name, '') if not is_create else '' }}"
+                                               {% if col.IS_NULLABLE == 'NO' %}required{% endif %}>
+                                    
+                                    {% else %}
+                                        <input type="text" id="{{ col_name }}" name="{{ col_name }}" 
+                                               class="form-input"
+                                               value="{{ record.get(col_name, '') if not is_create else '' }}"
+                                               {% if col.IS_NULLABLE == 'NO' and col.COLUMN_DEFAULT is none %}required{% endif %}>
+                                    {% endif %}
+                                     
+                                     {% if col_name in entity_config.encrypted_fields %}
+                                         <div class="field-hint">This field will be encrypted. Value cannot be retrieved after saving.</div>
+                                     {% endif %}
+                                </div>
+                                
+                             {# Render read-only fields only in EDIT mode #}
+                             {% elif is_readonly and not is_create %}
+                                <div class="form-group">
+                                    <label for="{{ col_name }}" class="form-label">
+                                        {{ col_name|replace('_', ' ')|title }}
+                                        <span class="readonly-badge">Read Only</span>
+                                    </label>
+                                    <input type="text" id="{{ col_name }}" 
+                                           value="{{ record.get(col_name, 'N/A') }}" 
+                                           class="form-input" readonly disabled> 
+                                </div>
+                             {% endif %} 
+                         {% endif %} 
+                    {% endfor %}
+                </div>
+
+                {# Admin Password Verification #}
+                <div class="password-section">
+                    <div class="password-section-title">
+                        <i data-lucide="lock" style="width: 16px; height: 16px;"></i>
+                        Confirm Action
+                    </div>
+                     <p>For security, please enter your current admin password to {{ 'create this record' if is_create else 'save these changes' }}.</p>
+                    <div class="form-group" style="max-width: 400px;"> 
+                        <label for="current_admin_password" class="form-label">
+                            Your Admin Password <span class="required">*</span>
+                        </label>
+                        <input type="password" id="current_admin_password" name="current_admin_password" 
+                               class="form-input" placeholder="Enter your admin password" required>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                         <span id="btnText">
+                             {% if is_create %}Create Record{% else %}Save Changes{% endif %}
+                         </span>
+                         <span id="spinner" class="spinner" style="display: none;"></span> 
+                    </button>
+                    <a href="{{ url_for('sevak69.' + entity_key) }}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- Image Modal -->
+    <div class="modal-overlay" id="imageModal" onclick="closeImageModal()">
+        <button type="button" class="modal-close" onclick="closeImageModal()">
+            <i data-lucide="x"></i>
+        </button>
+        <img src="" alt="Preview" class="modal-image" id="modalImage">
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        const entityForm = document.getElementById('entityForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText'); 
+        const spinner = document.getElementById('spinner'); 
+        const isCreateMode = {{ is_create|tojson }};
+        let formChanged = false; 
+
+        // --- Form Submission Logic ---
+        entityForm.addEventListener('submit', function(e) {
+            const adminPassword = document.getElementById('current_admin_password');
+            if (adminPassword && !adminPassword.value) { 
+                e.preventDefault();
+                alert('Please enter your admin password to confirm the action.');
+                adminPassword.focus();
+                return false;
+            }
+
+            if (submitBtn && btnText && spinner) {
+                submitBtn.disabled = true;
+                btnText.style.display = 'none'; 
+                spinner.style.display = 'inline-block'; 
+            }
+            formChanged = false; 
+            return true;
+        });
+
+        // --- File Input Preview & Validation ---
+        document.querySelectorAll('input[type="file"]').forEach(input => {
+            const label = document.getElementById(input.id + '_label');
+            const errorEl = document.getElementById(input.id + '_error');
+            const MAX_IMAGE_SIZE = 5 * 1024 * 1024; // 5MB
+
+            input.addEventListener('change', function(e) {
+                if(errorEl) errorEl.style.display = 'none'; 
+                if(label) label.style.borderColor = '#CBD5E1'; 
+
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+                    const fileSize = file.size;
+
+                    if (fileSize > MAX_IMAGE_SIZE) {
+                        if(label) {
+                             label.innerHTML = `
+                                <i data-lucide="alert-triangle" style="width: 24px; height: 24px; color: #EF4444; margin-bottom: 0.5rem;"></i>
+                                <div class="font-medium text-red-500">File Too Large</div>
+                                <div class="text-xs text-gray-400">${(fileSize / 1024 / 1024).toFixed(2)} MB (Max 5MB)</div>
+                            `;
+                             label.style.borderColor = '#EF4444';
+                             lucide.createIcons();
+                         }
+                        if(errorEl) errorEl.style.display = 'block';
+                        e.target.value = null; 
+                    } else {
+                        if(label) {
+                             label.innerHTML = `
+                                <i data-lucide="check-circle" style="width: 24px; height: 24px; color: #059669; margin-bottom: 0.5rem;"></i>
+                                <div class="font-medium text-green-600">${file.name}</div>
+                                <div class="text-xs text-gray-400">${(fileSize / 1024 / 1024).toFixed(2)} MB</div>
+                            `;
+                            label.style.borderColor = '#059669';
+                            lucide.createIcons();
+                         }
+                    }
+                } else {
+                     if(label) {
+                          label.innerHTML = `
+                             <i data-lucide="camera" style="width: 24px; height: 24px; margin-bottom: 0.5rem;"></i>
+                             <div class="font-medium">Click or Drag to upload image</div>
+                             <div class="text-xs text-gray-400 mt-1">JPG, PNG, max 5MB</div>
+                         `;
+                         lucide.createIcons();
+                     }
+                }
+                 formChanged = true; 
+            });
+        });
+        
+        // --- Image Modal ---
+        function openImageModal(src) {
+             if (!src) return;
+            document.getElementById('modalImage').src = src;
+            document.getElementById('imageModal').classList.add('active');
+        }
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.remove('active');
+        }
+
+        // --- Track Form Changes ---
+        const formInputs = entityForm.querySelectorAll('input:not([type="hidden"]), select, textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('input', () => { 
+                formChanged = true;
+            });
+             input.addEventListener('change', () => { 
+                formChanged = true;
+            });
+        });
+
+        // --- Confirm Navigation Away ---
+        window.addEventListener('beforeunload', function(e) {
+            if (formChanged && submitBtn && !submitBtn.disabled) {
+                e.preventDefault(); 
+                e.returnValue = ''; 
+                return '';       
+            }
+        });
+
+        // --- Auto-dismiss alerts ---
+         document.addEventListener('DOMContentLoaded', function() {
+              const alerts = document.querySelectorAll('.main-content > .alert'); 
+              alerts.forEach(alert => {
+                  setTimeout(() => {
+                     if (alert) { 
+                         alert.style.transition = 'opacity 0.3s ease';
+                         alert.style.opacity = '0';
+                         setTimeout(() => alert.remove(), 300);
+                     }
+                  }, 5000);
+              });
+         });
+
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Upload Document - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Scrollbar --- */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- Header --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        /* --- Main Layout --- */
+        .main-content {
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .upload-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* --- Forms --- */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+        .form-label .required { color: #EF4444; margin-left: 0.25rem; }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        .form-input::placeholder, .form-textarea::placeholder { color: #9CA3AF; }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        /* --- File Input --- */
+        .file-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem;
+            background: #F8FAFC;
+            border: 2px dashed #CBD5E1;
+            border-radius: var(--radius-md);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-muted);
+        }
+
+        .file-input-label:hover {
+            border-color: #6366F1;
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .file-input-icon {
+            margin-bottom: 0.75rem;
+            color: #9CA3AF;
+            transition: color 0.2s;
+        }
+        
+        .file-input-label:hover .file-input-icon { color: #6366F1; }
+
+        .file-input-text { font-weight: 600; margin-bottom: 0.25rem; font-size: 0.9rem; }
+        .file-input-hint { font-size: 0.75rem; }
+        
+        .file-input-filename {
+            font-weight: 600;
+            color: #059669;
+            margin-bottom: 0.5rem;
+            word-break: break-all;
+        }
+        
+        .file-input-filesize { font-size: 0.75rem; }
+
+        .file-input {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .upload-card { padding: 1.5rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT Logo" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <a href="{{ url_for('sevak69.documents') }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to Documents
+        </a>
+    </header>
+    
+    <main class="main-content">
+        <div class="upload-card">
+            <div class="page-header">
+                <h1 class="page-title">
+                    <i data-lucide="upload-cloud" style="width: 36px; height: 36px; color: #4F46E5;"></i>
+                    Upload Document
+                </h1>
+                <p class="page-subtitle">Upload files to the admin document library (for Users, Creators, or Admins)</p>
+            </div>
+            
+             {% with messages = get_flashed_messages(with_categories=true) %}
+                 {% if messages %}
+                     {% for category, message in messages %}
+                         <div class="alert alert-{{ category }}">
+                             {% if category == 'success' %}
+                                 <i data-lucide="check-circle-2"></i>
+                             {% elif category == 'error' %}
+                                 <i data-lucide="alert-circle"></i>
+                             {% else %}
+                                 <i data-lucide="info"></i>
+                             {% endif %}
+                             <span>{{ message }}</span>
+                         </div>
+                     {% endfor %}
+                 {% endif %}
+             {% endwith %}
+             
+            <form method="POST" action="{{ url_for('sevak69.upload_document') }}" enctype="multipart/form-data" id="uploadForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="form-group">
+                    <label for="target_type" class="form-label">Target Type <span class="required">*</span></label>
+                    <select id="target_type" name="target_type" class="form-select" required>
+                        <option value="">-- Select Target Type --</option>
+                        <option value="user">User</option>
+                        <option value="creator">Creator</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                     <label for="target_id" class="form-label">Target ID <span class="required">*</span></label>
+                     <input type="text" id="target_id" name="target_id" class="form-input" placeholder="Enter User ID, Creator ID, or Admin ID" required>
+                 </div>
+                 
+                 <div class="form-group">
+                     <label for="document_type" class="form-label">Document Type <span class="required">*</span></label>
+                     <input type="text" id="document_type" name="document_type" class="form-input" placeholder="e.g., ID Proof, Contract, Report" required>
+                 </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description (Optional)</label>
+                    <textarea id="description" name="description" class="form-textarea" placeholder="Add any relevant notes about the document"></textarea>
+                </div>
+                
+                <div class="form-group">
+                     <label class="form-label">Select Document File <span class="required">*</span></label>
+                    <div class="file-input-wrapper">
+                        <label for="document_file" class="file-input-label" id="fileLabel">
+                             <div class="file-input-icon">
+                                 <i data-lucide="folder-up" style="width: 48px; height: 48px;"></i>
+                             </div>
+                             <div class="file-input-text">Click or Drag to select file</div>
+                             <div class="file-input-hint">Max 10MB | PDF, Images, Documents</div>
+                        </label>
+                        <input type="file" id="document_file" name="document_file" class="file-input" required 
+                               accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt,.xls,.xlsx"> 
+                    </div>
+                     <small id="fileError" style="color: #EF4444; display: none; margin-top: 0.5rem;">File size exceeds 10MB limit.</small>
+                </div>
+                
+                <button type="submit" class="btn-primary" id="submitBtn">
+                     <span id="btnText">Upload Document</span>
+                     <span id="spinner" style="display: none; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite;"></span>
+                </button>
+            </form>
+        </div>
+    </main>
+    
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        const fileInput = document.getElementById('document_file');
+        const fileLabel = document.getElementById('fileLabel');
+        const fileError = document.getElementById('fileError');
+        const submitBtn = document.getElementById('submitBtn');
+        const btnText = document.getElementById('btnText');
+        const spinner = document.getElementById('spinner');
+        const uploadForm = document.getElementById('uploadForm');
+        const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+
+        fileInput.addEventListener('change', function(e) {
+            fileError.style.display = 'none'; // Hide error on new selection
+            submitBtn.disabled = false; // Re-enable button
+            
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const fileSize = file.size;
+
+                if (fileSize > MAX_SIZE) {
+                    fileLabel.innerHTML = `
+                        <div class="file-input-icon" style="color: #EF4444;">
+                            <i data-lucide="alert-triangle" style="width: 32px; height: 32px;"></i>
+                        </div>
+                        <div class="file-input-filename" style="color: #EF4444;">File Too Large</div>
+                        <div class="file-input-filesize">${(fileSize / 1024 / 1024).toFixed(2)} MB (Max 10MB)</div>
+                    `;
+                    fileError.style.display = 'block';
+                    submitBtn.disabled = true; // Disable submit if file is too large
+                    lucide.createIcons();
+                } else {
+                    fileLabel.innerHTML = `
+                        <div class="file-input-icon" style="color: #059669;">
+                            <i data-lucide="check-circle" style="width: 32px; height: 32px;"></i>
+                        </div>
+                        <div class="file-input-filename">${file.name}</div>
+                        <div class="file-input-filesize">${(fileSize / 1024 / 1024).toFixed(2)} MB</div>
+                    `;
+                    lucide.createIcons();
+                }
+            } else {
+                 // Reset label if no file selected
+                 fileLabel.innerHTML = `
+                     <div class="file-input-icon">
+                        <i data-lucide="folder-up" style="width: 48px; height: 48px;"></i>
+                     </div>
+                     <div class="file-input-text">Click or Drag to select file</div>
+                     <div class="file-input-hint">Max 10MB | PDF, Images, Documents</div>
+                 `;
+                 lucide.createIcons();
+            }
+        });
+        
+        // Show spinner on form submit
+         if (uploadForm && submitBtn) {
+             uploadForm.addEventListener('submit', function(e) {
+                 // Double check file size on submit
+                 if (fileInput.files.length > 0 && fileInput.files[0].size > MAX_SIZE) {
+                     e.preventDefault();
+                     fileError.style.display = 'block';
+                     alert('Cannot upload: File size exceeds the 10MB limit.');
+                     return;
+                 }
+
+                 // Show loading state
+                 submitBtn.disabled = true;
+                 if (btnText) btnText.style.display = 'none';
+                 if (spinner) spinner.style.display = 'inline-block';
+             });
+         }
+         
+          // Auto-dismiss Flask flash messages
+          document.addEventListener('DOMContentLoaded', function() {
+              const alerts = document.querySelectorAll('.main-content > .alert'); 
+              alerts.forEach(alert => {
+                  setTimeout(() => {
+                     if (alert) { 
+                         alert.style.transition = 'opacity 0.3s ease';
+                         alert.style.opacity = '0';
+                         setTimeout(() => alert.remove(), 300);
+                     }
+                  }, 5000);
+              });
+          });
+
+         // Keyframes for spinner animation
+         try {
+             const styleSheet = document.styleSheets[0];
+             let ruleExists = false;
+             for (let i = 0; i < styleSheet.cssRules.length; i++) {
+                 if (styleSheet.cssRules[i].cssText.startsWith('@keyframes spin') || styleSheet.cssRules[i].cssText.startsWith('@-webkit-keyframes spin')) {
+                     ruleExists = true;
+                     break;
+                 }
+             }
+             if (!ruleExists) {
+                 styleSheet.insertRule(`
+                     @keyframes spin {
+                         to { transform: rotate(360deg); }
+                     }
+                 `, styleSheet.cssRules.length);
+             }
+         } catch (e) {
+             console.error("Could not insert spin keyframes:", e);
+         }
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

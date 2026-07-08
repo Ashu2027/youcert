@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings - youcert-creator</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (Left Sidebar)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients (Used for text highlights/accents) */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+
+            /* Status Colors */
+            --color-success: #059669;
+            --color-error: #EF4444;
+            --status-success-bg: #D1FAE5;
+            --status-error-bg: #FEE2E2;
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+        }
+
+        .nav-link.active svg {
+            color: #4F46E5;
+        }
+
+        .btn-cta {
+            background: #000000;
+            /* Black CTA button */
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        @media (max-width: 768px) {
+
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Cards & Components --- */
+        .content-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--glass-shadow);
+        }
+
+        .form-input-light {
+            background-color: #FFFFFF !important;
+            border-color: #E2E8F0 !important;
+            color: var(--text-dark) !important;
+            border-radius: var(--radius-md);
+            padding: 0.65rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input-light:focus {
+            outline: none;
+            border-color: #6366F1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        }
+
+        /* Primary Button (Black) */
+        .btn-primary-custom-sm {
+            background: #000000;
+            color: var(--text-on-brand);
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.6rem 1.25rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            /* Kept flex for centering text */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom-sm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #1a1a1a;
+        }
+
+        .btn-secondary-small {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-sm);
+            padding: 0.35rem 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary-small:hover {
+            border-color: #6366F1;
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .btn-danger-custom {
+            background: var(--color-error);
+            color: var(--text-on-brand);
+            border: 1px solid #DC2626;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+            display: flex;
+            /* Kept flex for centering text */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-danger-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.3);
+            background: #DC2626;
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: var(--status-success-bg);
+            border: 1px solid #A7F3D0;
+            color: var(--color-success);
+        }
+
+        .alert-error {
+            background: var(--status-error-bg);
+            border: 1px solid #FECACA;
+            color: var(--color-error);
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            border: 1px solid #fde68a;
+            color: #92400e;
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body class="flex h-screen">
+
+    <!-- SIDEBAR -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- Main Content Area -->
+    <div id="main-content-area" class="main-content flex-1 overflow-y-auto relative z-30">
+
+        <main class="p-8">
+            <div class="max-w-4xl mx-auto">
+                <header class="mb-10">
+                    <h1 class="page-title">Settings</h1>
+                    <p class="text-muted mt-2">Manage your profile, account, and preferences.</p>
+                </header>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <div class="mb-6">
+                    {% for category, message in messages %}
+                    <div
+                        class="alert {{ 'alert-success' if category == 'success' else 'alert-error' if category == 'error' else 'alert-warning' }}">
+                        <i data-lucide="{{ 'check-circle-2' if category == 'success' else 'alert-circle' }}"
+                            style="width: 20px; height: 20px;"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <!-- Creator Profile Section -->
+                <section class="mb-12">
+                    <div class="content-card">
+                        <div class="p-6 border-b border-card-border">
+                            <h2 class="text-2xl font-bold text-dark flex items-center gap-2">
+                                <i data-lucide="user" style="width: 24px; height: 24px; color: #4F46E5;"></i>
+                                Creator Profile
+                            </h2>
+                            <p class="text-sm text-muted mt-1">This information will be displayed publicly on your
+                                certifications.</p>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-6 mb-6">
+                                <div class="relative">
+                                    <img id="profile-photo"
+                                        class="h-24 w-24 rounded-full object-cover ring-4 ring-indigo-200" src=""
+                                        alt="User avatar">
+                                    <div
+                                        class="absolute inset-0 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-50 rounded-full cursor-pointer">
+                                        <button type="button" id="refresh-profile-btn"
+                                            class="text-white text-xs font-medium px-3 py-1.5 rounded-full bg-indigo-600 hover:bg-indigo-700">
+                                            Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-medium text-dark">Profile Picture</h3>
+                                    <p class="text-sm text-muted">Automatically synced from your YouTube channel. Hover
+                                        to refresh.</p>
+                                </div>
+                            </div>
+                            <form id="profile-form" method="POST" action="/creator/profile_update/" class="space-y-6">
+                                <input type="hidden" id="profile-csrf" name="csrf_token" value="{{ csrf_token() }}" />
+                                <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="creator_name" class="form-label">Creator Name (Display Name)</label>
+                                        <input type="text" id="creator_name" name="creator_name"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm">
+                                    </div>
+                                    <div>
+                                        <label for="channel_name" class="form-label">Channel Name (Read Only)</label>
+                                        <input type="text" id="channel_name" name="channel_name"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm" readonly>
+                                    </div>
+                                    <div>
+                                        <label for="channel_id" class="form-label">Channel ID (Read Only)</label>
+                                        <input type="text" id="channel_id" name="channel_id"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm" readonly>
+                                    </div>
+                                    <div>
+                                        <label for="subscriber_count" class="form-label">Subscriber Count (Read
+                                            Only)</label>
+                                        <input type="number" id="subscriber_count" name="subscriber_count"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm" readonly>
+                                    </div>
+                                    <div class="sm:col-span-2">
+                                        <label for="youtube_channel_link" class="form-label">YouTube Channel Link (Read
+                                            Only)</label>
+                                        <input type="url" id="youtube_channel_link" name="youtube_channel_link"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm" readonly>
+                                    </div>
+                                </div>
+                                <div class="flex justify-end pt-2">
+                                    <button type="submit" class="btn-primary-custom-sm">
+                                        Save Profile
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Account Settings Section -->
+                <section class="mb-12">
+                    <div class="content-card">
+                        <div class="p-6 border-b border-card-border">
+                            <h2 class="text-2xl font-bold text-dark flex items-center gap-2">
+                                <i data-lucide="lock" style="width: 24px; height: 24px; color: #4F46E5;"></i>
+                                Account & Security
+                            </h2>
+                            <p class="text-sm text-muted mt-1">Manage your email and password.</p>
+                        </div>
+                        <div class="p-6">
+                            <form id="account-form" method="POST" action="/creator/settings/update_password/"
+                                class="space-y-6">
+                                <input type="hidden" id="account-csrf" name="csrf_token" value="{{ csrf_token() }}" />
+                                <div>
+                                    <label for="email" class="form-label">Email Address (Read Only)</label>
+                                    <input type="email" id="email" name="email"
+                                        class="mt-2 block w-full form-input-light shadow-sm sm:text-sm" readonly>
+                                </div>
+                                <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label for="current-password" class="form-label">Current Password</label>
+                                        <input type="password" id="current-password" name="current_password"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm"
+                                            placeholder="••••••••">
+                                    </div>
+                                    <div>
+                                        <label for="new-password" class="form-label">New Password</label>
+                                        <input type="password" id="new-password" name="new_password"
+                                            class="mt-2 block w-full form-input-light shadow-sm sm:text-sm"
+                                            placeholder="••••••••">
+                                    </div>
+                                </div>
+                                <div class="flex justify-end pt-2">
+                                    <button type="submit" class="btn-primary-custom-sm">
+                                        Update Password
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Payout Section -->
+                <section class="mb-12">
+                    <div
+                        class="content-card p-6 flex justify-between items-center transition duration-300 hover:border-indigo-400">
+                        <div class="flex items-center gap-4">
+                            <i data-lucide="banknote" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                            <div>
+                                <h3 class="text-xl font-bold text-dark">Payout & Verification</h3>
+                                <p class="text-sm text-muted">Manage your bank details, check status, and view
+                                    documents.</p>
+                            </div>
+                        </div>
+                        <a href="/creator/bank_accounts/" class="btn-primary-custom-sm flex items-center gap-2">
+                            View Details
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Signature Section -->
+                <section class="mb-12">
+                    <div class="content-card">
+                        <div class="p-6 border-b border-card-border flex justify-between items-center">
+                            <div>
+                                <h2 class="text-2xl font-bold text-dark flex items-center gap-2">
+                                    <i data-lucide="edit-3" style="width: 24px; height: 24px; color: #4F46E5;"></i>
+                                    Signature
+                                </h2>
+                                <p class="text-sm text-muted mt-1">Your official signature for certification documents.
+                                </p>
+                            </div>
+                            <!-- Added Update Signature button -->
+                            <button type="button" id="update-signature-btn" class="btn-secondary-small">
+                                Update
+                            </button>
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center gap-6">
+                                <img id="signature-photo"
+                                    class="h-16 max-w-xs object-contain border border-gray-200 rounded-lg p-2 bg-white"
+                                    src="" alt="Creator signature">
+                                <div>
+                                    <h3 class="text-sm font-medium text-dark">Digital Signature</h3>
+                                    <p class="text-xs text-muted mt-1">PNG or JPEG format preferred. Max 1MB.</p>
+                                </div>
+                            </div>
+                            <!-- Hidden file input for the uploader -->
+                            <input type="file" id="signature-uploader" class="hidden"
+                                accept="image/png,image/jpeg,image/gif">
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Logout Section -->
+                <section>
+                    <div class="content-card">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <h3 class="text-lg font-bold text-dark">Logout</h3>
+                                    <p class="text-sm text-muted">End your current session securely.</p>
+                                </div>
+                                <form action="/creator/logout/" method="POST">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button type="submit"
+                                        class="btn-danger-custom py-2 px-4 rounded-md text-sm font-semibold">
+                                        Logout
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="creator-data" style="display: none;">{{ creator|tojson|safe }}</div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Show notification function
+        function showNotification(message, type = 'info') {
+            const icon = type === 'success' ? 'check-circle-2' : type === 'error' ? 'alert-circle' : 'alert-triangle';
+            const notification = document.createElement('div');
+            // Notification styling uses general alert classes defined in the style block
+            notification.className = `alert fixed top-4 right-4 shadow-lg z-50 ${type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-warning'}`;
+            notification.innerHTML = `<i data-lucide="${icon}" style="width: 20px; height: 20px; flex-shrink: 0;"></i> <span>${message}</span>`;
+
+            document.body.appendChild(notification);
+            lucide.createIcons();
+
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.3s ease';
+                notification.style.opacity = '0';
+                setTimeout(() => { notification.remove(); }, 300);
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const creatorData = JSON.parse(document.getElementById('creator-data').textContent);
+            const profileForm = document.getElementById('profile-form');
+            const accountForm = document.getElementById('account-form');
+
+            // --- SIGNATURE UPLOAD LOGIC ---
+            const updateSignatureBtn = document.getElementById('update-signature-btn');
+            const signatureUploader = document.getElementById('signature-uploader');
+
+            updateSignatureBtn.addEventListener('click', () => {
+                signatureUploader.click();
+            });
+
+            signatureUploader.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) {
+                    return;
+                }
+
+                updateSignatureBtn.innerHTML = 'Uploading...'; // Text only loading state
+                updateSignatureBtn.disabled = true;
+
+                const formData = new FormData();
+                formData.append('signature', file);
+                const csrfToken = document.getElementById('profile-csrf').value;
+
+                fetch('/creator/settings/update_signature/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': csrfToken },
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification(data.message, 'success');
+                            const signaturePhoto = document.getElementById('signature-photo');
+                            if (signaturePhoto && data.signature_url) {
+                                signaturePhoto.src = data.signature_url;
+                            }
+                        } else {
+                            showNotification(data.message || 'Upload failed.', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error uploading signature:', error);
+                        showNotification('An unexpected error occurred during upload.', 'error');
+                    })
+                    .finally(() => {
+                        updateSignatureBtn.innerHTML = 'Update'; // Text only reset
+                        updateSignatureBtn.disabled = false;
+                        e.target.value = null;
+                    });
+            });
+            // --- END: SIGNATURE UPLOAD LOGIC ---
+
+
+            // Handle profile form submission
+            profileForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                // Basic loading indicator for profile update
+                const saveBtn = profileForm.querySelector('.btn-primary-custom-sm');
+                const originalContent = saveBtn.innerHTML;
+                saveBtn.innerHTML = 'Saving...'; // Text only loading state
+                saveBtn.disabled = true;
+
+                const formData = new FormData(profileForm);
+                const creatorName = formData.get('creator_name');
+                const csrfToken = document.getElementById('profile-csrf').value;
+
+                fetch('/creator/profile_update/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({ creator_name: creatorName })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification('Profile updated successfully!', 'success');
+                        } else {
+                            showNotification(data.message || 'Failed to update profile', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('An error occurred while updating profile', 'error');
+                    })
+                    .finally(() => {
+                        saveBtn.innerHTML = originalContent; // Text only reset
+                        saveBtn.disabled = false;
+                    });
+            });
+
+            // Handle password update form
+            accountForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                const saveBtn = accountForm.querySelector('.btn-primary-custom-sm');
+                const originalContent = saveBtn.innerHTML;
+                saveBtn.innerHTML = 'Saving...'; // Text only loading state
+                saveBtn.disabled = true;
+
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const csrfToken = document.getElementById('account-csrf').value;
+
+                fetch('/creator/settings/update_password/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification('Password updated successfully!', 'success');
+                            document.getElementById('current-password').value = '';
+                            document.getElementById('new-password').value = '';
+                        } else {
+                            showNotification(data.message || 'Failed to update password', 'error');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('An error occurred while updating password', 'error');
+                    })
+                    .finally(() => {
+                        saveBtn.innerHTML = originalContent; // Text only reset
+                        saveBtn.disabled = false;
+                    });
+            });
+
+            // --- Refresh Profile Picture Logic ---
+            const refreshProfileBtn = document.getElementById('refresh-profile-btn');
+            if (refreshProfileBtn) {
+                refreshProfileBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    refreshProfileBtn.innerHTML = 'Loading...'; // Text only loading state
+                    refreshProfileBtn.disabled = true;
+
+                    const csrfToken = document.getElementById('profile-csrf').value;
+
+                    fetch('/creator/refresh_profile_picture/', {
+                        method: 'POST',
+                        headers: { 'X-CSRFToken': csrfToken }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.path) {
+                                document.getElementById('profile-photo').src = data.path;
+                                showNotification('Profile picture refreshed!', 'success');
+                            } else {
+                                showNotification(data.message || 'Failed to refresh picture.', 'error');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error refreshing profile picture:', error);
+                            showNotification('An error occurred.', 'error');
+                        })
+                        .finally(() => {
+                            refreshProfileBtn.innerHTML = 'Refresh'; // Text only reset
+                            refreshProfileBtn.disabled = false;
+                        });
+                });
+            }
+            // --- END: Refresh Profile Picture Logic ---
+
+
+            // Populate all fields on load
+            if (creatorData) {
+                document.getElementById('channel_id').value = creatorData.channel_id || '';
+                document.getElementById('creator_name').value = creatorData.creator_name || '';
+                document.getElementById('channel_name').value = creatorData.channel_name || '';
+                document.getElementById('subscriber_count').value = creatorData.subscriber_count || '0';
+                document.getElementById('youtube_channel_link').value = creatorData.youtube_channel_link || '';
+                document.getElementById('email').value = creatorData.email || '';
+
+                const profilePhoto = document.getElementById('profile-photo');
+                if (creatorData.profile_photo_url) {
+                    profilePhoto.src = creatorData.profile_photo_url;
+                    profilePhoto.onerror = function () {
+                        const name = creatorData.creator_name || 'Creator';
+                        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                        this.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=F5F5F7&color=6E6E73&size=96`;
+                    };
+                } else {
+                    const name = creatorData.creator_name || 'Creator';
+                    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+                    profilePhoto.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&background=F5F5F7&color=6E6E73&size=96`;
+                }
+
+                const signaturePhoto = document.getElementById('signature-photo');
+                if (creatorData.signature_url) {
+                    signaturePhoto.src = creatorData.signature_url;
+                    signaturePhoto.onerror = function () {
+                        this.src = 'https://placehold.co/200x64/F5F5F7/6E6E73?text=No+Signature';
+                    };
+                } else {
+                    signaturePhoto.src = 'https://placehold.co/200x64/F5F5F7/6E6E73?text=No+Signature';
+                }
+            } else {
+                console.error('Creator data not found.');
+                // Note: Not showing notification on load error to avoid confusing users unnecessarily, unless debug is needed.
+            }
+        });
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

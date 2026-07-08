@@ -1,0 +1,43 @@
+{# ============================================================================
+USER NAVIGATION BAR COMPONENT
+============================================================================
+This is the centralized navigation bar for all user-facing pages.
+
+Usage: {% include 'components/user_navbar.html' %}
+
+Features:
+- Fixed header with glass morphism effect
+- Responsive design (mobile hamburger menu)
+- Active page highlighting
+- Consistent branding across all pages
+
+Pages using this navbar:
+- Home (index.html)
+- Exams (exams.html)
+- History (completed_exams.html)
+- Profile (user_profile.html)
+============================================================================ #}
+
+<header class="header-nav">
+   <div class="container mx-auto px-6 h-full flex justify-between items-center">
+      {# Logo and Brand Name #}
+      <a class="flex items-center gap-3" href="{{ url_for('user.index') }}" style="text-decoration: none;">
+         <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto"
+            style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+         <h1 class="text-2xl font-bold text-primary-theme">Youcert</h1>
+      </a>
+
+      {# Desktop Navigation Links #}
+      <nav class="hidden md:flex items-center gap-2">
+         <a class="nav-link {% if request.endpoint == 'user.index' %}active{% endif %}"
+            href="{{ url_for('user.index') }}">Home</a>
+         <a class="nav-link {% if request.endpoint == 'user.exams' %}active{% endif %}"
+            href="{{ url_for('user.exams') }}">Exams</a>
+         <a class="nav-link {% if request.endpoint == 'user.completed_exams' %}active{% endif %}"
+            href="{{ url_for('user.completed_exams') }}">History</a>
+         <a class="nav-link {% if request.endpoint == 'user.user_profile' %}active{% endif %}"
+            href="{{ url_for('user.user_profile') }}">Profile</a>
+      </nav>
+
+   </div>
+</header>

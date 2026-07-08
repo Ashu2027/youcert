@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ creator.channel_name }} - Youcert</title>
+    <meta name="description" content="View all courses and exams by {{ creator.channel_name }} on Youcert.">
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        /* ============================================================
+           YOUCERT — Channel Page
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:     #F0F0F5;
+            --c-dark:   #1A1A2E;
+            --c-muted:  #7C7C8E;
+            --c-soft:   #E8E8F0;
+            --c-indigo: #6366F1;
+            --c-purple: #9333EA;
+            --grad:     linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+            --t:        all 0.4s var(--spring);
+            --r:        20px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            background: var(--c-bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ── Navigation ── */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .nav-link.active {
+            opacity: 1;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        /* ══════════════════════════════════════════
+           CHANNEL HERO BANNER
+        ══════════════════════════════════════════ */
+        .channel-hero {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 3rem 0 2.5rem;
+        }
+
+        /* Mesh grid overlay */
+        .channel-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        /* Ambient orbs */
+        .ch-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .ch-orb-a {
+            width: 420px;
+            height: 420px;
+            top: -160px;
+            right: -50px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.38), transparent 60%);
+            animation: ho1 18s ease-in-out infinite;
+        }
+
+        .ch-orb-b {
+            width: 260px;
+            height: 260px;
+            bottom: -90px;
+            left: 3%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.3), transparent 60%);
+            animation: ho2 22s ease-in-out infinite;
+        }
+
+        @keyframes ho1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-40px, 28px); }
+        }
+
+        @keyframes ho2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(28px, -20px); }
+        }
+
+        .channel-banner-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        /* Avatar */
+        .channel-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .channel-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.22);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 12px 32px rgba(0, 0, 0, 0.35);
+            transition: var(--t);
+        }
+
+        .channel-avatar:hover {
+            transform: scale(1.04);
+        }
+
+        .channel-avatar-fallback {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: var(--grad);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Sora', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #fff;
+            border: 3px solid rgba(255, 255, 255, 0.22);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Channel info text */
+        .channel-info {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .channel-name {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            color: #fff;
+            margin-bottom: 0.7rem;
+            line-height: 1.1;
+        }
+
+        .channel-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.25rem;
+        }
+
+        .channel-meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.09);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            border-radius: 99px;
+            padding: 0.32rem 0.9rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(6px);
+        }
+
+        .channel-meta-pill i {
+            color: #A5B4FC;
+            font-size: 0.8rem;
+        }
+
+        .channel-hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            flex-wrap: wrap;
+        }
+
+        /* YouTube button */
+        .btn-yt {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: #FF0000;
+            color: #fff;
+            border: none;
+            padding: 0.72rem 1.4rem;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-decoration: none;
+            transition: var(--t);
+            box-shadow: 0 4px 14px rgba(255, 0, 0, 0.28);
+        }
+
+        .btn-yt:hover {
+            background: #CC0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 0, 0, 0.38);
+            color: #fff;
+        }
+
+        /* Back link button */
+        .btn-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-decoration: none;
+            padding: 0.72rem 1.2rem;
+            border-radius: 12px;
+            transition: var(--t);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(6px);
+        }
+
+        .btn-back-link:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.14);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ══════════════════════════════════════════
+           STATS STRIP — lifts from hero
+        ══════════════════════════════════════════ */
+        .stats-strip {
+            background: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        }
+
+        .stats-strip-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            gap: 1.25rem;
+            flex-wrap: wrap;
+        }
+
+        .stat-block {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            min-width: 130px;
+            padding: 1rem 1.5rem;
+            background: var(--c-bg);
+            border-radius: 16px;
+            transition: var(--t);
+        }
+
+        .stat-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.08);
+        }
+
+        .stat-block-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-block-lbl {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--c-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-top: 0.2rem;
+        }
+
+        /* ══════════════════════════════════════════
+           MAIN CONTENT AREA
+        ══════════════════════════════════════════ */
+        .content-area {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 4rem;
+        }
+
+        /* ── Toolbar: sort + search ── */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .toolbar-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 0.55rem 1.1rem;
+            border-radius: 99px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--c-muted);
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .sort-btn:hover,
+        .sort-btn.active {
+            background: var(--c-dark);
+            color: #fff;
+            border-color: var(--c-dark);
+        }
+
+        /* Search input */
+        .channel-search-wrap {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border-radius: 12px;
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            padding: 0.42rem 1rem;
+            gap: 0.6rem;
+            transition: var(--t);
+        }
+
+        .channel-search-wrap:focus-within {
+            border-color: rgba(99, 102, 241, 0.4);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .channel-search-input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            color: var(--c-dark);
+            width: 200px;
+        }
+
+        .channel-search-input::placeholder {
+            color: var(--c-muted);
+        }
+
+        /* ── Section title ── */
+        .section-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: var(--c-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        /* ── Course cards grid ── */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.75rem;
+        }
+
+        .course-card {
+            background: #fff;
+            border-radius: var(--r);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transition: var(--t);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+            opacity: 0;
+            transform: translateY(16px);
+            animation: fadeSlideUp 0.5s var(--spring) forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 44px rgba(99, 102, 241, 0.12);
+            border-color: rgba(99, 102, 241, 0.14);
+        }
+
+        /* Thumbnail */
+        .course-thumb-wrap {
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: var(--c-soft);
+        }
+
+        .course-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .course-card:hover .course-thumb {
+            transform: scale(1.05);
+        }
+
+        /* Type badge on thumbnail */
+        .course-type-badge {
+            position: absolute;
+            top: 0.75rem;
+            left: 0.75rem;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Card body */
+        .course-card-body {
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            gap: 0.5rem;
+        }
+
+        .course-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            color: var(--c-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .course-desc {
+            font-size: 0.82rem;
+            color: var(--c-muted);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        /* Price + question count row */
+        .course-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--c-soft);
+            margin-top: 0.5rem;
+        }
+
+        .course-price {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--c-dark);
+        }
+
+        .course-q-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: var(--c-bg);
+            border-radius: 8px;
+            padding: 0.3rem 0.7rem;
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--c-muted);
+        }
+
+        /* Action buttons row */
+        .course-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.85rem;
+        }
+
+        /* Details button */
+        .btn-details {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: var(--c-bg);
+            color: var(--c-dark);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--t);
+            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-details:hover {
+            background: #DCDCE8;
+        }
+
+        /* Enroll button */
+        .btn-enroll {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            border: none;
+            background: var(--c-dark);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--t);
+            text-align: center;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-enroll:hover {
+            background: #000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+            color: #fff;
+        }
+
+        /* Purchased / Start button */
+        .btn-purchased {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            background: #007AFF;
+            color: #fff;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--t);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .btn-purchased:hover {
+            background: #0056CC;
+            color: #fff;
+        }
+
+        /* Completed badge */
+        .btn-completed {
+            flex: 1;
+            padding: 0.6rem;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1.5px solid #059669;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 700;
+            cursor: default;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        /* ══════════════════════════════════════════
+           STATES — Loading / Empty / Error
+        ══════════════════════════════════════════ */
+        .loading-container {
+            text-align: center;
+            padding: 5rem 0;
+            color: var(--c-muted);
+        }
+
+        .loading-spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid rgba(99, 102, 241, 0.15);
+            border-top-color: var(--c-indigo);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            color: #D1D1DB;
+            margin-bottom: 1.4rem;
+        }
+
+        .empty-state h3 {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.5rem;
+            color: var(--c-dark);
+        }
+
+        /* ── Pagination bar ── */
+        .pagination-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            padding: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .btn-load-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 2rem;
+            background: var(--grad);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--t);
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.28);
+        }
+
+        .btn-load-more:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.38);
+        }
+
+        .btn-load-more:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-info {
+            font-size: 0.875rem;
+            color: var(--c-muted);
+            font-weight: 500;
+        }
+
+        /* ── Flash alerts ── */
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid rgba(16, 185, 129, 0.18);
+        }
+
+        .alert-danger {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid rgba(239, 68, 68, 0.18);
+        }
+
+        /* Utility: hide elements */
+        .cp-hidden {
+            display: none !important;
+        }
+
+        /* ══════════════════════════════════════════
+           EXAM DETAIL MODAL — exact copy from original
+        ══════════════════════════════════════════ */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(8px);
+            z-index: 999;
+            transition: opacity 0.3s ease;
+        }
+
+        #notification-container {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            width: 90%;
+            max-width: 900px;
+        }
+
+        .notification-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            padding: 0;
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-height: 90vh;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exam-detail-content {
+            padding: 3rem;
+            overflow-y: auto;
+            flex: 1;
+            padding-bottom: 8rem;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .exam-detail-content::-webkit-scrollbar {
+            display: none;
+        }
+
+        .exam-detail-fixed-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding: 1.5rem 3rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+            z-index: 10;
+        }
+
+        @media (max-width: 768px) {
+            .exam-detail-fixed-bottom {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        /* YouTube link button inside modal */
+        .youtube-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: #FF0000;
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
+        }
+
+        .youtube-link-btn:hover {
+            background: #CC0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 0, 0, 0.35);
+        }
+
+        /* Enroll button inside modal */
+        .enroll-btn-fixed {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            padding: 1rem 1.5rem;
+            background: var(--grad);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        .enroll-btn-fixed:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+        }
+
+        /* Completed badge inside modal */
+        .completed-badge-fixed {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 2px solid #059669;
+        }
+
+        /* Toast alerts */
+        .channel-alert {
+            position: fixed;
+            top: 84px;
+            right: 1.5rem;
+            z-index: 1100;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            animation: slideInRight 0.3s ease forwards;
+            max-width: 360px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(120%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .channel-alert-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .channel-alert-error {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .channel-alert-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .channel-name {
+                font-size: 1.8rem;
+            }
+
+            .channel-banner-inner {
+                gap: 1.5rem;
+                padding: 0 1rem;
+            }
+
+            .channel-avatar,
+            .channel-avatar-fallback {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+
+            .toolbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .channel-search-input {
+                width: 140px;
+            }
+
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-strip-inner {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .content-area {
+                padding: 1.8rem 1rem 4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .channel-banner-inner {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .channel-meta-row {
+                justify-content: center;
+            }
+
+            .channel-hero-actions {
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+
+    <!-- Overlay (behind modal) -->
+    <div id="overlay" onclick="hideExamDetailNotification()"></div>
+
+    {% include 'components/user_navbar.html' %}
+
+    <!-- Exam Detail Modal — same structure as homepage -->
+    <div id="notification-container">
+        <div class="notification-box">
+            <div id="examDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- ═══ CHANNEL HERO BANNER ═══ -->
+    <div class="channel-hero">
+        <div class="ch-orb ch-orb-a"></div>
+        <div class="ch-orb ch-orb-b"></div>
+
+        <div class="channel-banner-inner">
+
+            <!-- Avatar -->
+            <div class="channel-avatar-wrap" id="avatarWrap">
+                {% if creator.profile_photo_jpg %}
+                <img src="{{ creator.profile_photo_jpg }}"
+                    alt="{{ creator.channel_name }}"
+                    class="channel-avatar"
+                    onerror="this.outerHTML='<div class=&quot;channel-avatar-fallback&quot;>{{ creator.channel_name[0]|upper }}</div>';">
+                {% else %}
+                <div class="channel-avatar-fallback">{{ creator.channel_name[0]|upper }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Info -->
+            <div class="channel-info">
+                <h1 class="channel-name">{{ creator.channel_name }}</h1>
+                <div class="channel-meta-row">
+                    <span class="channel-meta-pill">
+                        <i class="fas fa-users"></i>
+                        {{ creator.formatted_subscribers }} subscribers
+                    </span>
+                    <span class="channel-meta-pill">
+                        <i class="fas fa-book-open"></i>
+                        <span id="totalExamsHero">{{ creator.total_exams or 0 }}</span> courses
+                    </span>
+                    <span class="channel-meta-pill">
+                        <i class="fas fa-user-tie"></i>
+                        {{ creator.creator_name }}
+                    </span>
+                </div>
+                <div class="channel-hero-actions">
+                    {% if creator.youtube_channel_link %}
+                    <a href="{{ creator.youtube_channel_link }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn-yt">
+                        <i class="fab fa-youtube"></i>
+                        Visit YouTube Channel
+                        <i class="fas fa-external-link-alt" style="font-size: 0.72rem;"></i>
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('user.index') }}" class="btn-back-link">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Search
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══ STATS STRIP ═══ -->
+    <div class="stats-strip">
+        <div class="stats-strip-inner">
+            <div class="stat-block">
+                <span class="stat-block-num" id="statCourses">—</span>
+                <span class="stat-block-lbl">Total Courses</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-block-num" id="statStudents">—</span>
+                <span class="stat-block-lbl">Students Enrolled</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-block-num" id="statAvgPrice">—</span>
+                <span class="stat-block-lbl">Average Price</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-block-num">{{ creator.formatted_subscribers }}</span>
+                <span class="stat-block-lbl">Subscribers</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <div class="content-area">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+            <span>{{ message }}</span>
+            <button onclick="this.parentElement.style.display='none'"
+                style="background: none; border: none; cursor: pointer; opacity: 0.6;">&times;</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Toolbar: sort + search -->
+        <div class="toolbar">
+            <div class="toolbar-left">
+                <span style="font-size: 0.875rem; font-weight: 600; color: var(--c-muted); margin-right: 0.25rem;">Sort:</span>
+                <button class="sort-btn active" data-sort="newest" onclick="setSort('newest', this)">Newest</button>
+                <button class="sort-btn" data-sort="price_asc" onclick="setSort('price_asc', this)">Price ↑</button>
+                <button class="sort-btn" data-sort="price_desc" onclick="setSort('price_desc', this)">Price ↓</button>
+                <button class="sort-btn" data-sort="alpha" onclick="setSort('alpha', this)">A–Z</button>
+            </div>
+            <div class="channel-search-wrap">
+                <i class="fas fa-search" style="color: var(--c-muted); font-size: 0.875rem;"></i>
+                <input type="text"
+                    class="channel-search-input"
+                    id="channelSearch"
+                    placeholder="Search courses…"
+                    oninput="filterLocalSearch(this.value)">
+            </div>
+        </div>
+
+        <!-- Courses section title -->
+        <h2 class="section-title">
+            <i class="fas fa-layer-group"
+                style="background: var(--grad); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
+            Courses
+        </h2>
+
+        <!-- Loading -->
+        <div id="loadingState" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div>Loading courses…</div>
+        </div>
+
+        <!-- Courses grid — populated by JS -->
+        <div id="coursesGrid" class="courses-grid hidden"></div>
+
+        <!-- Empty state -->
+        <div id="emptyState" class="empty-state hidden">
+            <i class="fas fa-book-open empty-icon"></i>
+            <h3>No courses found</h3>
+            <p style="color: var(--c-muted);">This channel hasn't listed any courses yet.</p>
+        </div>
+
+        <!-- Error state -->
+        <div id="errorState" class="empty-state hidden">
+            <i class="fas fa-wifi empty-icon" style="color: #F87171;"></i>
+            <h3>Connection Issue</h3>
+            <p style="color: var(--c-muted); margin-bottom: 1.5rem;">Failed to load courses.</p>
+            <button onclick="loadChannelExams()" class="btn-load-more">
+                <i class="fas fa-sync-alt"></i> Try Again
+            </button>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-bar" id="paginationBar" style="display: none;">
+            <span class="page-info" id="pageInfo"></span>
+            <button class="btn-load-more" id="loadMoreBtn" onclick="loadMoreExams()">
+                Load More <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Nav scroll glass effect
+        const nav = document.querySelector('.header-nav');
+        if (nav) {
+            window.addEventListener('scroll', () => {
+                nav.classList.toggle('scrolled', scrollY > 6);
+            }, { passive: true });
+        }
+
+        // CSRF token + channel ID — preserved exactly
+        const csrfToken  = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const CHANNEL_ID = '{{ creator.channel_id }}';
+
+        let currentSort = 'newest';
+        let currentPage = 1;
+        let totalPages  = 1;
+        let allExams    = [];   // for local in-page filtering
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChannelExams();
+        });
+
+        function setSort(sort, btn) {
+            currentSort = sort;
+            currentPage = 1;
+            allExams    = [];
+            document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('channelSearch').value = '';
+            loadChannelExams(true);
+        }
+
+        function loadChannelExams(reset = false) {
+            if (reset) {
+                allExams = [];
+                currentPage = 1;
+                document.getElementById('coursesGrid').innerHTML = '';
+                document.getElementById('coursesGrid').classList.add('cp-hidden');
+                document.getElementById('emptyState').classList.add('cp-hidden');
+                document.getElementById('errorState').classList.add('cp-hidden');
+                document.getElementById('paginationBar').style.display = 'none';
+            }
+
+            document.getElementById('loadingState').style.display = 'block';
+
+            const url = `/api/channel/${CHANNEL_ID}?sort=${currentSort}&page=${currentPage}&per_page=12`;
+
+            fetch(url, {
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
+            })
+                .then(r => {
+                    if (!r.ok) throw new Error(`Server error: ${r.status}`);
+                    return r.json();
+                })
+                .then(data => {
+                    document.getElementById('loadingState').style.display = 'none';
+                    if (!data.success) throw new Error(data.message || 'Failed');
+
+                    // Update stats — IDs preserved exactly
+                    const c = data.creator || {};
+                    document.getElementById('statCourses').textContent =
+                        data.pagination?.total_exams ?? c.total_exams ?? 0;
+                    document.getElementById('statStudents').textContent =
+                        formatNum(c.total_purchases || 0);
+                    document.getElementById('statAvgPrice').textContent =
+                        c.avg_price ? `₹${parseFloat(c.avg_price).toFixed(0)}` : 'Free';
+                    document.getElementById('totalExamsHero').textContent =
+                        data.pagination?.total_exams ?? c.total_exams ?? 0;
+
+                    totalPages = data.pagination?.total_pages || 1;
+
+                    if (!data.exams || data.exams.length === 0 && currentPage === 1) {
+                        document.getElementById('emptyState').classList.remove('cp-hidden');
+                        return;
+                    }
+
+                    allExams = allExams.concat(data.exams);
+                    renderExams(data.exams);
+
+                    // Pagination
+                    if (currentPage < totalPages) {
+                        document.getElementById('paginationBar').style.display = 'flex';
+                        document.getElementById('pageInfo').textContent =
+                            `Page ${currentPage} of ${totalPages}`;
+                    } else {
+                        document.getElementById('paginationBar').style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    console.error('Channel load error:', err);
+                    document.getElementById('loadingState').style.display = 'none';
+                    if (currentPage === 1) {
+                        document.getElementById('errorState').classList.remove('cp-hidden');
+                    }
+                });
+        }
+
+        function loadMoreExams() {
+            currentPage++;
+            loadChannelExams();
+        }
+
+        function renderExams(exams) {
+            const grid = document.getElementById('coursesGrid');
+            grid.classList.remove('hidden');
+            grid.classList.remove('cp-hidden');
+
+            exams.forEach((exam, i) => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.style.animationDelay = `${i * 60}ms`;
+                card.innerHTML = buildCourseCard(exam);
+                grid.appendChild(card);
+            });
+        }
+
+        function buildCourseCard(exam) {
+            const defaultThumb = 'https://placehold.co/320x180/F0F0F5/7C7C8E?text=Course';
+            const thumb  = exam.thumbnail_image || defaultThumb;
+            const type   = exam.video_id ? 'Video' : 'Playlist';
+            const price  = exam.exam_price === 0 ? 'Free' : `₹${exam.exam_price.toFixed(0)}`;
+            const qCount = exam.question_count || 0;
+
+            let actionBtn = '';
+            if (exam.is_completed) {
+                actionBtn = `<span class="btn-completed"><i class="fas fa-check-circle"></i> Completed</span>`;
+            } else if (exam.is_purchased) {
+                actionBtn = `<a href="/exam_form/${exam.unique_exam_number}" class="btn-purchased">
+                    <i class="fas fa-play"></i> Start
+                </a>`;
+            } else {
+                actionBtn = `<button class="btn-enroll" onclick="purchaseExam('${exam.unique_exam_number}', this)">
+                    <i class="fas fa-shopping-cart"></i> Enroll
+                </button>`;
+            }
+
+            return `
+                <div class="course-thumb-wrap">
+                    <img class="course-thumb" src="${thumb}" alt="${escHtml(exam.exam_title)}"
+                         onerror="this.onerror=null; this.src='${defaultThumb}'">
+                    <span class="course-type-badge">${type}</span>
+                </div>
+                <div class="course-card-body">
+                    <div class="course-title">${escHtml(exam.exam_title)}</div>
+                    <div class="course-desc">${escHtml(exam.exam_description || 'No description available.')}</div>
+                    <div class="course-footer">
+                        <span class="course-price">${price}</span>
+                        <span class="course-q-pill">
+                            <i class="fas fa-question-circle" style="color: var(--c-indigo);"></i>
+                            ${qCount} Q
+                        </span>
+                    </div>
+                    <div class="course-actions">
+                        <button class="btn-details" onclick="viewExamDetails('${exam.unique_exam_number}')">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                        ${actionBtn}
+                    </div>
+                </div>`;
+        }
+
+        function filterLocalSearch(query) {
+            const q = query.toLowerCase().trim();
+            document.querySelectorAll('#coursesGrid .course-card').forEach(card => {
+                const text = card.textContent.toLowerCase();
+                card.style.display = (q === '' || text.includes(q)) ? '' : 'none';
+            });
+        }
+
+        // ── Exam detail modal — same flow as homepage ──
+        function viewExamDetails(examId) {
+            fetch(`/api/exam_details/${examId}`, {
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken }
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.success && data.exam) {
+                        showExamDetailNotification(data.exam);
+                    } else {
+                        showAlert(data.message || 'Failed to load exam details', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Exam detail error:', error);
+                    showAlert('Unable to load exam details. Please try again.', 'error');
+                });
+        }
+
+        function showExamDetailNotification(exam) {
+            const thumbnailUrl = exam.thumbnail_image || null;
+            const content = `
+                <div class="exam-detail-content">
+                    <button class="absolute top-6 right-6 w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors z-20" onclick="hideExamDetailNotification()">
+                        <i class="fas fa-times text-gray-500"></i>
+                    </button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                        <div class="order-2 md:order-1">
+                            <h2 class="text-3xl font-bold text-dark mb-4 leading-tight">${escHtml(exam.exam_title)}</h2>
+                            <p class="text-muted mb-6 leading-relaxed text-lg">${escHtml(exam.exam_description || 'No description available')}</p>
+                        </div>
+                        <div class="order-1 md:order-2">
+                            <div class="rounded-xl overflow-hidden shadow-lg aspect-video bg-gray-100 mb-4">
+                                ${thumbnailUrl
+                                    ? `<img src="${thumbnailUrl}" class="w-full h-full object-cover" alt="Exam" onerror="this.parentElement.innerHTML='<div class=\\'flex items-center justify-center h-full text-4xl text-gray-300\\'><i class=\\'fas fa-image\\'></i></div>'">`
+                                    : '<div class="flex items-center justify-center h-full text-4xl text-gray-300"><i class="fas fa-image"></i></div>'
+                                }
+                            </div>
+                            <div class="flex items-center gap-3 p-4 bg-gray-50 rounded-t-xl border border-gray-200 border-b-0">
+                                ${exam.creator_profile_photo
+                                    ? `<img src="${exam.creator_profile_photo}" alt="${escHtml(exam.channel_name)}" class="w-12 h-12 rounded-full object-cover" onerror="this.outerHTML='<div class=\\'w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg\\'>${escHtml(exam.channel_name).charAt(0).toUpperCase()}</div>'">`
+                                    : `<div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg">${escHtml(exam.channel_name).charAt(0).toUpperCase()}</div>`
+                                }
+                                <div class="flex-1">
+                                    <div class="text-xs uppercase tracking-wider text-gray-500">Creator</div>
+                                    <div class="font-semibold text-lg text-dark">${escHtml(exam.channel_name)}</div>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-b-xl border border-gray-200">
+                                <div class="text-xs uppercase tracking-wider text-gray-500 mb-1">Price</div>
+                                <div class="font-semibold text-2xl text-dark">&#8377;${exam.exam_price}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="exam-detail-fixed-bottom">
+                    ${exam.youtube_url
+                        ? `<a href="${exam.youtube_url}" target="_blank" rel="noopener noreferrer" class="youtube-link-btn">
+                               <i class="fab fa-youtube text-xl"></i>
+                               <span>Watch ${exam.source_type === 'video' ? 'Video' : 'Playlist'}</span>
+                               <i class="fas fa-external-link-alt text-sm"></i>
+                           </a>`
+                        : '<div></div>'
+                    }
+                    ${exam.is_purchased
+                        ? (exam.is_completed
+                            ? '<div class="completed-badge-fixed"><i class="fas fa-check-circle"></i><span>Completed</span></div>'
+                            : `<a href="/exam_form/${exam.unique_exam_number}" class="enroll-btn-fixed"><i class="fas fa-play"></i><span>Start Exam</span></a>`)
+                        : `<button class="enroll-btn-fixed" onclick="purchaseExam('${exam.unique_exam_number}', this)"><i class="fas fa-shopping-cart"></i><span>Enroll Now</span></button>`
+                    }
+                </div>`;
+
+            document.getElementById('examDetailContent').innerHTML = content;
+            document.getElementById('notification-container').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideExamDetailNotification() {
+            document.getElementById('notification-container').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function showAlert(message, type = 'error') {
+            const existing = document.getElementById('channelAlertToast');
+            if (existing) existing.remove();
+            const el = document.createElement('div');
+            el.id = 'channelAlertToast';
+            el.className = `channel-alert channel-alert-${type}`;
+            const icon = type === 'success'
+                ? 'check-circle'
+                : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle';
+            el.innerHTML = `
+                <i class="fas fa-${icon}"></i>
+                <span>${escHtml(message)}</span>
+                <button onclick="this.parentElement.remove()"
+                    style="background: none; border: none; cursor: pointer; margin-left: auto; opacity: 0.6; font-size: 1.1rem;">&times;</button>`;
+            document.body.appendChild(el);
+            setTimeout(() => el && el.remove(), 5000);
+        }
+
+        // ── Payment — reuses the same Razorpay flow as index.html ──
+        let isPaymentProcessing = false;
+
+        function purchaseExam(examId, btn) {
+            if (isPaymentProcessing) return;
+            isPaymentProcessing = true;
+            const orig = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            fetch('/api/create_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({ exam_id: examId })
+            })
+                .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+                .then(data => {
+                    if (data.success && data.order_id) {
+                        initiateRazorpay(data, examId, btn, orig);
+                    } else {
+                        alert(data.message || 'Failed to create order.');
+                        resetBtn(btn, orig);
+                    }
+                })
+                .catch(err => {
+                    console.error('Order error:', err);
+                    alert('Unable to process payment. Please try again.');
+                    resetBtn(btn, orig);
+                });
+        }
+
+        function resetBtn(btn, orig) {
+            isPaymentProcessing = false;
+            btn.innerHTML = orig;
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+        }
+
+        function initiateRazorpay(orderData, examId, btn, orig) {
+            if (typeof Razorpay === 'undefined') {
+                alert('Payment gateway not loaded. Please refresh.');
+                resetBtn(btn, orig);
+                return;
+            }
+            const rzp = new Razorpay({
+                key:         orderData.key_id,
+                amount:      orderData.amount,
+                currency:    orderData.currency,
+                name:        'Youcert',
+                description: orderData.exam_title,
+                order_id:    orderData.order_id,
+                handler:     resp => verifyPayment(resp, examId, btn, orig),
+                prefill:     { name: '{{ session.name }}', email: '{{ session.email }}' },
+                theme:       { color: '#1D1D1F' },
+                modal:       { ondismiss: () => resetBtn(btn, orig) }
+            });
+            rzp.on('payment.failed', resp => {
+                alert(`Payment failed: ${resp.error.description}`);
+                resetBtn(btn, orig);
+            });
+            rzp.open();
+        }
+
+        function verifyPayment(resp, examId, btn, orig) {
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Verifying...';
+            fetch('/api/verify_payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                body: JSON.stringify({
+                    razorpay_order_id:   resp.razorpay_order_id,
+                    razorpay_payment_id: resp.razorpay_payment_id,
+                    razorpay_signature:  resp.razorpay_signature,
+                    exam_id: examId
+                })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    isPaymentProcessing = false;
+                    if (data.success) {
+                        window.location.href = '/exams/';
+                    } else {
+                        alert(data.message || 'Payment verification failed.');
+                        resetBtn(btn, orig);
+                    }
+                })
+                .catch(() => {
+                    alert('Verification error.');
+                    resetBtn(btn, orig);
+                });
+        }
+
+        function formatNum(n) {
+            n = parseInt(n) || 0;
+            if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+            if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
+            return n.toString();
+        }
+
+        function escHtml(str) {
+            const div = document.createElement('div');
+            div.appendChild(document.createTextNode(str || ''));
+            return div.innerHTML;
+        }
+    </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>
+

@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bank Account Details - youcert-creator</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+
+    <!-- Tailwind CSS (Keep as requested) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+
+    <!-- Lucide Icons (Premium Replacement for FontAwesome/Emojis) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (FROM GOLD STANDARD)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+
+            /* Brand Gradients (Used for text highlights/accents) */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(0, 0, 0, 0.06);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --sidebar-width: 260px;
+
+            /* Status Colors */
+            --status-verified-bg: #D1FAE5;
+            --status-verified-text: #059669;
+            --status-rejected-bg: #FEE2E2;
+            --status-rejected-text: #B91C1C;
+            --status-pending-bg: #FEF3C7;
+            --status-pending-text: #B45309;
+            --status-active-bg: #DBEAFE;
+            --status-active-text: #1D4ED8;
+            /* Used for 'active' state in this context */
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 2.5rem;
+            padding-left: 0.5rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius-md);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+
+        .nav-link svg {
+            width: 20px;
+            height: 20px;
+            transition: color 0.2s;
+            color: var(--text-muted);
+            /* Default icon color */
+        }
+
+        .nav-link.active svg {
+            color: #4F46E5;
+        }
+
+        .btn-cta {
+            background: #000000;
+            /* Black CTA button */
+            color: white;
+            padding: 0.75rem;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            margin-top: auto;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            padding: 2rem;
+            max-width: 1200px;
+        }
+
+        @media (max-width: 768px) {
+
+            /* Sidebar becomes off-canvas — controlled by mobile-premium.js */
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--radius-md);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #FCA5A5;
+        }
+
+        .btn-delete:hover {
+            background: #FEE2E2;
+            box-shadow: 0 4px 8px rgba(185, 28, 28, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .btn-delete:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background: #F8FAFC;
+            color: var(--text-muted);
+            border-color: #E2E8F0;
+        }
+
+
+        /* --- Cards & Details --- */
+        .glass-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--glass-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .detail-row {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem 0;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: 500;
+            color: var(--text-muted);
+            min-width: 250px;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        @media (min-width: 640px) {
+            .detail-row {
+                flex-direction: row;
+            }
+
+            .detail-label {
+                margin-bottom: 0;
+            }
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .st-verified {
+            background: var(--status-verified-bg);
+            color: var(--status-verified-text);
+        }
+
+        .st-rejected {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+        }
+
+        .st-pending {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+        }
+
+        .st-active {
+            background: var(--status-active-bg);
+            color: var(--status-active-text);
+        }
+
+        .st-default {
+            background: #F3F4F6;
+            color: var(--text-muted);
+        }
+
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .icon-verified {
+            background: var(--status-verified-bg);
+            color: var(--status-verified-text);
+        }
+
+        .icon-rejected {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+        }
+
+        .icon-pending {
+            background: var(--status-pending-bg);
+            color: var(--status-pending-text);
+        }
+
+
+        /* --- Document Preview --- */
+        .document-preview {
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: #F8FAFC;
+        }
+
+        .document-preview:hover {
+            border-color: #6366F1;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+            background: #EEF2FF;
+        }
+
+        .doc-icon-main {
+            width: 40px;
+            height: 40px;
+            color: #4F46E5;
+            margin-bottom: 0.5rem;
+        }
+
+        .doc-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .doc-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* --- Toggle Switch --- */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.toggle-slider {
+            background-color: #059669;
+            /* Success green */
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        /* --- Alerts/Notifications --- */
+        .notification {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 900;
+            /* High Z-index */
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 500;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .note-success {
+            background: var(--status-verified-bg);
+            color: var(--status-verified-text);
+            border: 1px solid #A7F3D0;
+        }
+
+        .note-danger {
+            background: var(--status-rejected-bg);
+            color: var(--status-rejected-text);
+            border: 1px solid #FECACA;
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+
+    <!-- SIDEBAR NAVIGATION -->
+    {% include 'components/creator_sidebar.html' %}
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+
+        <header class="page-header">
+            <div>
+                <h1 class="page-title">Bank Account Details</h1>
+                <p class="page-subtitle">View and manage your bank account information (ID: {{ account.id }})</p>
+            </div>
+            <a href="/creator/bank_accounts" class="btn-secondary">
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                Back to List
+            </a>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6">
+            {% for category, message in messages %}
+            <div class="notification note-{{ 'success' if category == 'success' or category == 'info' else 'danger' }}">
+                {% if category == 'success' or category == 'info' %} <i data-lucide="check-circle-2"></i>
+                {% else %} <i data-lucide="alert-circle"></i>
+                {% endif %}
+                <span>{{ message }}</span>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Hidden CSRF Token for AJAX calls -->
+        <input type="hidden" id="csrf_token" value="{{ csrf_token() }}">
+
+
+        <!-- Status Overview Card -->
+        <div class="glass-card p-6">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-6">
+                <div class="flex items-start gap-6">
+                    <div class="icon-box 
+                        {% if account.verification_status == 1 %} icon-verified 
+                        {% elif account.verification_status == 2 %} icon-rejected 
+                        {% elif account.verification_status == 3 %} icon-pending 
+                        {% else %} icon-pending 
+                        {% endif %}">
+
+                        {% if account.verification_status == 1 %}
+                        <i data-lucide="check-check" style="width: 28px; height: 28px;"></i>
+                        {% elif account.verification_status == 2 %}
+                        <i data-lucide="x" style="width: 28px; height: 28px;"></i>
+                        {% else %}
+                        <i data-lucide="loader-2" style="width: 28px; height: 28px;"></i>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h2 class="text-2xl font-bold">{{ account.account_holder_name }}</h2>
+                        <p class="text-muted mb-2">{{ account.bank_name }} • A/C: <span
+                                style="font-family: monospace;">{{ account.account_number }}</span></p>
+
+                        <!-- Verification Status Badge -->
+                        <span class="status-badge st-{{ account.status_display.class }}">
+                            {% if account.verification_status == 1 %} <i data-lucide="check"
+                                style="width: 14px; height: 14px;"></i>
+                            {% elif account.verification_status == 2 %} <i data-lucide="alert-octagon"
+                                style="width: 14px; height: 14px;"></i>
+                            {% else %} <i data-lucide="clock" style="width: 14px; height: 14px;"></i>
+                            {% endif %}
+                            {{ account.status_display.label }}
+                        </span>
+
+                        {% if account.is_frozen %}
+                        <span class="status-badge st-rejected ml-3">
+                            <i data-lucide="snowflake" style="width: 14px; height: 14px;"></i> Account Frozen
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="flex flex-col items-start sm:items-end gap-3 pt-4 sm:pt-0">
+                    {% if account.can_activate %}
+                    <div class="flex items-center gap-3">
+                        <span class="text-sm font-medium text-dark">Set as Primary Payout Account:</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-active" {% if account.is_active %}checked{% endif %}>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    {% endif %}
+
+                    {% if account.can_receive_payment %}
+                    <div class="flex items-center gap-2 text-sm font-semibold text-green-600">
+                        <i data-lucide="badge-check" style="width: 16px; height: 16px;"></i>
+                        <span>Ready to receive payments</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Information Card -->
+        <div class="glass-card mb-8">
+            <h2 class="section-title">
+                <i data-lucide="info" style="color: #6366F1;"></i>
+                Account & Holder Information
+            </h2>
+            <div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Holder Name</span>
+                    <span class="detail-value">{{ account.account_holder_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Bank Name</span>
+                    <span class="detail-value">{{ account.bank_name }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Branch Name</span>
+                    <span class="detail-value">{{ account.branch_name or 'N/A' }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Number</span>
+                    <span class="detail-value">{{ account.account_number }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Type</span>
+                    <span class="detail-value">{{ account.account_type.title() }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Account Holder Address</span>
+                    <span class="detail-value">{{ account.account_holder_address }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banking Details Card -->
+        <div class="glass-card mb-8">
+            <h2 class="section-title">
+                <i data-lucide="banknote" style="color: #6366F1;"></i>
+                Payment Routing Details
+            </h2>
+            <div>
+                {% if account.ifsc_code %}
+                <div class="detail-row">
+                    <span class="detail-label">IFSC Code (India)</span>
+                    <span class="detail-value">{{ account.ifsc_code }}</span>
+                </div>
+                {% endif %}
+                {% if account.swift_code %}
+                <div class="detail-row">
+                    <span class="detail-label">SWIFT Code (International)</span>
+                    <span class="detail-value">{{ account.swift_code }}</span>
+                </div>
+                {% endif %}
+                {% if account.iban %}
+                <div class="detail-row">
+                    <span class="detail-label">IBAN (Europe/International)</span>
+                    <span class="detail-value">{{ account.iban }}</span>
+                </div>
+                {% endif %}
+                {% if account.routing_number %}
+                <div class="detail-row">
+                    <span class="detail-label">Routing Number (USA)</span>
+                    <span class="detail-value">{{ account.routing_number }}</span>
+                </div>
+                {% endif %}
+                {% if account.sort_code %}
+                <div class="detail-row">
+                    <span class="detail-label">Sort Code (UK)</span>
+                    <span class="detail-value">{{ account.sort_code }}</span>
+                </div>
+                {% endif %}
+                {% if account.bsb_number %}
+                <div class="detail-row">
+                    <span class="detail-label">BSB Number (Australia)</span>
+                    <span class="detail-value">{{ account.bsb_number }}</span>
+                </div>
+                {% endif %}
+                {% if account.bank_address %}
+                <div class="detail-row">
+                    <span class="detail-label">Bank Address</span>
+                    <span class="detail-value">{{ account.bank_address }}</span>
+                </div>
+                {% endif %}
+                <div class="detail-row">
+                    <span class="detail-label">Country Code</span>
+                    <span class="detail-value">{{ account.country_code }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Currency Code</span>
+                    <span class="detail-value">{{ account.currency_code }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Government ID & Documents Card -->
+        <div class="glass-card mb-8">
+            <h2 class="section-title">
+                <i data-lucide="file-check-2" style="color: #6366F1;"></i>
+                Verification Documents
+            </h2>
+
+            <!-- Government ID Info -->
+            <div class="border-b border-gray-100 mb-6 pb-4">
+                <div class="detail-row pt-0">
+                    <span class="detail-label">ID Type</span>
+                    <span class="detail-value">{{ account.id_type.replace('_', ' ').title() }}</span>
+                </div>
+                <div class="detail-row pb-0 border-b-0">
+                    <span class="detail-label">ID Number</span>
+                    <span class="detail-value">{{ account.id_number }}</span>
+                </div>
+            </div>
+
+            <!-- Document Previews -->
+            <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                <a href="/creator/bank_accounts/{{ account.id }}/documents/id_image/" target="_blank"
+                    class="document-preview">
+                    <i data-lucide="id-card" class="doc-icon-main"></i>
+                    <h3 class="doc-title">Government ID Image</h3>
+                    <p class="doc-subtitle">Click to view (Secure, Encrypted)</p>
+                </a>
+                <a href="/creator/bank_accounts/{{ account.id }}/documents/bank_statement/" target="_blank"
+                    class="document-preview">
+                    <i data-lucide="file-text" class="doc-icon-main"></i>
+                    <h3 class="doc-title">Bank Statement/Passbook</h3>
+                    <p class="doc-subtitle">Click to view (Secure, Encrypted)</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Verification History -->
+        <div class="glass-card mb-8">
+            <h2 class="section-title">
+                <i data-lucide="clock-3" style="color: #6366F1;"></i>
+                Time & Verification History
+            </h2>
+            <div>
+                <div class="detail-row">
+                    <span class="detail-label">Created On</span>
+                    <span class="detail-value">{{ account.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+                {% if account.updated_at %}
+                <div class="detail-row">
+                    <span class="detail-label">Last Updated</span>
+                    <span class="detail-value">{{ account.updated_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                </div>
+                {% endif %}
+                {% if account.verified_at %}
+                <div class="detail-row">
+                    <span class="detail-label">Verified On</span>
+                    <span class="detail-value text-green-600 font-semibold">{{ account.verified_at.strftime('%B %d, %Y
+                        at %I:%M %p') }}</span>
+                </div>
+                {% endif %}
+                {% if account.rejection_reason %}
+                <div class="detail-row">
+                    <span class="detail-label">Rejection Reason</span>
+                    <span class="detail-value text-red-600">{{ account.rejection_reason }}</span>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-between items-center pt-4">
+            <button onclick="deleteAccount()" class="btn-delete" {% if account.is_active %}disabled
+                title="Cannot delete an active account" {% endif %}>
+                <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>Delete Account
+            </button>
+            <a href="/creator/bank_accounts/{{ account.id }}/update/" class="btn-cta">
+                <i data-lucide="edit-3" style="width: 18px; height: 18px;"></i>Update Details
+            </a>
+        </div>
+
+        {% if account.is_active %}
+        <div class="mt-4 p-4 rounded-xl bg-red-50 text-red-700 border border-red-200">
+            <i data-lucide="alert-triangle"
+                style="width: 20px; height: 20px; display: inline; vertical-align: middle; margin-right: 8px;"></i>
+            <strong>Note:</strong> You cannot delete an active account. Please **turn off the primary payout switch**
+            above to deactivate it first.
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        const accountId = parseInt('{{ account.id }}');
+        const csrfToken = document.getElementById('csrf_token').value;
+
+        // Toggle active status
+        const toggleActive = document.getElementById('toggle-active');
+        if (toggleActive) {
+            // Fix: Added event listener to the click on the whole switch, not just change
+            document.querySelector('.toggle-switch').addEventListener('click', function (e) {
+                // Prevent change event propagation if the button is disabled for safety/visual reasons
+                if (toggleActive.disabled) {
+                    e.preventDefault();
+                    return;
+                }
+
+                // The toggle logic runs on the change event below
+            });
+
+            toggleActive.addEventListener('change', function () {
+                const newStatus = this.checked;
+
+                // Disable the switch immediately to show loading state
+                this.disabled = true;
+
+                fetch(`/creator/bank_accounts/${accountId}/toggle_active/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify({})
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showNotification(data.message, 'success');
+                            setTimeout(() => location.reload(), 1000); // Reload to update delete button state
+                        } else {
+                            showNotification(data.message, 'danger');
+                            this.checked = !newStatus; // Revert visually on fail
+                            this.disabled = false; // Re-enable switch
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showNotification('Failed to update status due to network error.', 'danger');
+                        this.checked = !newStatus; // Revert visually on fail
+                        this.disabled = false; // Re-enable switch
+                    });
+            });
+        }
+
+        // Delete account
+        function deleteAccount() {
+            // Custom modal replacement for alert/confirm
+            const modalMessage = "Are you sure you want to permanently delete this bank account? This action cannot be undone.";
+            const userConfirmed = confirm(modalMessage);
+
+            if (!userConfirmed) {
+                return;
+            }
+
+            fetch(`/creator/bank_accounts/${accountId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(data.message, 'success');
+                        setTimeout(() => window.location.href = '/creator/bank_accounts/', 1000);
+                    } else {
+                        showNotification(data.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showNotification('Failed to delete account due to network error.', 'danger');
+                });
+        }
+
+        // Show notification (re-implemented using alert styles)
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification note-${type}`;
+            notification.innerHTML = `
+                ${type === 'success' ? '<i data-lucide="check-circle-2"></i>' : '<i data-lucide="alert-circle"></i>'}
+                <span>${message}</span>
+            `;
+
+            document.body.appendChild(notification);
+            lucide.createIcons(); // Initialize icon inside the new notification
+
+            setTimeout(() => {
+                notification.style.transition = 'opacity 0.3s ease';
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+
+        // Auto-hide notifications on load
+        document.addEventListener('DOMContentLoaded', function () {
+            const notifications = document.querySelectorAll('.notification');
+            notifications.forEach(notification => {
+                setTimeout(() => {
+                    notification.style.transition = 'opacity 0.3s ease';
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }, 5000);
+            });
+        });
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+
+</html>

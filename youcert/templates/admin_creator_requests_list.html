@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Creator Join Requests - YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           THEME VARIABLES
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            
+            /* Status Colors */
+            --status-pending-bg: #FEF3C7;
+            --status-pending-text: #B45309;
+            
+            --status-reviewed-bg: #DBEAFE;
+            --status-reviewed-text: #1D4ED8;
+            
+            --status-contacted-bg: #F3E8FF;
+            --status-contacted-text: #7E22CE;
+            
+            --status-approved-bg: #D1FAE5;
+            --status-approved-text: #059669;
+            
+            --status-rejected-bg: #FEE2E2;
+            --status-rejected-text: #B91C1C;
+
+            /* Spacing & Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- Header (Fixed Glass) --- */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- Buttons --- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--cta-gradient);
+            color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
+        }
+
+        .btn-secondary {
+            background: var(--bg-light-secondary);
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            transform: translateY(-1px);
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.85rem;
+            font-size: 0.8rem;
+            border-radius: var(--radius-sm);
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+        .btn-small:hover {
+            background: #F8FAFC;
+            border-color: #CBD5E1;
+            color: #4F46E5;
+        }
+
+        /* --- Main Content --- */
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .page-subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Filters --- */
+        .filter-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .filter-grid {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            background: #F8FAFC;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md);
+            color: var(--text-dark);
+            font-size: 0.875rem;
+            font-family: inherit;
+            appearance: none;
+            /* Custom Arrow */
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn-filter {
+            padding: 0.75rem 1.5rem;
+            background: var(--cta-gradient);
+            border: none;
+            border-radius: var(--radius-md);
+            color: var(--text-on-brand);
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn-filter:hover { opacity: 0.9; }
+
+        /* --- Data Table --- */
+        .data-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .table-wrapper { overflow-x: auto; }
+
+        .data-table { width: 100%; border-collapse: collapse; }
+
+        .data-table th, .data-table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #F1F5F9;
+            white-space: nowrap;
+        }
+
+        .data-table th {
+            font-weight: 600;
+            color: var(--text-muted);
+            background: #F8FAFC;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-size: 0.75rem;
+            position: sticky;
+            top: 0;
+        }
+
+        .data-table td {
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table tr:hover { background: #F8FAFC; }
+
+        /* --- Status Badges --- */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .st-pending { background: var(--status-pending-bg); color: var(--status-pending-text); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .st-reviewed { background: var(--status-reviewed-bg); color: var(--status-reviewed-text); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .st-contacted { background: var(--status-contacted-bg); color: var(--status-contacted-text); border: 1px solid rgba(147, 51, 234, 0.2); }
+        .st-approved { background: var(--status-approved-bg); color: var(--status-approved-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .st-rejected { background: var(--status-rejected-bg); color: var(--status-rejected-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        /* --- Pagination --- */
+        .pagination {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            border-top: 1px solid #F1F5F9;
+            background: #F8FAFC;
+        }
+
+        .page-btn {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #E2E8F0;
+            color: var(--text-dark);
+            border-radius: var(--radius-sm);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .page-btn:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .page-btn.active {
+            background: var(--brand-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .page-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+            background: #F1F5F9;
+        }
+
+        /* --- Empty State --- */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-muted);
+        }
+
+        .empty-icon {
+            color: #CBD5E1;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 1rem;
+        }
+
+        /* --- Alerts --- */
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .alert svg { width: 18px; height: 18px; }
+        .alert-success { background: var(--success-bg); color: var(--success-text); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-error { background: var(--error-bg); color: var(--error-text); border: 1px solid rgba(239, 68, 68, 0.2); }
+
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .filter-grid { flex-direction: column; align-items: stretch; }
+            .filter-group { min-width: 100%; }
+            .data-table th, .data-table td { padding: 0.75rem 1rem; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <div class="logo-container">
+                <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                <span class="brand-name">YOUCERT Admin</span>
+            </div>
+        </div>
+        <div>
+            <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+                <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+                Back to Dashboard
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i data-lucide="clapperboard" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                Creator Join Requests
+            </h1>
+            <p class="page-subtitle">Review and manage applications from YouTubers. Total: {{ total }}</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'success' %}
+                            <i data-lucide="check-circle-2"></i>
+                        {% elif category == 'error' %}
+                            <i data-lucide="x-circle"></i>
+                        {% else %}
+                            <i data-lucide="info"></i>
+                        {% endif %}
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="filter-card">
+            <form method="GET" action="{{ url_for('sevak69.creator_requests_list') }}" class="filter-grid">
+                <div class="filter-group">
+                    <label class="filter-label">
+                        <i data-lucide="filter" style="width: 14px; height: 14px; display: inline; vertical-align: middle;"></i>
+                        Filter by Status
+                    </label>
+                    <select name="status" class="filter-select">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Requests</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending Review</option>
+                        <option value="reviewed" {% if status_filter == 'reviewed' %}selected{% endif %}>Reviewed</option>
+                        <option value="contacted" {% if status_filter == 'contacted' %}selected{% endif %}>Contacted</option>
+                        <option value="approved" {% if status_filter == 'approved' %}selected{% endif %}>Approved</option>
+                        <option value="rejected" {% if status_filter == 'rejected' %}selected{% endif %}>Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="flex-grow: 0;">
+                    <label class="filter-label">&nbsp;</label>
+                    <button type="submit" class="btn-filter">Apply Filter</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="data-card">
+            {% if requests %}
+            <div class="table-wrapper">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Creator Name</th>
+                            <th>Channel Name</th>
+                            <th>Subscribers</th>
+                            <th>Status</th>
+                            <th>Submitted</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in requests %}
+                        <tr>
+                            <td style="font-family: monospace; color: var(--text-muted);">#{{ req.request_id }}</td>
+                            <td style="font-weight: 500;">{{ req.name }}</td>
+                            <td>
+                                <a href="{{ req.channel_link }}" target="_blank" style="color: #4F46E5; text-decoration: none; display: flex; align-items: center; gap: 0.25rem;">
+                                    {{ req.channel_name }} <i data-lucide="external-link" style="width: 12px; height: 12px;"></i>
+                                </a>
+                            </td>
+                            <td>{{ req.subscriber_count }}</td>
+                            <td>
+                                {% if req.status == 'pending' %} <span class="status-badge st-pending">Pending</span>
+                                {% elif req.status == 'reviewed' %} <span class="status-badge st-reviewed">Reviewed</span>
+                                {% elif req.status == 'contacted' %} <span class="status-badge st-contacted">Contacted</span>
+                                {% elif req.status == 'approved' %} <span class="status-badge st-approved">Approved</span>
+                                {% elif req.status == 'rejected' %} <span class="status-badge st-rejected">Rejected</span>
+                                {% else %} {{ req.status }} {% endif %}
+                            </td>
+                            <td>{{ req.submitted_at }}</td>
+                            <td>
+                                <a href="{{ url_for('sevak69.creator_request_detail_action', request_id=req.request_id) }}" class="btn-small">
+                                    <i data-lucide="eye" style="width: 14px; height: 14px;"></i>
+                                    View Details
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i data-lucide="inbox" class="empty-icon"></i>
+                <h3>No requests found</h3>
+                <p>There are no creator requests matching your current filter.</p>
+            </div>
+            {% endif %}
+
+            {% if total > per_page %}
+            <div class="pagination">
+                {% set num_pages = (total / per_page)|round(0, 'ceil')|int %}
+                
+                {% if page > 1 %}
+                    <a href="{{ url_for('sevak69.creator_requests_list', page=page-1, status=status_filter) }}" class="page-btn">
+                        <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
+                    </a>
+                {% else %}
+                    <span class="page-btn disabled">
+                        <i data-lucide="chevron-left" style="width: 14px; height: 14px;"></i> Prev
+                    </span>
+                {% endif %}
+
+                {% for p in range(1, num_pages + 1) %}
+                    <a href="{{ url_for('sevak69.creator_requests_list', page=p, status=status_filter) }}" 
+                       class="page-btn {% if p == page %}active{% endif %}">{{ p }}</a>
+                {% endfor %}
+
+                {% if page < num_pages %}
+                    <a href="{{ url_for('sevak69.creator_requests_list', page=page+1, status=status_filter) }}" class="page-btn">
+                        Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                    </a>
+                {% else %}
+                    <span class="page-btn disabled">
+                        Next <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                    </span>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Fade out alerts automatically
+        document.addEventListener('DOMContentLoaded', function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.transition = 'opacity 0.5s ease';
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 500);
+                }, 4000);
+            });
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

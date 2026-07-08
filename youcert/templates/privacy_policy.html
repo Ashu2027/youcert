@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        /* --- Buttons --- */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: auto;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            font-size: 0.95rem; /* Smaller size for header button */
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Policy Content Styling (Preserved) --- */
+        .terms-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em; margin-bottom: 2.5rem; text-align: center;
+        }
+        .terms-content h2 {
+            font-size: 1.75rem; font-weight: 700; color: var(--text-dark);
+            margin-top: 3rem; margin-bottom: 1.5rem; padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color-alpha);
+        }
+        .terms-content h3 {
+            font-size: 1.35rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 2rem; margin-bottom: 1rem;
+        }
+        .terms-content h4 {
+            font-size: 1.15rem; font-weight: 600; color: var(--text-dark);
+            margin-top: 1.5rem; margin-bottom: 0.75rem;
+        }
+        .terms-content p { color: var(--text-muted); line-height: 1.8; margin-bottom: 1.5rem; font-size: 1.05rem; }
+        .terms-content ul, .terms-content ol { color: var(--text-muted); margin-bottom: 1.5rem; padding-left: 1.5rem; line-height: 1.7; }
+        .terms-content ul { list-style-type: disc; }
+        .terms-content ol { list-style-type: decimal; }
+        .terms-content li { margin-bottom: 0.5rem; }
+        .terms-content strong { font-weight: 600; color: var(--text-dark); }
+        .terms-content a { color: #6366F1; transition: color 0.3s ease; font-weight: 500; text-decoration: none; }
+        .terms-content a:hover { color: #9333ea; text-decoration: underline; }
+        .terms-content hr { margin: 3rem 0; border: 0; border-top: 1px solid var(--border-color-alpha); }
+        
+        /* Alert boxes */
+        .terms-content .notice-box {
+            background-color: #EEF2FF; border: 1px solid #C7D2FE; border-left: 4px solid #6366F1;
+            border-radius: var(--btn-radius); padding: 1.5rem; margin: 2rem 0;
+        }
+        .terms-content .notice-box p { color: #4F46E5 !important; margin-bottom: 0; line-height: 1.6; }
+        .terms-content .alert-box {
+            background-color: #FEE2E2; border: 1px solid #FECACA; border-left: 4px solid #EF4444;
+            border-radius: var(--btn-radius); padding: 1.5rem; margin: 2rem 0;
+        }
+        .terms-content .alert-box p { color: #B91C1C !important; margin-bottom: 0; line-height: 1.6; }
+        .terms-content .alert-box strong { color: #B91C1C; }
+
+        /* --- Animations --- */
+        .animate-on-scroll {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
+        .glitter {
+            position: absolute; background-color: #A855F7; width: 4px; height: 4px; border-radius: 50%;
+            opacity: 0; pointer-events: none; transition: transform 0.8s, opacity 0.8s; z-index: 9999;
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body class="flex flex-col">
+    <div class="animated-background"></div>
+
+    <!-- Header (Top Nav) -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-primary-custom header-btn" href="{{ url_for('user.oauth_login') }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 max-w-[1000px] py-16 flex-grow">
+        <div class="glass-card p-8 md:p-12 terms-content">
+            
+            <!-- Original Content Starts Here -->
+            <h1>Privacy Policy</h1>
+            <p class="text-center !mb-8"><strong>Effective Date:</strong> October 21, 2025</p>
+
+            <h2>1. Introduction and Commitment to Privacy</h2>
+            
+            <h3>1.1 Our Commitment</h3>
+            <p>Welcome to Youcert ("Youcert," "we," "us," or "our"). We are committed to protecting your privacy and handling your personal data in an open and transparent manner. This Privacy Policy ("Policy") describes how we collect, use, process, share, and safeguard your Personal Data when you ("you," "User," "Data Principal") access or use our platform, website, and associated services (collectively, the "Service").</p>
+            <p>Our platform is built on trust. For Learners, this means trusting the validity of our Certificates. For Creators, this means trusting us with your intellectual property and channel data. This Policy is designed to be comprehensive and clear, ensuring you understand your rights and our obligations.</p>
+
+            <h3>1.2 Scope of this Policy</h3>
+            <p>This Policy applies to all Personal Data processed by Youcert, whether you are a:
+            <ul>
+                <li><strong>Creator:</strong> A User who verifies their YouTube channel ownership to create and sell Exams.</li>
+                <li><strong>Learner:</strong> A User who registers to purchase and take Exams.</li>
+                <li><strong>Visitor:</strong> An individual browsing the public-facing areas of our Service.</li>
+            </ul>
+            </p>
+            <p>By accessing or using our Service, you signify that you have read, understood, and agree to our collection, storage, use, and disclosure of your Personal Data as described in this Policy and our <a href="/terms-and-conditions/">Terms of Service</a>.</p>
+
+            <h3>1.3 Data Fiduciary and Legal Basis</h3>
+            <p>For the purposes of applicable data protection laws, Youcert is the "Data Fiduciary" of your Personal Data. We are a company registered in India, and our data processing activities are governed by:
+            <ul>
+                <li><strong>The Digital Personal Data Protection (DPDP) Act, 2023</strong></li>
+                <li><strong>The Information Technology (IT) Act, 2000</strong></li>
+                <li><strong>The Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011 ("IT Rules")</strong></li>
+            </ul>
+            </p>
+            <p>We will only process your Personal Data when we have a lawful basis to do so, as detailed in Section 4 of this Policy.</p>
+
+            <h3>1.4 Key Definitions</h3>
+            <ul>
+                <li><strong>"Personal Data"</strong> means any data about an individual who is identifiable by or in relation to such data, as defined under the DPDP Act.</li>
+                <li><strong>"Processing"</strong> means any operation performed on Personal Data, such as collection, storage, use, sharing, alteration, or deletion.</li>
+                <li><strong>"Data Fiduciary"</strong> means the entity that, alone or in conjunction with others, determines the purposes and means of the Processing of Personal Data (in this case, Youcert).</li>
+                <li><strong>"Data Principal"</strong> means the individual to whom the Personal Data relates (in this case, you).</li>
+            </ul>
+
+            <hr>
+
+            <h2>2. Information We Collect (Our Data Collection)</h2>
+            <p>We collect Personal Data in three primary ways: data you provide to us directly, data we collect automatically through your use of the Service, and data we receive from third parties (like Google).</p>
+
+            <h3>2.1 Data You Provide Directly to Us</h3>
+            
+            <h4>2.1.1 For All Registered Users (Learners and Creators)</h4>
+            <ul>
+                <li><strong>Account Registration Data:</strong> When you create an account (e.g., via Google OAuth or email), we collect your name, email address, and a unique user ID. We may also ask for a password if you don't use a third-party login.</li>
+                <li><strong>Profile Information:</strong> You may voluntarily add more information to your profile, such as a profile picture, a short bio, or links to your social media profiles.</li>
+                <li><strong>Communications Data:</strong> When you contact our support team, report an issue, or communicate with us in any way, we collect the content of those communications and any associated metadata.</li>
+            </ul>
+            
+            <h4>2.1.2 Specifically for Learners</h4>
+            <ul>
+                <li><strong>Payment Information:</strong> When you purchase an Exam, our third-party payment processors (e.g., Razorpay, Stripe) collect your payment details (such as credit/debit card number, UPI ID, or net-banking details). <strong>Youcert does not store your full payment card number or financial account details on our servers.</strong> We only receive a transaction token, the last four digits of your card, and confirmation of payment.</li>
+                <li><strong>Exam and Performance Data:</strong> We collect your answers to Exam questions, your scores, the time taken, and your completion status. This is necessary to issue your Certificate.</li>
+            </ul>
+
+            <h4>2.1.3 Specifically for Creators</h4>
+            <ul>
+                <li><strong>Payout Information:</strong> To pay you your Creator Revenue, we collect necessary financial information, such as your bank account number, IFSC code, account holder name, and billing address.</li>
+                <li><strong>Tax Information:</strong> As required by Indian law, we must collect your Permanent Account Number (PAN) and, if applicable, your Goods and Services Tax Identification Number (GSTIN) for tax reporting and compliance purposes.</li>
+                <li><strong>Exam Content Data:</strong> We collect the information you add to your Exam, such as custom instructions, pricing details, and any edits you make to the AI-Generated Content.</li>
+            </ul>
+
+            <div class="alert-box">
+                <p><strong>Note on Sensitive Personal Data:</strong> We do not intentionally collect "Sensitive Personal Data or Information" (SPDI) as defined under the IT Rules (e.g., passwords, financial information, health conditions, sexual orientation, biometrics) *except* for financial information necessary for payouts (for Creators) and payments (for Learners), which is handled by our secure, compliant payment processors. We will never ask you for your other sensitive data.</p>
+            </div>
+
+            <h3>2.2 Data We Receive from Third Parties</h3>
+            
+            <h4>2.2.1 Google / YouTube API Services</h4>
+            <p>This is a critical part of our Service for Creators. To verify your identity and access your content, we use the YouTube API Services.</p>
+            <ul>
+                <li><strong>Creator Channel Verification Data:</strong> When you link your YouTube channel, you will be prompted to authenticate via Google's OAuth screen. By granting permission, you authorize us to securely access specific data from your Google Account. This data is used *exclusively* for the purposes stated. We collect:
+                    <ul>
+                        <li><strong>Basic Profile Info:</strong> Your name and email address (to link to your Youcert account).</li>
+                        <li><strong>Channel Ownership Confirmation:</strong> We request permissions (e.g., `youtube.readonly`) to confirm that your authenticated account is the owner or manager of the YouTube channel you claim to represent. We receive a secure OAuth token to verify this.</li>
+                        <li><strong>Channel Information:</strong> We may collect your public channel ID, channel name, and channel icon to display on your Creator profile and Exam pages.</li>
+                    </ul>
+                </li>
+                <li><strong>Creator Content Data:</strong> Once you are verified, we use the YouTube API to access the data for the *specific video URLs you submit* to our Service. This includes:
+                    <ul>
+                        <li>The video's public title and description.</li>
+                        <li>The video's caption/transcript file.</li>
+                    </ul>
+                </li>
+            </ul>
+            <p><strong>Our Promise on Google Data:</strong>
+            <br>1. We *only* use this data to provide the Service (i.e., verify you and process your videos).
+            <br>2. We *never* share this data with any other third party, except as required by law.
+            <br>3. Our use of this data is subject to the <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer">Google Privacy Policy</a> and the <a href="https://developers.google.com/youtube/terms/api-services-terms-of-service" target="_blank" rel="noopener noreferrer">YouTube API Services Terms of Service</a>.</p>
+
+            <h3>2.3 Data We Collect Automatically</h3>
+            <ul>
+                <li><strong>Log and Usage Data:</strong> Like most web services, our servers automatically record information ("Log Data") when you use the Service. This Log Data may include your Internet Protocol (IP) address, browser type and settings, device information (e.g., operating system), the date and time of your request, and how you interacted with the Service (e.g., links clicked, pages viewed).</li>
+                <li><strong>Cookie Data:</strong> We use cookies and similar tracking technologies (like local storage) to operate and improve the Service. Cookies are small data files stored on your device. We use:
+                    <ul>
+                        <li><strong>Essential Cookies:</strong> For security and to keep you logged in (session cookies).</li>
+                        <li><strong>Analytics Cookies:</strong> To help us understand how Users interact with our Service (e.g., Google Analytics).</li>
+                        <li><strong>Preference Cookies:</strong> To remember your settings (e.g., language).</li>
+                    </ul>
+                    <p>You can control or reset your cookies through your web browser settings. Please see our Cookie Policy</p>
+                </li>
+            </ul>
+            
+            <h3>2.4 Data We Generate (AI Content and Confidentiality)</h3>
+            
+            <h4>2.4.1 Generated Content</h4>
+            <p>Our AI models process the Creator's transcript to create "Generated Content" (summaries and questions). This Generated Content is then stored as part of the Exam on our platform.</p>
+            
+            <h4>2.4.2 Our Core Promise: Transcript Confidentiality</h4>
+            <p>This is a cornerstone of our trust with Creators.
+            <ul>
+                <li>We treat your raw video transcripts and captions as your <strong>Confidential Information</strong>.</li>
+                <li>Transcripts are fed into our secure, proprietary AI processing pipeline. They are used *only* for the purpose of generating your Exam content.</li>
+                <li>**We will never share, sell, rent, or make your raw transcripts visible to any other User (including Learners) or any third party.**</li>
+                <li>Access to these raw transcripts is restricted to a very limited number of authorized Youcert personnel (e.g., senior engineers for debugging) and to the automated AI system itself. All such access is logged and audited.</li>
+                <li>Once the Generated Content is created and approved by you, the raw transcript may be deleted or securely archived in an encrypted format, separate from the main production database, for model-retraining purposes (only in an aggregated, anonymized form) or as required for legal compliance.</li>
+            </ul>
+            </p>
+
+            <hr>
+
+            <h2>3. How We Use Your Personal Data (Purpose of Processing)</h2>
+            <p>We use your Personal Data for specific, limited purposes, and we only process data that is necessary for those purposes.</p>
+            
+            <h3>3.1 To Provide and Maintain the Service</h3>
+            <ul>
+                <li>To create and manage your user account.</li>
+                <li>To process your transactions (both Learner payments and Creator payouts).</li>
+                <li>To enable you to create, manage, publish, and take Exams.</li>
+                <li>To issue Certificates to Learners who pass Exams.</li>
+                <li>To display your Creator profile and your available Exams to Learners.</li>
+            </ul>
+            
+            <h3>3.2 To Verify and Secure Your Account</h3>
+            <p>This is a critical function for protecting our community and your intellectual property.</p>
+            <ul>
+                <li><strong>To Verify Creator Channel Ownership:</strong> We use the data from the YouTube API (as described in 2.2.1) to confirm that you are the legitimate owner of the channel you are linking. This is a security measure to prevent impersonation and fraud.</li>
+                <li><strong>To Secure Your Account:</strong> To protect your account from unauthorized access, to detect and prevent fraud, and to enforce our Terms of Service.</li>
+            </ul>
+            
+            <h3>3.3 To Process Your Content (The AI Pipeline)</h3>
+            <ul>
+                <li>To securely access the specific video transcripts you submit (as per Section 2.4.2).</li>
+                <li>To feed these confidential transcripts into our proprietary AI models.</li>
+                <li>To generate the summaries and questions that form your Exam.</li>
+                <li>To store the final Generated Content (which you review and approve) as part of your published Exam.</li>
+            </ul>
+            
+            <h3>3.4 To Communicate With You</h3>
+            <ul>
+                <li><strong>Transactional Communications:</strong> To send you necessary communications, such as payment confirmations, payout notifications, Certificate issuance, password resets, and important notices about the Service or changes to our Terms or this Policy.</li>
+                <li><strong>Customer Support:</strong> To respond to your comments, questions, and requests, and to provide customer service.</li>
+                <li><strong>Marketing Communications (with your consent):</strong> To send you marketing emails about new features, promotions, or new Exams you might be interested in. You can opt out of these at any time, as described in Section 7.</li>
+            </ul>
+            
+            <h3>3.5 For Analytics, Research, and Improvement</h3>
+            <ul>
+                <li>To monitor and analyze trends, usage, and activities in connection with our Service.</li>
+                <li>To understand what features are popular and how to improve the User experience.</li>
+                <li>To improve our AI models (only using anonymized or aggregated data, never your raw, identifiable transcripts for public-facing models).</li>
+                <li>To debug and fix errors in the Service.</li>
+            </ul>
+            
+            <h3>3.6 To Comply with Legal Obligations</h3>
+            <ul>
+                <li>To comply with our legal and regulatory requirements under Indian law (e.g., tax laws like GST, corporate laws, IT Act, DPDP Act).</li>
+                <li>To respond to valid legal requests, such as summons, court orders, or government investigations.</li>
+                <li>To enforce our Terms of Service and protect our rights, property, and safety, and that of our Users.</li>
+            </ul>
+
+            <hr>
+
+            <h2>4. Our Lawful Bases for Processing (DPDP Act Compliance)</h2>
+            <p>Under India's DPDP Act, 2023, we must have a "lawful basis" (referred to as "legitimate uses") for processing your Personal Data. Our bases are:</p>
+            
+            <div class="notice-box">
+                <p><strong>Deemed Consent (Legitimate Uses):</strong> For most of our processing, we rely on "Deemed Consent" as outlined in the DPDP Act. This means your consent is deemed to be given when you voluntarily provide your Personal Data to us for a specific purpose, and you would reasonably expect us to process it for that purpose.
+            </div>
+            
+            <ul>
+                <li><strong>Example 1 (Creator):</strong> When you provide your bank details for payouts, you give Deemed Consent for us to process those details to send you money.</li>
+                <li><strong>Example 2 (Creator):</strong> When you link your YouTube channel, you give Deemed Consent for us to process the necessary channel data to verify your ownership.</li>
+                <li><strong>Example 3 (Learner):</strong> When you provide your payment details, you give Deemed Consent for us to process that payment.</li>
+                <li><strong>Example 4 (All Users):</strong> When you create an account, you give Deemed Consent for us to process your login details to operate and secure your account.</li>
+            </ul>
+            
+            <p>We also rely on other lawful bases:</p>
+            <ul>
+                <li><strong>Explicit Consent:</strong> For activities that are not covered by Deemed Consent, such as sending you non-essential marketing emails, we will ask for your explicit, opt-in consent.</li>
+                <li><strong>Performance of a Contract:</strong> Much of our processing is necessary to perform our contractual obligations to you as set out in our <a href="/terms-and-conditions/">Terms of Service</a>.</li>
+                <li><strong>Compliance with Law:</strong> We process certain data (like PAN/GST information) because we are legally obligated to do so under Indian tax law and other statutes.</li>
+            </ul>
+            
+            <p>You have the right to withdraw your consent at any time, as detailed in Section 7.</p>
+            
+            <hr>
+            
+            <h2>5. How We Share and Disclose Your Information</h2>
+            <p>We are not in the business of selling your Personal Data. We share it only in the limited circumstances described below, and always with appropriate safeguards.</p>
+
+            <h3>5.1 With Third-Party Service Providers</h3>
+            <p>We engage trusted third-party companies ("Data Processors") to help us operate, secure, and improve our Service. These processors are contractually bound to only use the data to perform services for us and to maintain its confidentiality and security. They include:
+            <ul>
+                <li><strong>Payment Processors (e.g., Razorpay, Stripe):</strong> To securely process Learner payments and Creator payouts.</li>
+                <li><strong>Cloud Hosting Providers (e.g., AWS, Google Cloud):</strong> To host our servers, databases, and infrastructure.</li>
+                <li><strong>Analytics Providers (e.g., Google Analytics):</strong> To help us understand Service usage.</li>
+                <li><strong>Email Service Providers:</strong> To send you transactional and marketing emails.</li>
+            </ul>
+            </p>
+            
+            <h3>5.2 With Other Users (Limited Sharing)</h3>
+            <p>Some of your information is public or semi-public by nature.</p>
+            <ul>
+                <li><strong>For Creators:</strong> Your public YouTube channel name, channel icon, and any other profile information you add are visible to Learners to help them identify your Exams.</li>
+                <li><strong>For Learners:</strong> Your name and completion status are shared with the Creator of the Exam you took, so they can track their audience's performance. Your detailed answers or scores on specific questions are generally not shared, only your final pass/fail status and overall score. Your profile is not public to other Learners.</li>
+            </ul>
+            
+            <h3>5.3 With Third-Party Services (Google/YouTube)</h3>
+            <p>As described in Section 2.2.1, our Service interacts with the YouTube API. Our use of information received from YouTube API Services will adhere to the <a href="https://developers.google.com/youtube/terms/api-services-terms-of-service" target="_blank" rel="noopener noreferrer">YouTube API Services Terms of Service</a>, including the Limited Use requirements. We do not share your data *back* to Google, other than what is necessary to use the API (e.g., making an API request for your video's transcript).</p>
+
+            <h3>5.4 What We **NEVER** Share</h3>
+            <div class="alert-box">
+                <p><strong>Our Data Sharing Red Lines:</strong>
+                <br>1. We **NEVER** share, sell, or rent your raw video transcripts to any third party. Period.
+                <br>2. We **NEVER** sell or rent your personal email address or contact information to third-party marketers.
+                <br>3. We **NEVER** share your Creator payout information (bank details) with anyone other than our secure payment processor for the sole purpose of sending you money.
+                <br>4. We **NEVER** share your Learner payment details (card numbers) with anyone, as we do not store them.</p>
+            </div>
+
+            <h3>5.5 For Legal Compliance and Protection</h3>
+            <p>We may disclose your Personal Data if we believe in good faith that it is necessary to:
+            <ul>
+                <li>Comply with a legal obligation, court order, or valid request from law enforcement or government authorities (in accordance with the law).</li>
+                <li>Enforce our <a href="/terms-and-conditions/">Terms of Service</a> and other agreements.</li>
+                <li>Detect, prevent, or address fraud, security, or technical issues.</li>
+                <li>Protect the rights, property, or safety of Youcert, our Users, or the public.</li>
+            </ul>
+            </p>
+
+            <h3>5.6 In a Business Transfer</h3>
+            <p>If Youcert is involved in a merger, acquisition, sale of assets, or bankruptcy, your Personal Data may be transferred as part of that transaction. We will notify you via email and/or a prominent notice on our Service before your data is transferred and becomes subject to a different privacy policy. We will ensure the new entity is bound by privacy obligations at least as strict as this one.</p>
+
+            <hr>
+
+            <h2>6. Your Rights as a Data Principal (DPDP Act)</h2>
+            <p>Under India's DPDP Act, 2023, you (as the "Data Principal") have specific rights over your Personal Data. We are committed to upholding these rights.</p>
+
+            <h3>6.1 Right to Access Information</h3>
+            <p>You have the right to request a summary of the Personal Data we hold about you and information on our processing activities related to that data. We will provide this in a clear and understandable format.</p>
+            
+            <h3>6.2 Right to Correction and Erasure</h3>
+            <ul>
+                <li><strong>Correction:</strong> You have the right to request the correction of any inaccurate or misleading Personal Data we hold about you. You can update most of your profile information directly in your account settings.</li>
+                <li><strong>Erasure:</strong> You have the right to request the erasure (deletion) of your Personal Data. Upon receiving a valid request, we will delete your data, *except* for any information we are legally obligated to retain (e.g., tax and transaction records) or that is necessary for our legitimate business purposes (e.g., to defend against legal claims).</li>
+            </ul>
+            
+            <h3>6.3 Right to Withdraw Consent</h3>
+            <p>You have the right to withdraw your consent for any processing that is based on your explicit consent (like marketing emails) at any time. You can do this via the "unsubscribe" link in the email or in your account settings.
+            <br>For processing based on "Deemed Consent" (which is necessary to provide the Service), withdrawing consent would require you to stop using the feature or to delete your account (see Right to Erasure). For example, you cannot withdraw consent for us to process your payment for an Exam and still receive access to that Exam.</p>
+
+            <h3>6.4 Right to Grievance Redressal</h3>
+            <p>You have the right to have your grievances addressed in a timely manner. We have appointed a Grievance Officer as required by law. Please see Section 12 for their contact details and our redressal process.</p>
+            
+            <h3>6.5 How to Exercise Your Rights</h3>
+            <p>To exercise any of these rights, please submit a written request to our Data Protection Officer at <strong>copyright@youcert.com</strong>.
+            <br>For your protection, we will need to verify your identity before processing your request. We will respond to your request within the timeframes mandated by law (typically within 30 days).</p>
+
+            <hr>
+
+            <h2>7. Marketing and Communications</h2>
+            
+            <h3>7.1 Transactional Communications</h3>
+            <p>We will send you transactional emails that are necessary to provide the Service. These are not marketing and you cannot opt-out of them. This includes:
+            <ul>
+                <li>Account verification emails.</li>
+                <li>Payment receipts and payout notifications.</li>
+                <li>Exam completion and Certificate delivery.</li>
+                <li>Critical security alerts.</li>
+                <li>Notices of changes to our Terms or this Policy.</li>
+            </ul>
+            </p>
+
+            <h3>7.2 Marketing Communications (Opt-In)</h3>
+            <p>We will only send you promotional or marketing emails (e.g., new Exam announcements, platform new features) if you have given us your <strong>explicit, opt-in consent</strong> to do so. </p>
+            
+            <h3>7.3 How to Opt-Out</h3>
+            <p>You can withdraw your consent and opt-out of marketing emails at any time by:
+            <ul>
+                <li>Clicking the "unsubscribe" link at the bottom of any marketing email.</li>
+                <li>Updating your communication preferences in your account settings.</li>
+            </ul>
+            </p>
+
+            <hr>
+
+            <h2>8. Data Security</h2>
+            
+            <h3>8.1 Our Security Commitment</h3>
+            <p>We take the security of your Personal Data very seriously and have implemented "reasonable security practices and procedures" as required by the IT Rules, 2011, and the DPDP Act. We use a combination of technical, administrative, and physical safeguards to protect your data from loss, theft, misuse, and unauthorized access.</p>
+            
+            <h3>8.2 Technical Safeguards</h3>
+            <ul>
+                <li><strong>Encryption:</strong> We use industry-standard TLS encryption for all data in transit (when you use our website). Sensitive data at rest (like database backups) is encrypted using AES-256.</li>
+                <li><strong>Access Controls:</strong> We enforce strict role-based access controls. Our employees and contractors can only access the data they absolutely need to perform their jobs.</li>
+                <li><strong>Secure Infrastructure:</strong> We host our Service with reputable, secure cloud providers who offer robust physical and network security.</li>
+                <li><strong>Payment Security:</strong> We do not store your full payment card data. All payments are processed by our PCI-DSS compliant payment processors.</li>
+            </ul>
+            
+            <h3>8.3 Special Security for Creator Data</h3>
+            <ul>
+                <li><strong>OAuth Security:</strong> We use secure, standard OAuth 2.0 protocols to link your YouTube channel. We only request the minimum permissions necessary. We store access tokens in an encrypted, secure manner.</li>
+                <li><strong>Transcript Security:</strong> As stated in Section 2.4.2, raw transcripts are treated as highly confidential, with strict access controls and a separate, secured processing pipeline.</li>
+            </ul>
+
+            <h3>8.4 Data Breach Notification</h3>
+            <p>In the event of a Personal Data breach that is likely to affect you, we will notify you and the Data Protection Board of India in accordance with the DPDP Act. We will inform you of the nature of the breach, the data affected, and the steps we are taking to mitigate it.</p>
+            
+            <h3>8.5 No Absolute Guarantee</h3>
+            <p>While we do our utmost to protect your data, no system is 100% secure. We cannot guarantee or warrant the absolute security of any information you transmit to us. You use the Service and provide us with your information at your own risk.</p>
+
+            <hr>
+
+            <h2>9. Data Retention</h2>
+            
+            <h3>9.1 Our Retention Policy</h3>
+            <p>We retain your Personal Data for no longer than is necessary for the purposes for which it was collected, as described in this Policy, and to comply with our legal obligations.</p>
+            
+            <h3>9.2 Specific Retention Periods</h3>
+            <ul>
+                <li><strong>Account Data:</strong> We retain your account and profile data for as long as your account is active. If you delete your account, we will permanently delete this data within a reasonable period (e.g., 90 days), except for data we must keep for legal reasons.</li>
+                <li><strong>Creator Payout & Tax Data:</strong> We are required by Indian tax law to retain financial records (including your PAN, GSTIN, and payout history) for a period of up to eight (8) years after the end of the financial year.</li>
+                <li><strong>Learner Transaction Data:</strong> We retain records of your payments for a similar period as required by law.</li>
+                <li><strong>Exam & Certificate Data:</strong> We retain your Exam results and Certificates for as long as your account is active, so you can access them.</li>
+                <li><strong>Log Data:</strong> Server logs are typically rotated and deleted within 90-180 days, unless required for a security investigation.</li>
+            </ul>
+            
+            <h3>9.3 Account Deletion</h3>
+            <p>When you request to delete your account, we will initiate a process to permanently delete your Personal Data. This process is irreversible. We will anonymize or delete your data, retaining only what is legally required (as mentioned above).</p>
+
+            <hr>
+
+            <h2>10. Cookies and Tracking Technologies</h2>
+            
+            <h3>10.1 What are Cookies?</h3>
+            <p>Cookies are small text files placed on your device when you visit a website. We use them to make our Service work, or work more efficiently, as well as to provide reporting information.</p>
+            
+            <h3>10.2 Types of Cookies We Use</h3>
+            <ul>
+                <li><strong>Strictly Necessary Cookies:</strong> These are essential for you to move around the Service and use its features, such as accessing secure areas and maintaining your login session. You cannot opt-out of these.</li>
+                <li><strong>Performance and Analytics Cookies:</strong> These cookies (e.g., from Google Analytics) help us understand how visitors interact with our Service by collecting and reporting information anonymously. This helps us improve our platform.</li>
+                <li><strong>Functionality Cookies:</strong> These are used to recognize you when you return to our Service and remember your preferences (e.g., your choice of language).</li>
+                <li><strong>Marketing Cookies:</strong> We may use these (with your consent) to track your activity and show you relevant ads for Youcert on other websites.</li>
+            </ul>
+            
+            <h3>10.3 Your Choices</h3>
+            <p>When you first visit our Service, we will show you a cookie banner asking for your consent to use non-essential cookies. You can manage your preferences at any time through our cookie settings panel or by changing your browser settings. Please note that blocking essential cookies may make parts of the Service unusable.</p>
+
+            <hr>
+
+            <h2>11. International Data Transfers</h2>
+            
+            <h3>11.1 Our Primary Location</h3>
+            <p>Youcert is an Indian company, and our primary servers and operations are located in India. Your Personal Data will be primarily stored and processed in India, subject to Indian data protection laws.</p>
+            
+            <h3>11.2 Use of Global Service Providers</h3>
+            <p>However, some of our third-party service providers (e.g., cloud hosting, payment processors) may be based in other countries. This means that your Personal Data may be transferred to, and processed in, countries outside of India.</p>
+            <p>When we do this, we take steps to ensure your data receives an adequate level of protection. We do this by:
+            <ul>
+                <li>Ensuring the country has been deemed to provide an adequate level of protection by the Government of India.</li>
+                <li>Using Standard Contractual Clauses or other legal mechanisms approved under the DPDP Act.</li>
+                <li>Entering into robust Data Processing Agreements with these providers.</li>
+            </ul>
+            </p>
+            <p>By using the Service, you consent to the transfer of your Personal Data to other countries, including those that may have different data protection laws than your own, for the purposes described in this Policy.</p>
+
+            <hr>
+
+            <h2>12. Children's Privacy</h2>
+            
+            <p>Our Service is not directed to children under the age of 13. We do not knowingly collect Personal Data from children under 13. </p>
+            <p>As stated in our Terms of Service, individuals between the ages of 13 and 18 may only use the Service with the consent and supervision of a parent or legal guardian. If we become aware that we have collected Personal Data from a child under 13 without verification of parental consent, we will take steps to delete that information. If you are a parent or guardian and believe your child has provided us with Personal Data without your consent, please contact us at <strong>copyright@youcert.com</strong>.</p>
+
+            <hr>
+
+            <h2>13. Changes to This Privacy Policy</h2>
+            
+            <p>We may update this Privacy Policy from time to time to reflect changes in our practices or for legal, regulatory, or operational reasons. If we make material changes, we will provide you with reasonable notice, such as by:
+            <ul>
+                <li>Sending an email to the address associated with your account.</li>
+                <li>Posting a prominent notice on our Service.</li>
+                <li>Requesting your consent to the new policy, if required by law.</li>
+            </ul>
+            </p>
+            <p>We will also update the "Last Updated" date at the top of this Policy. We encourage you to review this Policy periodically to stay informed about how we are protecting your data.</p>
+
+            <hr>
+            
+            <h2>14. Grievance Redressal (DPDP Act & IT Rules, 2021)</h2>
+            
+            <h3>14.1 Your Right to Redressal</h3>
+            <p>You have the right to an easily accessible and effective grievance redressal mechanism. We have appointed a Grievance Officer to handle your complaints and concerns regarding our processing of your Personal Data.</p>
+            
+            <h3>14.2 Grievance Officer Contact</h3>
+            <p>In accordance with the <strong>Information Technology Act, 2000</strong> and the <strong>Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021</strong>, the name and contact details of the Grievance Officer are provided below:</p>
+            
+            <div class="notice-box">
+                <p><strong>Grievance Officer</strong>
+                Title: Grievance Officer
+                <br>
+                Email: <strong>copyright@youcert.com</strong>
+                <br>
+                </p>
+            </div>
+            
+            <h3>14.3 How to File a Grievance</h3>
+            <p>To file a grievance, please send a written communication to our Grievance Officer with the following details:
+            <ul>
+                <li>Your full name and account email.</li>
+                <li>A clear description of your grievance.</li>
+                <li>Any supporting documents or evidence.</li>
+                <li>The specific relief you are seeking.</li>
+            </ul>
+            </p>
+            
+            <h3>14.4 Our Process</h3>
+            <ol>
+                <li>We will acknowledge receipt of your grievance within <strong>24 hours</strong>.</li>
+                <li>We will work to resolve your grievance and provide a final response within <strong>15 days</strong> from the date of its receipt.</li>
+                <li>If your grievance is complex, we may require additional time, but we will keep you informed of the progress.</li>
+            </ol>
+
+            <hr>
+            
+
+        </div>
+    </main>
+
+    <!-- Footer (Base Theme) -->
+    <footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // CRITICAL: Initialize Lucide Icons to show the "Sign In" gate icon
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

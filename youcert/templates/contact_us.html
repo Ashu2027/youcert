@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Youcert</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <script src="https://unpkg.com/lucide@latest"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM USER'S SAVED THEME) --- */
+            --bg-light-primary: #F5F5F7; /* Saved Theme */
+            --bg-light-secondary: #FFFFFF; /* Saved Theme */
+            --text-dark: #1D1D1F; /* Saved Theme */
+            --text-muted: #6E6E73; /* Saved Theme */
+            
+            /* Gradients (Updated to linear-gradient(45deg, ...) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea); /* Saved Theme */
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7); /* Saved Theme */
+            
+            /* Glassmorphism & UI Variables (STRICTLY FROM USER'S SAVED THEME) */
+            --border-color-alpha: rgba(0, 0, 0, 0.1); /* Saved Theme */
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Saved Theme */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            --input-radius: 16px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif; /* Saved Theme */
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Scrollbar */
+        body::-webkit-scrollbar { width: 8px; }
+        body::-webkit-scrollbar-track { background: transparent; }
+        body::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 4px; }
+        body::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed; /* Saved instruction: always fixed */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur); /* Saved instruction: glassmorphism effect */
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        .text-primary-theme {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha); /* Saved Theme: rgba(255, 255, 255, 0.7) */
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha); /* Saved Theme: rgba(0, 0, 0, 0.1) */
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        /* --- Buttons --- */
+        /* Dark CTA (Default for form submission/Sign In) */
+        .btn-primary-custom {
+            background: var(--text-dark);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem; /* Matched size from cancellation file */
+            border-radius: var(--btn-radius);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%; /* Default for form button */
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .btn-primary-custom.header-btn {
+            width: auto; /* Override for header button */
+            font-size: 0.95rem; /* Smaller size for header button */
+            padding: 0.6rem 1.25rem;
+        }
+        .btn-primary-custom:hover {
+            background: black;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            color: white;
+        }
+        .btn-primary-custom:disabled {
+            background: #9ca3af;
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* --- Footer --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Animations/Typography --- */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .glitter {
+            position: absolute;
+            background-color: #A855F7;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.8s, opacity 0.8s;
+            z-index: 9999;
+        }
+
+        /* --- Contact Form Styles --- */
+        .contact-form-container { max-width: 700px; margin: 0 auto; }
+        .form-group { margin-bottom: 1.75rem; }
+        .form-label {
+            display: block; margin-bottom: 0.6rem; font-weight: 600;
+            color: var(--text-dark); font-size: 0.95rem;
+        }
+        .phone-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        
+        .form-input,
+        .form-textarea {
+            width: 100%; padding: 0.875rem 1.25rem;
+            border: 1px solid var(--border-color-alpha);
+            border-radius: var(--input-radius);
+            background-color: var(--bg-light-secondary);
+            color: var(--text-dark);
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition-smooth);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            font-size: 1rem;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none; border-color: #6366F1;
+            background-color: var(--bg-light-secondary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+        
+        .form-textarea { min-height: 150px; resize: vertical; }
+        
+        .char-counter {
+            display: block; text-align: right; font-size: 0.85rem;
+            color: var(--text-muted); margin-top: 0.5rem; font-weight: 500;
+        }
+        .char-counter.error { color: #EF4444; }
+
+        /* --- Typography --- */
+        .terms-content h1 {
+            font-size: 2.5rem; line-height: 1.2; font-weight: 800;
+            background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em; margin-bottom: 1rem; text-align: center;
+        }
+        .terms-content .page-intro {
+            font-size: 1.15rem; text-align: center; max-width: 700px;
+            margin-left: auto; margin-right: auto; margin-bottom: 3rem;
+            color: var(--text-muted); line-height: 1.6;
+        }
+        .terms-content a {
+            color: #6366F1; transition: color 0.3s ease; font-weight: 500; text-decoration: none;
+        }
+        .terms-content a:hover {
+            color: #9333ea; text-decoration: underline;
+        }
+
+
+        /* --- Alert Messages --- */
+        .alert-message {
+            padding: 1.25rem; border-radius: var(--btn-radius); margin-bottom: 2rem;
+            display: none; animation: slideDown 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+        }
+        .alert-message.show { display: block; }
+        .alert-success { background-color: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); color: #065F46; }
+        .alert-success strong { color: #047857; }
+        .alert-error { background-color: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #991B1B; }
+        .alert-error strong { color: #B91C1C; }
+        .alert-warning { background-color: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); color: #92400E; }
+        .alert-warning strong { color: #B45309; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="/">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-extrabold text-primary-theme">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-primary-custom header-btn" href="{{ url_for('user.oauth_login') }}">
+                    <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 max-w-[1000px] py-16 min-h-screen">
+        <div class="glass-card p-8 md:p-16 terms-content animate-on-scroll">
+            
+            <div class="contact-form-container">
+                <h1>Contact Us</h1>
+                <p class="page-intro">
+                    Have a question, technical issue, or feedback? We'd love to hear from you. Fill out the form below, and our team will get back to you as soon as possible.
+                    For common questions, please check our <a href="/help-center/">Help Center</a>.
+                </p>
+
+                <div id="successAlert" class="alert-message alert-success">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-check-circle text-xl"></i>
+                        <div><strong>Success!</strong> <span id="successText"></span></div>
+                    </div>
+                </div>
+
+                <div id="errorAlert" class="alert-message alert-error">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-exclamation-circle text-xl"></i>
+                        <div><strong>Error!</strong> <span id="errorText"></span></div>
+                    </div>
+                </div>
+
+                <div id="warningAlert" class="alert-message alert-warning">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-exclamation-triangle text-xl"></i>
+                        <div><strong>Warning!</strong> <span id="warningText"></span></div>
+                    </div>
+                </div>
+
+                <form id="contactForm" action="#" method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    
+                    <div class="form-group">
+                        <label for="name" class="form-label">Full Name</label>
+                        <input type="text" id="name" name="name" class="form-input" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone" class="form-label phone-label">Phone Number (Optional)</label>
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91-9876543210">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" id="subject" name="subject" class="form-input" placeholder="Briefly describe your topic" required>
+                        <span id="subjectCounter" class="char-counter">0/25 words</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea id="message" name="message" class="form-textarea" placeholder="Please provide details about your problem or question..." rows="6" required></textarea>
+                        <span id="messageCounter" class="char-counter">0/100 words</span>
+                    </div>
+
+                    <div class="form-group mt-8">
+                        <button type="submit" id="submitButton" class="btn-primary-custom text-white">
+                            Send Message <i class="fas fa-paper-plane ml-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer animate-on-scroll">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-on-scroll">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-on-scroll">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-on-scroll">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons (Needed for the header button)
+        lucide.createIcons();
+
+        // Intersection Observer for scroll animations
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Removed unobserve to allow repeated footer animation check if needed, but keeping for the glass card
+                    if (entry.target.classList.contains('glass-card')) {
+                         observer.unobserve(entry.target);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-on-scroll').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Glitter effect on mouse movement
+        document.addEventListener('mousemove', (e) => {
+            const glitter = document.createElement('div');
+            glitter.className = 'glitter';
+            glitter.style.left = `${e.clientX}px`;
+            glitter.style.top = `${e.clientY}px`;
+            document.body.appendChild(glitter);
+
+            setTimeout(() => {
+                glitter.style.transform = `scale(1.5)`;
+                glitter.style.opacity = '1';
+                setTimeout(() => {
+                    glitter.style.transform = `scale(0)`;
+                    glitter.style.opacity = '0';
+                    setTimeout(() => {
+                        glitter.remove();
+                    }, 800);
+                }, 100);
+            }, 0);
+        });
+        
+        // =====================================================================
+        // WORD LIMITS & API INTEGRATION (Rest of script remains unchanged)
+        // =====================================================================
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const API_BASE = '/api/contact-us';
+
+            // Word counter functionality
+            function createWordCounter(inputId, counterId, maxWords) {
+                const input = document.getElementById(inputId);
+                const counter = document.getElementById(counterId);
+
+                if (!input || !counter) return;
+
+                function updateCount() {
+                    let text = input.value.trim();
+                    let wordCount = 0;
+                    if (text.length > 0) {
+                        wordCount = text.split(/\s+/).length;
+                    }
+
+                    counter.textContent = `${wordCount}/${maxWords} words`;
+
+                    if (wordCount > maxWords) {
+                        counter.classList.add('error');
+                    } else {
+                        counter.classList.remove('error');
+                    }
+                }
+
+                input.addEventListener('input', updateCount);
+                input.addEventListener('paste', () => {
+                    setTimeout(updateCount, 0); 
+                });
+
+                updateCount();
+            }
+
+            createWordCounter('subject', 'subjectCounter', 25);
+            createWordCounter('message', 'messageCounter', 100);
+
+            // =====================================================================
+            // API FORM SUBMISSION
+            // =====================================================================
+            const form = document.getElementById('contactForm');
+            if(form) {
+                const ORIGINAL_BUTTON_HTML = 'Send Message <i class="fas fa-paper-plane ml-2"></i>';
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    // Get form values
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const phone = document.getElementById('phone').value.trim();
+                    const subject = document.getElementById('subject').value.trim();
+                    const message = document.getElementById('message').value.trim();
+                    const submitButton = document.getElementById('submitButton');
+
+                    // Validation (Check word limits)
+                    const subjectWords = subject.length > 0 ? subject.split(/\s+/).length : 0;
+                    const messageWords = message.length > 0 ? message.split(/\s+/).length : 0;
+
+                    if (!name) { showAlert('error', 'Full Name is required'); return; }
+                    if (!email || !email.includes('@')) { showAlert('error', 'Valid Email Address is required'); return; }
+                    if (!subject) { showAlert('error', 'Subject is required'); return; }
+                    if (subjectWords > 25) { showAlert('error', 'Subject exceeds the 25-word limit'); return; }
+                    if (!message) { showAlert('error', 'Message is required'); return; }
+                    if (messageWords > 100) { showAlert('error', 'Message exceeds the 100-word limit'); return; }
+
+
+                    // Disable button and show loading
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Sending...';
+
+                    try {
+                        // Create FormData
+                        const formData = new FormData();
+                        formData.append('name', name);
+                        formData.append('email', email);
+                        formData.append('phone', phone);
+                        formData.append('subject', subject);
+                        formData.append('message', message);
+                        formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+
+                        // Submit via API (This part simulates an API call)
+                        const response = await fetch(`${API_BASE}/submit`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok && data.success) {
+                            // Success
+                            showAlert('success', data.message);
+
+                            // Replace form with success message after delay
+                            setTimeout(() => {
+                                const formContainer = document.querySelector('.contact-form-container');
+                                formContainer.innerHTML = `
+                                    <div class="text-center animate-on-scroll" style="padding: 2rem;">
+                                        <div style="margin-bottom: 1.5rem; animation: fadeInUp 0.5s ease-out;">
+                                            <div style="width: 80px; height: 80px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                                <i class="fas fa-check text-4xl" style="color: #10B981;"></i>
+                                            </div>
+                                        </div>
+                                        <h1 class="text-3xl font-bold mb-4" style="background: var(--brand-gradient); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Message Sent!</h1>
+                                        <p class="page-intro" style="margin-bottom: 2rem;">Thank you for contacting us. Our team will review your message and get back to you shortly via email.</p>
+                                        
+                                        <div style="background: var(--bg-light-secondary); border: 1px dashed #6366F1; border-radius: 16px; padding: 1.5rem; margin: 0 auto; max-width: 400px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+                                            <p class="text-sm text-muted mb-2 uppercase tracking-wider font-bold">Your Reference ID</p>
+                                            <div style="font-family: 'Courier New', monospace; color: #4F46E5; font-weight: 700; font-size: 1.25rem; letter-spacing: 1px;">
+                                                ${data.query_id || 'REF-XYZ-12345'}
+                                            </div>
+                                        </div>
+                                        <p class="text-sm mt-6" style="color: var(--text-muted);">Please save this ID for future reference.</p>
+                                        
+                                        <div class="mt-8">
+                                            <a href="/" class="btn-primary-custom text-white" style="display: inline-block; width: auto; padding: 0.75rem 2rem; text-decoration: none;">
+                                                Return Home
+                                            </a>
+                                        </div>
+                                    </div>
+                                `;
+                                // Trigger animation for new content
+                                document.querySelectorAll('.animate-on-scroll').forEach(section => {
+                                    observer.observe(section);
+                                });
+                            }, 1000);
+
+                        } else {
+                            // Error
+                            const errorMsg = data.error || 'An unexpected error occurred';
+                            const details = data.message ? ` - ${data.message}` : '';
+                            showAlert('error', errorMsg + details);
+
+                            // Re-enable button
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = ORIGINAL_BUTTON_HTML;
+                        }
+
+                    } catch (error) {
+                        console.error('Network Error:', error);
+                        showAlert('error', 'Network error. Please check your connection and try again.');
+                        
+                        // Re-enable button
+                        submitButton.disabled = false;
+                        submitButton.innerHTML = ORIGINAL_BUTTON_HTML;
+                    }
+                });
+            }
+
+            // Alert display function
+            function showAlert(type, message) {
+                const alertMap = {
+                    'success': document.getElementById('successAlert'),
+                    'error': document.getElementById('errorAlert'),
+                    'warning': document.getElementById('warningAlert')
+                };
+
+                const alertElement = alertMap[type];
+                if (!alertElement) return;
+
+                // Hide all alerts
+                [document.getElementById('successAlert'), document.getElementById('errorAlert'), document.getElementById('warningAlert')].forEach(a => a && a.classList.remove('show'));
+
+                // Set message and show
+                const textElement = type === 'success' ? document.getElementById('successText') : 
+                                   type === 'error' ? document.getElementById('errorText') : 
+                                   document.getElementById('warningText');
+                if (textElement) {
+                    textElement.textContent = message;
+                }
+
+                alertElement.classList.add('show');
+                
+                // Scroll to top to ensure alert is seen
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+
+                // Auto-hide after delay
+                const delay = type === 'success' ? 5000 : (type === 'warning' ? 6000 : 8000);
+                setTimeout(() => {
+                    alertElement.classList.remove('show');
+                }, delay);
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

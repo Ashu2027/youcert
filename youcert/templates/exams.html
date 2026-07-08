@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Exams - Youcert</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <style>
+        /* ============================================================
+           YOUCERT — My Exams (Purchased Library)
+           Layout:
+             1. Dark HERO banner  (title + subtitle + find-more CTA)
+             2. Body              (loading / empty / error states + grid)
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:      #F0F0F5;
+            --c-surface: #FFFFFF;
+            --c-dark:    #1A1A2E;
+            --c-muted:   #7C7C8E;
+            --c-soft:    #E8E8F0;
+            --c-indigo:  #6366F1;
+            --c-purple:  #9333EA;
+            --grad:      linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --grad-h:    linear-gradient(135deg, #4F46E5 0%, #7E22CE 100%);
+            --r:         20px;
+            --spring:    cubic-bezier(0.16, 1, 0.3, 1);
+            --t:         all 0.4s var(--spring);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            background: var(--c-bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a { text-decoration: none; }
+
+        /* ── Nav ── */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover { opacity: 1; background: rgba(0, 0, 0, 0.04); }
+
+        .nav-link.active {
+            opacity: 1;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        /* ══════════════════════════════════════════
+           HERO BANNER
+        ══════════════════════════════════════════ */
+        .hero {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 3.2rem 0 3.8rem;
+        }
+
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .hero-orb-a {
+            width: 480px;
+            height: 480px;
+            top: -180px;
+            right: -60px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.38), transparent 60%);
+            animation: ho1 18s ease-in-out infinite;
+        }
+
+        .hero-orb-b {
+            width: 320px;
+            height: 320px;
+            bottom: -100px;
+            left: 4%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.32), transparent 60%);
+            animation: ho2 22s ease-in-out infinite;
+        }
+
+        @keyframes ho1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-42px,32px)} }
+        @keyframes ho2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(32px,-24px)} }
+
+        .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .hero-text-block {
+            
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            padding: 0.32rem 0.9rem;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 1.1rem;
+            backdrop-filter: blur(6px);
+        }
+
+        .hero-eyebrow-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #818CF8, #C084FC);
+            flex-shrink: 0;
+        }
+
+        .hero-title {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -0.048em;
+            line-height: 1.05;
+            color: #fff;
+            margin-bottom: 0.6rem;
+        }
+
+        .hero-title .accent {
+            background: linear-gradient(120deg, #A5B4FC, #F0ABFC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.42);
+            max-width: 420px;
+        }
+
+        /* Find More Exams CTA button in hero */
+        .btn-find-more {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.88rem 1.6rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            transition: var(--t);
+            white-space: nowrap;
+            align-self: flex-end;
+        }
+
+        .btn-find-more:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        /* ══════════════════════════════════════════
+           BODY CONTENT
+        ══════════════════════════════════════════ */
+        .body-wrap {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 5rem;
+        }
+
+        /* ── Alerts ── */
+        .alert {
+            padding: 0.88rem 1.1rem;
+            border-radius: 14px;
+            margin-bottom: 1.2rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .alert-success { background: #D1FAE5; color: #065F46; border: 1px solid rgba(16,185,129,0.18); }
+        .alert-danger  { background: #FEE2E2; color: #991B1B; border: 1px solid rgba(239,68,68,0.18); }
+
+        /* ── Exam cards grid ── */
+        .exams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Exam card */
+        .exam-card {
+            background: #fff;
+            border-radius: var(--r);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            transition: var(--t);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+        }
+
+        .exam-card:hover {
+            transform: translateY(-7px);
+            box-shadow: 0 20px 44px rgba(99, 102, 241, 0.13);
+            border-color: rgba(99, 102, 241, 0.16);
+        }
+
+        /* Thumbnail */
+        .card-img-wrapper {
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: var(--c-soft);
+        }
+
+        .exam-card-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.55s var(--spring);
+        }
+
+        .exam-card:hover .exam-card-thumbnail {
+            transform: scale(1.06);
+        }
+
+        /* Content area */
+        .exam-card-content {
+            padding: 1.3rem 1.4rem 1.4rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 0.45rem;
+        }
+
+        .exam-card-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+            color: var(--c-dark);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .exam-card-desc {
+            font-size: 0.84rem;
+            color: var(--c-muted);
+            line-height: 1.55;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            flex-grow: 1;
+        }
+
+        /* Meta row — Creator + Questions */
+        .exam-meta-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.7rem;
+            padding-top: 0.9rem;
+            border-top: 1px solid var(--c-soft);
+            margin-top: auto;
+            margin-bottom: 0.85rem;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .meta-label {
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            color: var(--c-muted);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+
+        .meta-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--c-dark);
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Action row — date + start button */
+        .card-action-area {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 0.4rem;
+        }
+
+        .purchase-date {
+            font-size: 0.76rem;
+            color: var(--c-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.38rem;
+        }
+
+        .btn-start {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.58rem 1.2rem;
+            background: var(--c-dark);
+            color: #fff;
+            border-radius: 11px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.845rem;
+            transition: var(--t);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-start::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.45s var(--spring);
+        }
+
+        .btn-start:hover::before { left: 160%; }
+
+        .btn-start:hover {
+            background: #000;
+            color: #fff;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        /* ── States ── */
+        .loading-container {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--c-muted);
+            font-size: 0.9rem;
+        }
+
+        .loading-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid rgba(99, 102, 241, 0.15);
+            border-top-color: var(--c-indigo);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Empty & error states share the glass card style */
+        .state-card {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: rgba(255, 255, 255, 0.72);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+        }
+
+        .state-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.3rem;
+            display: block;
+        }
+
+        .state-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--c-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .state-sub {
+            font-size: 0.9rem;
+            color: var(--c-muted);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        /* CTA buttons inside state cards */
+        .btn-cta-dark {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.85rem 1.8rem;
+            background: var(--c-dark);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--t);
+            text-decoration: none;
+        }
+
+        .btn-cta-dark:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+            color: #fff;
+        }
+
+        .btn-cta-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.85rem 1.8rem;
+            background: transparent;
+            color: var(--c-dark);
+            border: 1.5px solid rgba(0, 0, 0, 0.12);
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--t);
+            text-decoration: none;
+        }
+
+        .btn-cta-outline:hover {
+            background: var(--c-soft);
+            border-color: rgba(0, 0, 0, 0.18);
+            transform: translateY(-1px);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .hero-inner { flex-direction: column; align-items: flex-start; }
+            .btn-find-more { align-self: flex-start; }
+            .body-wrap { padding: 1.8rem 1rem 4rem; }
+            .exams-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body>
+
+    {% include 'components/user_navbar.html' %}
+
+    <!-- ═══════════════════════════════════
+         HERO BANNER
+    ═══════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+
+        <div class="hero-inner">
+            <div class="hero-text-block">
+                <div class="hero-eyebrow">
+                    <div class="hero-eyebrow-dot"></div>
+                    Your Library
+                </div>
+                <h1 class="hero-title">
+                    My <span class="accent">Exams</span>
+                </h1>
+                <p class="hero-sub">Your enrolled courses and assessments</p>
+            </div>
+
+            <a href="{{ url_for('user.index') }}" class="btn-find-more">
+                <i class="fas fa-search" style="font-size: 0.8rem;"></i>
+                Find More Exams
+            </a>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════
+         BODY CONTENT
+    ═══════════════════════════════════ -->
+    <div class="body-wrap">
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+            <span>{{ message }}</span>
+            <button type="button" style="background:none;border:none;cursor:pointer;opacity:0.5;font-size:1rem;" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-container">
+            <div class="loading-spinner"></div>
+            <div>Loading your library…</div>
+        </div>
+
+        <!-- Exams Grid — populated by JS -->
+        <div id="examsContainer" class="exams-grid" style="display: none;"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="state-card hidden">
+            <i class="fas fa-layer-group state-icon" style="color: #D1D1DB;"></i>
+            <div class="state-title">No purchased exams yet</div>
+            <p class="state-sub">Start your journey by exploring our catalog of professional exams.</p>
+            <a href="{{ url_for('user.index') }}" class="btn-cta-dark">
+                <i class="fas fa-compass" style="font-size: 0.8rem;"></i>
+                Browse Catalog
+            </a>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="state-card hidden">
+            <i class="fas fa-wifi state-icon" style="color: #F87171;"></i>
+            <div class="state-title">Connection Issue</div>
+            <p class="state-sub">We couldn't load your exams at this moment.</p>
+            <button onclick="loadPurchasedExams()" class="btn-cta-outline">
+                <i class="fas fa-sync-alt" style="font-size: 0.8rem;"></i>
+                Try Again
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // ── Nav scroll glass effect ──
+        const nav = document.querySelector('.header-nav');
+        if (nav) {
+            window.addEventListener('scroll', function () {
+                nav.classList.toggle('scrolled', window.scrollY > 6);
+            }, { passive: true });
+        }
+
+        // ── CSRF token ──
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        // ── Load on DOM ready ──
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPurchasedExams();
+        });
+
+        // ── Fetch purchased exams from /api/purchased_exams ──
+        function loadPurchasedExams() {
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('loadingState').style.display = 'block';
+            document.getElementById('examsContainer').style.display = 'none';
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('errorState').classList.add('hidden');
+
+            fetch('/api/purchased_exams', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                }
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (data) {
+                    document.getElementById('loadingState').style.display = 'none';
+
+                    if (data.success) {
+                        if (data.exams && data.exams.length > 0) {
+                            displayPurchasedExams(data.exams);
+                        } else {
+                            document.getElementById('emptyState').classList.remove('hidden');
+                        }
+                    } else {
+                        console.error('Failed to load purchased exams:', data.message);
+                        document.getElementById('errorState').classList.remove('hidden');
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error loading purchased exams:', error);
+                    document.getElementById('loadingState').style.display = 'none';
+                    document.getElementById('errorState').classList.remove('hidden');
+                });
+        }
+
+        // ── Render exam cards ──
+        function displayPurchasedExams(exams) {
+            const container = document.getElementById('examsContainer');
+
+            const html = exams.map(function (exam) {
+                const purchaseDate = new Date(exam.payment_date).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                // Use thumbnail directly (already converted to GCS URL by backend)
+                const defaultThumbnail = 'https://placehold.co/320x180/F0F0F5/7C7C8E?text=Exam';
+                const thumbnailUrl     = exam.thumbnail_image || defaultThumbnail;
+
+                return `
+                    <div class="exam-card">
+                        <div class="card-img-wrapper">
+                            <img
+                                src="${thumbnailUrl}"
+                                alt="${escHtml(exam.exam_title)}"
+                                class="exam-card-thumbnail"
+                                onerror="this.onerror=null; this.src='${defaultThumbnail}'">
+                        </div>
+
+                        <div class="exam-card-content">
+                            <h5 class="exam-card-title">${escHtml(exam.exam_title)}</h5>
+                            <p class="exam-card-desc">
+                                ${exam.exam_description ? escHtml(exam.exam_description) : 'No description provided for this exam.'}
+                            </p>
+
+                            <div class="exam-meta-grid">
+                                <div class="meta-item">
+                                    <span class="meta-label">Creator</span>
+                                    <span class="meta-value" title="${escHtml(exam.channel_name)}">${escHtml(exam.channel_name)}</span>
+                                </div>
+                                <div class="meta-item">
+                                    <span class="meta-label">Questions</span>
+                                    <span class="meta-value">${exam.total_questions || 'N/A'}</span>
+                                </div>
+                            </div>
+
+                            <div class="card-action-area">
+                                <div class="purchase-date">
+                                    <i class="far fa-calendar-alt"></i>
+                                    <span>${purchaseDate}</span>
+                                </div>
+                                <a href="/exam_form/${exam.unique_exam_number}" class="btn-start">
+                                    <i class="fas fa-play" style="font-size: 0.72rem;"></i>
+                                    Start
+                                </a>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            container.innerHTML = html;
+            container.style.display = 'grid';
+        }
+
+        // ── XSS-safe HTML escaper ──
+        function escHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str || '';
+            return div.innerHTML;
+        }
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+

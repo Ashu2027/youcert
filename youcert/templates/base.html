@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Youcert - Certified Learning</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kalam:wght@700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* --- Core Brand Variables (STRICTLY FROM GOLD STANDARD) --- */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            
+            /* Gradients (Standardized to 45deg) */
+            --brand-gradient: linear-gradient(45deg, #6366F1, #9333ea);
+            --cta-gradient: linear-gradient(45deg, #4F46E5, #A855F7);
+            
+            /* Glassmorphism & UI Variables */
+            --border-color-alpha: rgba(0, 0, 0, 0.1);
+            --card-bg-alpha: rgba(255, 255, 255, 0.7); /* Standardized to 0.7 */
+            --navbar-bg-alpha: rgba(255, 255, 255, 0.85);
+            
+            /* Glass & Layout */
+            --glass-blur: blur(20px);
+            --glass-shadow: 0 10px 40px -10px rgba(0,0,0,0.05);
+            --card-radius: 24px;
+            --btn-radius: 14px;
+            
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        html {
+            background-color: var(--bg-light-primary);
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            position: relative;
+            background-color: transparent;
+            overflow-x: hidden;
+            padding-top: 80px;
+            margin: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* --- Ambient Background --- */
+        .animated-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.08), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(147, 51, 234, 0.08), transparent 40%);
+            filter: blur(40px);
+            pointer-events: none;
+        }
+
+        /* --- Navigation: Fixed with Glassmorphism --- */
+        .header-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background-color: var(--navbar-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border-color-alpha);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            height: 80px;
+            display: flex;
+            align-items: center;
+        }
+
+        /* --- Cards --- */
+        .glass-card {
+            background-color: var(--card-bg-alpha);
+            border-radius: var(--card-radius);
+            border: 1px solid var(--border-color-alpha);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            background-color: rgba(255, 255, 255, 0.85);
+        }
+
+        /* --- Buttons (Page Specific) --- */
+        .btn-google {
+            background: var(--cta-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            border-radius: var(--btn-radius);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            gap: 0.75rem;
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-google:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.35);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--text-dark);
+            border: 1px solid var(--border-color-alpha);
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--btn-radius);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: rgba(0,0,0,0.2);
+            transform: translateY(-1px);
+            color: var(--text-dark);
+        }
+
+        .text-gradient {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+        }
+
+        /* --- Animations (Page Specific) --- */
+        .animate-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .animate-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        /* Orbit Visual */
+        .orbit-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        .orbiting-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbit 15s linear infinite;
+            background: white;
+            padding: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            font-size: 1.5rem;
+            color: #6366F1;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        @keyframes orbit {
+            from { transform: rotate(0deg) translateX(160px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
+        }
+        .orbiting-icon:nth-child(2) { animation-delay: -5s; }
+        .orbiting-icon:nth-child(3) { animation-delay: -10s; }
+
+        /* --- Footer (Gold Standard) --- */
+        .footer {
+            background-color: var(--card-bg-alpha);
+            backdrop-filter: var(--glass-blur);
+            color: var(--text-muted);
+            padding-top: 50px;
+            padding-bottom: 50px;
+            border-top: 1px solid var(--border-color-alpha);
+            margin-top: 4rem;
+        }
+
+        .footer h5, .footer h6 {
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+        .footer a {
+            transition: color 0.3s ease;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+        .footer a:hover {
+            color: var(--text-dark);
+        }
+
+        /* --- Accordion (Page Specific) --- */
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease;
+        }
+        .faq-item.active .faq-content {
+            max-height: 200px;
+            padding-top: 1rem;
+        }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-item.active .faq-icon { transform: rotate(180deg); }
+
+        /* --- Back to top --- */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: white;
+            border: 1px solid var(--border-color-alpha);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 90;
+        }
+        .back-to-top.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        .back-to-top:hover {
+            transform: translateY(-5px);
+        }
+
+        .font-handwriting {
+            font-family: 'Kalam', cursive;
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="animated-background"></div>
+
+    <!-- Navigation -->
+    <header class="header-nav">
+        <div class="container mx-auto px-6 flex justify-between items-center max-w-[1200px]">
+            <a class="flex items-center gap-3 no-underline" href="#">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-9 w-auto" />
+                <h1 class="text-xl font-bold text-text-dark tracking-tight">Youcert</h1>
+            </a>
+            <div class="flex items-center">
+                <a class="btn-secondary text-sm" href="{{ url_for('user.oauth_login') }}">
+                    <i class="fab fa-google mr-2"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto mt-3 px-4 max-w-[1200px]">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }}" role="alert">
+                        {{ message }}
+                        <button type="button" class="opacity-50 hover:opacity-100" onclick="this.parentElement.remove()">&times;</button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        <!-- A) HERO SECTION -->
+        <section class="min-h-[90vh] flex items-center py-20 px-6">
+            <div class="container mx-auto max-w-[1200px]">
+                <div class="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+                    <div class="w-full lg:w-3/5 text-center lg:text-left animate-in visible">
+                        <div class="inline-block px-3 py-1 rounded-full bg-white/50 border border-gray-200 text-muted text-xs font-bold uppercase tracking-wider mb-6">
+                            For self Learners
+                        </div>
+                        <h1 class="text-5xl lg:text-7xl font-extrabold leading-[1.1] mb-8 text-dark tracking-tight">
+                            Finished a YouTube Tutorial or Course? <span class="text-gradient">Get a certificate that proves it.</span>
+                        </h1>
+                        <p class="text-xl text-muted leading-relaxed mb-10 max-w-2xl mx-auto lg:mx-0 font-light">
+                          You completed a course on YouTube. Now you can finally prove it with a certificate from the creator you learned from.
+                        </p>
+                        <div class="flex flex-col items-center lg:items-start gap-5">
+                            <a href="{{ url_for('user.oauth_login') }}" class="btn-google">
+                                <i class="fab fa-google"></i>
+                                Start With Your Google Account
+                            </a>
+                            <span class="text-sm font-medium text-muted bg-white/50 px-4 py-2 rounded-full border border-black/5 backdrop-blur-sm">
+                                Start For Absolutely Free || Get Certified From Your Favourite YouTuber
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <!-- Hero Visual -->
+                    <div class="w-full lg:w-2/5 flex justify-center animate-in visible delay-200">
+                        <div class="orbit-container">
+                            <!-- Center Icon -->
+                            <div class="absolute z-10 bg-white rounded-full p-8 shadow-2xl border border-gray-100">
+                                <i class="fab fa-youtube text-red-600 text-7xl"></i>
+                            </div>
+                            <!-- Orbiting Icons (Success signals) -->
+                            <div class="orbiting-icon"><i class="fas fa-certificate text-yellow-500"></i></div>
+                            <div class="orbiting-icon"><i class="fas fa-graduation-cap text-purple-600"></i></div>
+                            <div class="orbiting-icon"><i class="fas fa-check-circle text-green-500"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- B) HOW IT WORKS (SIMPLE 3 STEPS) -->
+        <section class="py-24 px-6 bg-white/30 border-y border-border-color-alpha animate-in">
+            <div class="container mx-auto max-w-[1100px]">
+                <div class="text-center mb-16">
+                    <span class="text-indigo-600 font-bold tracking-wider text-xs uppercase mb-2 block">How Your YouTube Learning Becomes a Certificate</span>
+                    <h2 class="text-4xl font-bold text-dark mb-4">How It Works</h2>
+                </div>
+                
+                <div class="relative grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Progress Line (Desktop) -->
+                    <div class="hidden md:block absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-indigo-200 to-transparent z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="glass-card p-10 flex flex-col h-full text-center relative z-10 hover:border-indigo-200">
+                        <div class="mx-auto mb-6 bg-white border border-indigo-50 shadow-sm w-20 h-20 rounded-2xl flex items-center justify-center text-indigo-600 text-3xl">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">1. Pick an Exam</h3>
+                        <p class="text-muted leading-relaxed mb-4">Search and enroll for an exam that’s based on a YouTube video or playlist you’ve learned.</p>
+                        <p class="text-xs font-bold text-indigo-400 mt-auto uppercase tracking-wide">Takes a few seconds</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="glass-card p-10 flex flex-col h-full text-center relative z-10 hover:border-purple-200">
+                        <div class="mx-auto mb-6 bg-white border border-purple-50 shadow-sm w-20 h-20 rounded-2xl flex items-center justify-center text-purple-600 text-3xl">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">2. Answer AI-Generated Questions</h3>
+                        <p class="text-muted leading-relaxed mb-4">Take a test built from the actual content of that video or playlist, so it checks what you learned.</p>
+                        <p class="text-xs font-bold text-purple-400 mt-auto uppercase tracking-wide">Takes a few minutes</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="glass-card p-10 flex flex-col h-full text-center relative z-10 hover:border-green-200">
+                        <div class="mx-auto mb-6 bg-white border border-green-50 shadow-sm w-20 h-20 rounded-2xl flex items-center justify-center text-green-600 text-3xl">
+                            <i class="fas fa-medal"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">3. Complete exam & Get Your Certificate</h3>
+                        <p class="text-muted leading-relaxed mb-4">If you qualify, you instantly receive a verifiable certificate you can download and share.
+                            You can try as many time you want.
+                        </p>
+                        <p class="text-xs font-bold text-green-400 mt-auto uppercase tracking-wide">Instant when you qualify</p>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="{{ url_for('user.oauth_login') }}" class="btn-secondary">
+                        Sign In and See Available Exams
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- C) NEW SECTION: CHOOSE YOUR LEARNING AREA -->
+        <section class="py-24 px-6 animate-in">
+            <div class="container mx-auto max-w-[1000px]">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-dark mb-4">Choose the Skills You Want to Prove</h2>
+                    <p class="text-lg text-muted">Exams are based on educational YouTube content you already enjoy learning.</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 md:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Cat 1 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">💻</div>
+                        <h5 class="font-bold text-dark">Programming & Tech</h5>
+                    </div>
+                    <!-- Cat 2 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">📈</div>
+                        <h5 class="font-bold text-dark">Business & Marketing</h5>
+                    </div>
+                    <!-- Cat 3 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">🎨</div>
+                        <h5 class="font-bold text-dark">Design & Creativity</h5>
+                    </div>
+                    <!-- Cat 4 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">🗣️</div>
+                        <h5 class="font-bold text-dark">Language</h5>
+                    </div>
+                    <!-- Cat 5 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">🧬</div>
+                        <h5 class="font-bold text-dark">Science & Data</h5>
+                    </div>
+                    <!-- Cat 6 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">🌱</div>
+                        <h5 class="font-bold text-dark">Personal Growth</h5>
+                    </div>
+                    <!-- Cat 7 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">🎓</div>
+                        <h5 class="font-bold text-dark">Exam Prep</h5>
+                    </div>
+                    <!-- Cat 8 -->
+                    <div class="glass-card p-6 text-center hover:bg-white cursor-pointer transition-all hover:-translate-y-2">
+                        <div class="text-3xl mb-3">💡</div>
+                        <h5 class="font-bold text-dark">Other Skills</h5>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- D) WHY THIS MATTERS FOR YOUR FUTURE -->
+        <section class="py-24 px-6 bg-gradient-to-b from-white to-transparent animate-in">
+            <div class="container mx-auto max-w-[1000px]">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-dark mb-6">Why This Matters for Your Future</h2>
+                    <p class="text-xl text-dark font-light max-w-2xl mx-auto italic">
+                        “You’re not just someone who watches videos anymore. You become someone who can prove what he learned. Present it on Interview, Linkedin and stand out from the rest.”
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- You Get -->
+                    <div class="glass-card p-10 border-t-4 border-green-500 shadow-xl">
+                        <h3 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                            <i class="fas fa-check-circle text-green-500"></i> You Get
+                        </h3>
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-plus text-green-500 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-dark">Signed Certificate</h5>
+                                    <p class="text-sm text-muted">You will get a signed certificate from your favourite YouTube Creator.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-plus text-green-500 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-dark">Proof of Understanding</h5>
+                                    <p class="text-sm text-muted">Evidence that you didn't just passively watch. You learned from it in depth.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-plus text-green-500 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-dark">Resume Assets</h5>
+                                    <p class="text-sm text-muted">Certificates from your favourite Youtuber which you can attach to LinkedIn or resume.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-plus text-green-500 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-dark">Closure</h5>
+                                    <p class="text-sm text-muted">A clear next step after watching, instead of endless scrolling.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- You Avoid -->
+                    <div class="glass-card p-10 border-t-4 border-gray-400 bg-gray-50/50">
+                        <h3 class="text-2xl font-bold mb-8 flex items-center gap-3 text-gray-600">
+                            <i class="fas fa-times-circle text-gray-400"></i> You Avoid
+                        </h3>
+                        <ul class="space-y-6">
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-minus text-gray-400 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-gray-600">Rejection From Interview</h5>
+                                    <p class="text-sm text-muted">It will decrease the chance of getting rejected, because now you can prove your learning.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-minus text-gray-400 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-gray-600">Invisible Effort</h5>
+                                    <p class="text-sm text-muted">Having nothing to show for hours of learning from youtube.</p>
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-4">
+                                <i class="fas fa-minus text-gray-400 mt-1 text-sm"></i>
+                                <div>
+                                    <h5 class="font-bold text-gray-600">Imposter Syndrome</h5>
+                                    <p class="text-sm text-muted">Feeling unsure if you truly mastered a topic.</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- E) NEW SECTION: WHERE YOUR CERTIFICATE HELPS -->
+        <section class="py-24 px-6 animate-in">
+            <div class="container mx-auto max-w-[1000px]">
+                <div class="flex flex-col md:flex-row items-center gap-16">
+                    <div class="md:w-1/2">
+                        <h2 class="text-3xl font-bold text-dark mb-6">Where Your Certificate Actually Helps You.</h2>
+                        <p class="text-muted mb-8">Your certificate won’t replace a degree, but it shows real effort and skill.</p>
+                        <ul class="space-y-6">
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600"><i class="fab fa-linkedin-in"></i></div>
+                                <p class="text-muted font-medium">On LinkedIn, to show ongoing self-learning.</p>
+                            </li>
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600"><i class="fas fa-file-alt"></i></div>
+                                <p class="text-muted font-medium">On your resume, as proof that you went deeper than casual watching.</p>
+                            </li>
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600"><i class="fas fa-briefcase"></i></div>
+                                <p class="text-muted font-medium">In job or internship applications, as an extra signal that you take learning seriously.</p>
+                            </li>
+                            <li class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600"><i class="fas fa-user"></i></div>
+                                <p class="text-muted font-medium">For your own confidence, to see your progress over time.</p>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="md:w-1/2 flex justify-center">
+                        <!-- Visual Mockup -->
+                        <div class="relative w-full max-w-sm">
+                            <!-- Fake LinkedIn Card -->
+                            <div class="bg-white p-4 rounded-xl shadow-lg border border-gray-100 transform -rotate-3 mb-4">
+                                <div class="flex gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-gray-200 rounded-full"></div>
+                                    <div class="flex-1 space-y-2">
+                                        <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                                        <div class="h-2 bg-gray-100 rounded w-1/3"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-100 flex items-center gap-3">
+                                    <div class="text-2xl text-yellow-500"><i class="fas fa-certificate"></i></div>
+                                    <div>
+                                        <div class="text-xs font-bold text-dark">Certified: Python Basics</div>
+                                        <div class="text-[10px] text-muted">Issued by Creator Name via Youcert</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Fake Resume Snippet -->
+                            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 transform rotate-2 absolute top-20 left-10 right-0">
+                                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Certifications</div>
+                                <div class="flex justify-between items-center border-b border-gray-100 pb-2 mb-2">
+                                    <span class="text-sm font-bold text-dark">Data Science Fundamentals</span>
+                                    <span class="text-xs text-muted">2025</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-bold text-dark">Digital Marketing Strategy</span>
+                                    <span class="text-xs text-muted">2025</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- F) SHORT LEARNER STORY BAND -->
+        <section class="py-24 px-6 animate-in">
+            <div class="container mx-auto max-w-[600px] text-center">
+                <div class="w-12 h-1 bg-indigo-500 mx-auto mb-8 rounded-full"></div>
+                <h4 class="text-sm font-bold text-muted uppercase tracking-widest mb-6">A Short Story</h4>
+                <div class="font-handwriting text-2xl text-dark leading-loose transform -rotate-1">
+                    "I taught myself coding through YouTube.
+                    I could build things, but when I went for my first interview, they asked for a certificate.
+                    I didn’t have anything to show — just skills they had to trust.
+                    Now I can take an exam based on what I learned from youtube and earn a certificate from my favourite creator.
+                    I’m still self-taught — but now I can prove it."
+                </div>
+            </div>
+        </section>
+
+        <!-- G) SIMPLE PRICING STRIP -->
+        <section class="py-20 px-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-none md:rounded-3xl mx-0 md:mx-6 shadow-2xl animate-in">
+            <div class="container mx-auto max-w-[800px] text-center">
+                <h2 class="text-3xl font-bold mb-4 text-white">Its totally free to Signup</h2>
+                <p class="text-xl text-indigo-100 leading-relaxed font-light">
+                    You only pay when you enroll for a Certification Exam from your favourite creator for a vey little registration fee.
+                </p>
+            </div>
+        </section>
+
+        <!-- H) ONE SIMPLE JOURNEY TIMELINE -->
+        <section class="py-24 px-6 animate-in">
+            <div class="container mx-auto max-w-[900px]">
+                <h2 class="text-3xl font-bold text-center mb-16">From Viewer to Certified in One Simple Journey</h2>
+                
+                <div class="space-y-8 relative">
+                    <div class="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gray-200"></div>
+                    
+                    <!-- Step 1 -->
+                    <div class="flex gap-8 items-center group">
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center text-indigo-500 z-10 group-hover:scale-110 transition-transform"><i class="fas fa-play"></i></div>
+                        <div class="glass-card p-4 px-6 flex-1 hover:pl-8 transition-all">
+                            <h5 class="font-bold text-dark">You find a YouTube video or playlist that teaches you something.</h5>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex gap-8 items-center group">
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center text-indigo-500 z-10 group-hover:scale-110 transition-transform"><i class="fas fa-mouse-pointer"></i></div>
+                        <div class="glass-card p-4 px-6 flex-1 hover:pl-8 transition-all">
+                            <h5 class="font-bold text-dark">You choose an exam based on that content.</h5>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex gap-8 items-center group">
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center text-indigo-500 z-10 group-hover:scale-110 transition-transform"><i class="fas fa-file-alt"></i></div>
+                        <div class="glass-card p-4 px-6 flex-1 hover:pl-8 transition-all">
+                            <h5 class="font-bold text-dark">You take AI-generated exam based on that course.</h5>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="flex gap-8 items-center group">
+                        <div class="w-10 h-10 rounded-full bg-indigo-600 border-2 border-indigo-600 flex items-center justify-center text-white z-10 group-hover:scale-110 transition-transform"><i class="fas fa-check"></i></div>
+                        <div class="glass-card p-4 px-6 flex-1 hover:pl-8 transition-all border-indigo-200">
+                            <h5 class="font-bold text-indigo-700">You qualified and earn your certificate.</h5>
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="flex gap-8 items-center group">
+                        <div class="w-10 h-10 rounded-full bg-white border-2 border-indigo-100 flex items-center justify-center text-indigo-500 z-10 group-hover:scale-110 transition-transform"><i class="fas fa-share-alt"></i></div>
+                        <div class="glass-card p-4 px-6 flex-1 hover:pl-8 transition-all">
+                            <h5 class="font-bold text-dark">You keep it, share it, or use it as proof of your skills.</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- I) FAQ (ACCORDION) -->
+        <section class="section-padding px-6 bg-white/50 animate-in">
+            <div class="container mx-auto max-w-[800px]">
+                <h2 class="text-3xl font-bold text-center text-dark mb-12">Common Questions</h2>
+                <div class="space-y-5">
+                    <!-- Q1 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h5 class="font-bold text-lg">Do I have to pay every month?</h5>
+                            <i class="fas fa-chevron-down text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">No. There is no subscription. You only pay when you register for an exam.</p>
+                        </div>
+                    </div>
+                    <!-- Q2 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h5 class="font-bold text-lg">Where do the questions come from?</h5>
+                            <i class="fas fa-chevron-down text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">They’re generated from the transcript and content of the YouTube video or playlist the exam is based on.</p>
+                        </div>
+                    </div>
+                    <!-- Q3 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h5 class="font-bold text-lg">Can I retake the exam if I don’t pass the first time?</h5>
+                            <i class="fas fa-chevron-down text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">Yes, you can retry for as many time you want. We want you to master the material, not just pass a test.</p>
+                        </div>
+                    </div>
+                    <!-- Q4 -->
+                    <div class="glass-card p-6 cursor-pointer faq-item" onclick="toggleFaq(this)">
+                        <div class="flex justify-between items-center">
+                            <h5 class="font-bold text-lg">Will employers recognize this certificate?</h5>
+                            <i class="fas fa-chevron-down text-indigo-500 faq-icon"></i>
+                        </div>
+                        <div class="faq-content">
+                            <p class="text-muted text-sm leading-relaxed">It’s an extra signal of effort and focused learning, not a formal degree. It proves you went beyond passive watching.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- J) BOTTOM CTA -->
+        <section class="py-32 px-6 text-center animate-in">
+            <div class="container mx-auto max-w-[900px]">
+                <div class="glass-card p-12 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-50 to-white opacity-50"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-4xl font-extrabold text-dark mb-6">Your Learning Deserves to Be Seen.</h2>
+                        <p class="text-xl text-muted mb-10 max-w-2xl mx-auto font-light">
+                            You’ve already spent time learning from YouTube. A short exam turns that effort into something you can show.
+                        </p>
+                        <div class="flex flex-col items-center gap-4">
+                            <a href="{{ url_for('user.oauth_login') }}" class="btn-google text-lg px-10 py-4 shadow-xl">
+                                Start With Your Google Account
+                            </a>
+                            <span class="text-sm font-medium text-muted">No subscription • Only pay when you register for an exam</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer animate-in">
+        <div class="container mx-auto px-6 max-w-[1200px]">
+            <div class="flex flex-col md:flex-row md:justify-between items-center md:items-start gap-12 mb-12">
+                <div class="md:w-1/3 text-center md:text-left animate-in">
+                    <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                        <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-8 w-auto" />
+                        <h5 class="text-xl font-bold text-dark">Youcert</h5>
+                    </div>
+                    <p class="text-secondary-premium mb-3 max-w-md mx-auto md:mx-0 leading-relaxed">
+                        Because your self-learning deserves recognition
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row gap-12 md:gap-24 text-center md:text-left animate-in">
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Quick Links</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/how-it-works/" class="text-secondary-premium hover:text-indigo-600">How It Works</a></li>
+                            <li><a href="/contact-us/" class="text-secondary-premium hover:text-indigo-600">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h6 class="text-lg font-bold text-dark mb-4">Support</h6>
+                        <ul class="list-none p-0 m-0 space-y-3">
+                            <li><a href="/help-center/" class="text-secondary-premium hover:text-indigo-600">Help Center</a></li>
+                            <li><a href="/privacy-policy/" class="text-secondary-premium hover:text-indigo-600">Privacy Policy</a></li>
+                            <li><a href="/terms-and-conditions/" class="text-secondary-premium hover:text-indigo-600">Terms of Service</a></li>
+                            <li><a href="/cookie-policy/" class="text-secondary-premium hover:text-indigo-600">Cookie Policy</a></li>
+                            <li><a href="/cancellation-and-refund/" class="text-secondary-premium hover:text-indigo-600">Refund Policy</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t border-gray-200">
+            <div class="flex flex-col md:flex-row md:justify-between items-center text-center md:text-left animate-in">
+                <p class="text-secondary-premium text-sm mb-2 md:mb-0">&copy; 2025 Youcert. All rights reserved.</p>
+                <p class="text-secondary-premium text-sm flex items-center gap-1">
+                    Made with <i class="fas fa-heart text-red-500"></i> for learners worldwide
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Back to Top -->
+    <div class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="fas fa-arrow-up text-indigo-600"></i>
+    </div>
+
+    <script>
+        // Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.animate-in').forEach(section => {
+            observer.observe(section);
+        });
+
+        // FAQ Accordion
+        function toggleFaq(element) {
+            const isActive = element.classList.contains('active');
+            document.querySelectorAll('.faq-item').forEach(item => item.classList.remove('active'));
+            if (!isActive) element.classList.add('active');
+        }
+
+        // Back to top visibility
+        window.addEventListener('scroll', () => {
+            const btn = document.querySelector('.back-to-top');
+            if (window.scrollY > 500) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

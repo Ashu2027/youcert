@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>Featured Exams | YOUCERT Admin</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+        .main-content { padding: 2rem; max-width: 1400px; margin: 0 auto; }
+
+        .page-header {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .page-title svg { width: 28px; height: 28px; color: #F59E0B; }
+
+        .btn-back {
+            padding: 0.65rem 1.25rem;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-dark);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-back:hover { background: #F3F4F6; border-color: #6366F1; color: #6366F1; }
+        .btn-back svg { width: 16px; height: 16px; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .stat-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; margin-bottom: 0.75rem; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slots-grid { display: grid; gap: 1.5rem; }
+
+        .exam-slot {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .exam-slot:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.08); }
+
+        .exam-slot.filled {
+            border-color: #10B981;
+            background: linear-gradient(to right, rgba(16, 185, 129, 0.02), transparent);
+        }
+
+        .exam-slot.empty {
+            border-color: #EF4444;
+            border-style: dashed;
+            background: linear-gradient(to right, rgba(239, 68, 68, 0.02), transparent);
+        }
+
+        .slot-content { display: flex; align-items: center; gap: 1.5rem; }
+
+        .slot-number {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            background: var(--brand-gradient);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .slot-details { flex: 1; }
+
+        .exam-title { font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin-bottom: 0.5rem; }
+
+        .exam-meta {
+            display: flex;
+            gap: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .exam-meta span { display: flex; align-items: center; gap: 0.4rem; }
+
+        .btn {
+            padding: 0.65rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn svg { width: 16px; height: 16px; }
+
+        .btn-primary {
+            background: var(--brand-gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-danger { background: #EF4444; color: white; }
+        .btn-danger:hover { background: #DC2626; transform: translateY(-2px); }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            max-width: 700px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-title svg { width: 22px; height: 22px; color: #6366F1; }
+
+        .btn-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: #F3F4F6;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-close:hover { background: #E5E7EB; }
+        .btn-close svg { width: 18px; height: 18px; }
+
+        .search-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .search-results { flex: 1; overflow-y: auto; }
+
+        .search-result-item {
+            padding: 1rem;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .search-result-item:hover {
+            border-color: #6366F1;
+            background: #EEF2FF;
+            transform: translateX(4px);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .slot-content { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+    <div class="main-content">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+                <div>
+                    <h1 class="page-title">
+                        <i data-lucide="star"></i>
+                        Featured Exams Manager
+                    </h1>
+                    <p style="font-size:0.95rem;color:var(--text-muted);margin-top:0.5rem;">Select up to 5 exams to feature on the user homepage carousel</p>
+                </div>
+                <a href="/naanni/dashboard/" class="btn-back">
+                    <i data-lucide="arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Slots Filled</div>
+                <div class="stat-value">{{ featured_count }}/5</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Active Exams</div>
+                <div class="stat-value">{{ total_exams }}</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Homepage Carousel</div>
+                <div class="stat-value">10</div>
+            </div>
+        </div>
+
+        <!-- Exam Slots -->
+        <div class="slots-grid">
+            {% for i in range(1, 6) %}
+            <div class="exam-slot {% if featured_exams[i-1] %}filled{% else %}empty{% endif %}">
+                <div class="slot-content">
+                    <div class="slot-number">{{ i }}</div>
+
+                    <div class="slot-details">
+                        {% if featured_exams[i-1] %}
+                        <div class="exam-title">{{ featured_exams[i-1].title }}</div>
+                        <div class="exam-meta">
+                            <span>
+                                <i data-lucide="user"></i>
+                                {{ featured_exams[i-1].creator_name }}
+                            </span>
+                            <span>
+                                <i data-lucide="dollar-sign"></i>
+                                ₹{{ featured_exams[i-1].price }}
+                            </span>
+                            <span>
+                                <i data-lucide="shopping-cart"></i>
+                                {{ featured_exams[i-1].purchase_count }} purchases
+                            </span>
+                        </div>
+                        {% else %}
+                        <div style="font-size:1.05rem;font-weight:600;color:#9CA3AF;">Empty Slot {{ i }}</div>
+                        <div style="font-size:0.85rem;color:#D1D5DB;margin-top:0.25rem;">Click "Add Exam" to fill this slot</div>
+                        {% endif %}
+                    </div>
+
+                    <div style="display:flex;gap:0.75rem;">
+                        {% if featured_exams[i-1] %}
+                        <button onclick="removeExam({{ i }}, {{ featured_exams[i-1].exam_id }})" class="btn btn-danger">
+                            <i data-lucide="trash-2"></i>
+                            Remove
+                        </button>
+                        {% else %}
+                        <button onclick="openSearchModal({{ i }})" class="btn btn-primary">
+                            <i data-lucide="plus"></i>
+                            Add Exam
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">
+                    <i data-lucide="search"></i>
+                    Search Exams
+                </h2>
+                <button onclick="closeSearchModal()" class="btn-close">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+
+            <input type="text"
+                   id="examSearch"
+                   class="search-input"
+                   placeholder="Search by exam title, creator name, or exam number..."
+                   oninput="searchExams()">
+
+            <div id="searchResults" class="search-results"></div>
+
+            <input type="hidden" id="currentSlot" value="">
+        </div>
+    </div>
+
+    <script>
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        let allExams = [];
+        let currentSlot = 0;
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Open search modal
+        function openSearchModal(slot) {
+            currentSlot = slot;
+            document.getElementById('currentSlot').value = slot;
+            document.getElementById('searchModal').classList.add('active');
+            document.getElementById('examSearch').focus();
+
+            // Load all exams
+            fetch('/naanni/api/search_exams?q=', {
+                headers: {
+                    'X-CSRFToken': csrfToken
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    allExams = data.exams || [];
+                    displaySearchResults(allExams);
+                })
+                .catch(err => {
+                    console.error('Error:', err);
+                    document.getElementById('searchResults').innerHTML = '<p style="text-align:center;color:#6E6E73;padding:2rem;">Failed to load exams</p>';
+                });
+        }
+
+        // Close search modal
+        function closeSearchModal() {
+            document.getElementById('searchModal').classList.remove('active');
+            document.getElementById('examSearch').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+        }
+
+        // Search exams
+        function searchExams() {
+            const query = document.getElementById('examSearch').value.toLowerCase();
+            const filtered = allExams.filter(exam =>
+                exam.title.toLowerCase().includes(query) ||
+                exam.creator_name.toLowerCase().includes(query) ||
+                exam.exam_number.toLowerCase().includes(query)
+            );
+            displaySearchResults(filtered);
+        }
+
+        // Display search results
+        function displaySearchResults(exams) {
+            const resultsDiv = document.getElementById('searchResults');
+
+            if (exams.length === 0) {
+                resultsDiv.innerHTML = '<p style="text-align:center;color:#6E6E73;padding:2rem;">No exams found</p>';
+                return;
+            }
+
+            resultsDiv.innerHTML = exams.map(exam => `
+                <div class="search-result-item" onclick="selectExam(${exam.id})">
+                    <div style="font-weight:600;color:var(--text-dark);margin-bottom:0.5rem;">${escapeHtml(exam.title)}</div>
+                    <div style="font-size:0.85rem;color:var(--text-muted);">
+                        <span>${escapeHtml(exam.creator_name)}</span>
+                        <span style="margin:0 0.5rem;">•</span>
+                        <span>₹${exam.price}</span>
+                        <span style="margin:0 0.5rem;">•</span>
+                        <span>${exam.purchase_count} purchases</span>
+                        <span style="margin:0 0.5rem;">•</span>
+                        <span style="font-family:monospace;font-size:0.75rem;">${exam.exam_number}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Select exam for slot
+        function selectExam(examId) {
+            const slot = currentSlot;
+
+            fetch('/naanni/api/featured_exams/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    exam_id: examId,
+                    display_order: slot
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert('Error adding exam');
+                console.error(err);
+            });
+        }
+
+        // Remove exam from slot
+        function removeExam(slot, examId) {
+            if (!confirm('Are you sure you want to remove this exam from the featured list?')) {
+                return;
+            }
+
+            fetch('/naanni/api/featured_exams/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken
+                },
+                body: JSON.stringify({
+                    exam_id: examId
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                alert('Error removing exam');
+                console.error(err);
+            });
+        }
+
+        // Close modal on outside click
+        document.getElementById('searchModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSearchModal();
+            }
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

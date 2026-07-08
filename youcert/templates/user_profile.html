@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="user-id" content="{{ session.get('user_id', '') }}" />
+    <meta name="session-id" content="{{ session.sid if session.sid else '' }}" />
+    <title>User Profile - Youcert</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           YOUCERT — User Profile Page
+           Layout:
+             1. Dark HERO banner  (avatar + name + badges + stats strip)
+             2. Body content      (personal info form · cert identity ·
+                                   account status · sign out)
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:      #F0F0F5;
+            --c-surface: #FFFFFF;
+            --c-dark:    #1A1A2E;
+            --c-muted:   #7C7C8E;
+            --c-soft:    #E8E8F0;
+            --c-indigo:  #6366F1;
+            --c-purple:  #9333EA;
+            --grad:      linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --grad-h:    linear-gradient(135deg, #4F46E5 0%, #7E22CE 100%);
+            --r:         20px;
+            --spring:    cubic-bezier(0.16, 1, 0.3, 1);
+            --t:         all 0.4s var(--spring);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html {
+            background: var(--c-bg);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a { text-decoration: none; }
+
+        /* ══════════════════════════════════════════
+           NAV
+        ══════════════════════════════════════════ */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover { opacity: 1; background: rgba(0, 0, 0, 0.04); }
+
+        .nav-link.active {
+            opacity: 1;
+            background: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+        }
+
+        /* ══════════════════════════════════════════
+           PROFILE HERO BANNER
+        ══════════════════════════════════════════ */
+        .profile-hero {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 3rem 0 0;
+        }
+
+        /* Mesh grid overlay */
+        .ph-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        /* Ambient orbs */
+        .ph-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .ph-orb-a {
+            width: 500px;
+            height: 500px;
+            top: -200px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.38), transparent 60%);
+            animation: pho1 18s ease-in-out infinite;
+        }
+
+        .ph-orb-b {
+            width: 340px;
+            height: 340px;
+            bottom: -80px;
+            left: 3%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.32), transparent 60%);
+            animation: pho2 22s ease-in-out infinite;
+        }
+
+        @keyframes pho1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-40px, 30px); }
+        }
+
+        @keyframes pho2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(30px, -24px); }
+        }
+
+        .ph-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Avatar + identity row */
+        .ph-identity {
+            display: flex;
+            align-items: flex-end;
+            gap: 1.8rem;
+            flex-wrap: wrap;
+        }
+
+        /* Profile avatar */
+        .profile-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid rgba(255, 255, 255, 0.22);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.08),
+                0 12px 32px rgba(0, 0, 0, 0.35);
+            flex-shrink: 0;
+        }
+
+        .ph-info {
+            flex: 1;
+            min-width: 200px;
+            padding-bottom: 0.2rem;
+        }
+
+        /* Name */
+        .profile-name {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.7rem, 3.5vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            line-height: 1.05;
+            color: #fff;
+            margin-bottom: 0.35rem;
+        }
+
+        /* Email row */
+        .profile-email {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.45);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            margin-bottom: 0.85rem;
+        }
+
+        /* Badge pills */
+        .profile-badges {
+            display: flex;
+            gap: 0.55rem;
+            flex-wrap: wrap;
+        }
+
+        .badge-pill {
+            padding: 0.3rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            letter-spacing: 0.01em;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.18);
+            color: #6EE7B7;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #FCA5A5;
+            border: 1px solid rgba(239, 68, 68, 0.22);
+        }
+
+        .badge-neutral {
+            background: rgba(255, 255, 255, 0.07);
+            color: rgba(255, 255, 255, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* ══ Stats strip — lifts out of hero ══ */
+        .stat-strip {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            transform: translateY(-28px);
+        }
+
+        .stat-tile {
+            background: #fff;
+            border-radius: var(--r);
+            padding: 1.3rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.055);
+            transition: var(--t);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-tile::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--grad);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .stat-tile:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.1);
+        }
+
+        .stat-tile:hover::after { opacity: 1; }
+
+        .st-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.05rem;
+            color: #fff;
+        }
+
+        .ic-indigo { background: linear-gradient(135deg, #6366F1, #818CF8); box-shadow: 0 4px 12px rgba(99,102,241,0.28); }
+        .ic-purple { background: linear-gradient(135deg, #9333EA, #C084FC); box-shadow: 0 4px 12px rgba(147,51,234,0.26); }
+        .ic-teal   { background: linear-gradient(135deg, #0D9488, #2DD4BF); box-shadow: 0 4px 12px rgba(13,148,136,0.26); }
+
+        .st-num {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--c-dark);
+            line-height: 1;
+        }
+
+        .st-lbl {
+            font-size: 0.72rem;
+            color: var(--c-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-top: 0.12rem;
+        }
+
+        /* ══════════════════════════════════════════
+           BODY CONTENT
+        ══════════════════════════════════════════ */
+        .body-wrap {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 2rem 5rem;
+        }
+
+        /* ── Section cards ── */
+        .sec-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                0 8px 32px rgba(0, 0, 0, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Section header row */
+        .sec-header {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            margin-bottom: 1.6rem;
+            padding-bottom: 1.2rem;
+            border-bottom: 1px solid var(--c-soft);
+        }
+
+        .sec-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .si-indigo {
+            background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(147,51,234,0.08));
+            color: var(--c-indigo);
+        }
+
+        .si-amber {
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+        }
+
+        .si-slate {
+            background: rgba(100, 116, 139, 0.1);
+            color: #475569;
+        }
+
+        .si-red {
+            background: rgba(239, 68, 68, 0.08);
+            color: #DC2626;
+        }
+
+        .section-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--c-dark);
+            margin: 0;
+        }
+
+        /* ── Alerts ── */
+        .alert {
+            padding: 0.9rem 1.1rem;
+            border-radius: 14px;
+            margin-bottom: 1.4rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+            font-size: 0.865rem;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .alert i { flex-shrink: 0; margin-top: 0.1rem; }
+
+        .alert-info    { background: rgba(239,246,255,0.9); color: #1D4ED8; border: 1px solid rgba(59,130,246,0.15); }
+        .alert-warning { background: rgba(255,251,235,0.9); color: #B45309; border: 1px solid rgba(245,158,11,0.18); }
+        .alert-danger  { background: rgba(254,242,242,0.9); color: #B91C1C; border: 1px solid rgba(239,68,68,0.15); }
+        .alert-success { background: rgba(209,250,229,0.9); color: #065F46; border: 1px solid rgba(16,185,129,0.15); }
+
+        /* ── Form grid ── */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.6rem;
+        }
+
+        @media (max-width: 720px) {
+            .form-grid { grid-template-columns: 1fr; gap: 0; }
+        }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--c-dark);
+            margin-bottom: 0.48rem;
+            letter-spacing: 0.01em;
+        }
+
+        /* Lock / editable badges on labels */
+        .field-badge {
+            font-size: 0.64rem;
+            font-weight: 700;
+            padding: 0.18rem 0.55rem;
+            border-radius: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .bg-locked   { background: var(--c-soft); color: var(--c-muted); }
+        .bg-editable { background: rgba(16, 185, 129, 0.1); color: #059669; }
+
+        /* Inputs */
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.82rem 1rem;
+            border-radius: 14px;
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--c-dark);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            transition: var(--t);
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: var(--c-indigo);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1), 0 4px 12px rgba(99,102,241,0.06);
+        }
+
+        .form-input.locked {
+            background: var(--c-bg);
+            color: var(--c-muted);
+            border-color: transparent;
+            cursor: not-allowed;
+        }
+
+        .form-textarea { resize: none; line-height: 1.6; }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder { color: #C4C4D4; }
+
+        /* Form action row */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.85rem;
+            margin-top: 1.6rem;
+            padding-top: 1.4rem;
+            border-top: 1px solid var(--c-soft);
+        }
+
+        /* ── Buttons ── */
+        .btn-primary {
+            background: var(--c-dark);
+            color: #fff;
+            border: none;
+            padding: 0.82rem 1.8rem;
+            border-radius: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--t);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 60%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s var(--spring);
+        }
+
+        .btn-primary:hover::before { left: 160%; }
+
+        .btn-primary:hover {
+            background: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--c-dark);
+            border: 1.5px solid rgba(0, 0, 0, 0.1);
+            padding: 0.82rem 1.6rem;
+            border-radius: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--t);
+        }
+
+        .btn-secondary:hover { background: var(--c-soft); border-color: rgba(0,0,0,0.14); }
+
+        .btn-danger-soft {
+            background: rgba(239, 68, 68, 0.07);
+            color: #DC2626;
+            border: 1.5px solid rgba(239, 68, 68, 0.18);
+            padding: 0.82rem 1.8rem;
+            border-radius: 13px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--t);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            width: 100%;
+        }
+
+        .btn-danger-soft:hover {
+            background: rgba(239, 68, 68, 0.12);
+            border-color: rgba(239, 68, 68, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 16px rgba(239, 68, 68, 0.12);
+        }
+
+        /* ── Certificate section ── */
+        .cert-locked-box {
+            background: var(--c-bg);
+            border-radius: 18px;
+            padding: 2rem;
+            text-align: center;
+            border: 1.5px solid var(--c-soft);
+        }
+
+        .cert-name-display {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--c-dark);
+            margin: 0.5rem 0 1rem;
+        }
+
+        .cert-locked-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: var(--c-soft);
+            color: var(--c-muted);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 99px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .cert-warning-box {
+            background: rgba(255, 251, 235, 0.9);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            border-radius: 16px;
+            padding: 1.1rem 1.3rem;
+            display: flex;
+            gap: 0.9rem;
+            align-items: flex-start;
+            margin-bottom: 1.3rem;
+        }
+
+        .cert-warning-box i {
+            color: #D97706;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .cert-warning-box h4 {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: #92400E;
+            margin-bottom: 0.25rem;
+        }
+
+        .cert-warning-box p {
+            font-size: 0.82rem;
+            color: #B45309;
+            line-height: 1.5;
+        }
+
+        .cert-input-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-end;
+        }
+
+        .cert-input-row .grow { flex: 1; }
+
+        /* ── Account info grid ── */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: var(--c-bg);
+            border-radius: 16px;
+            padding: 1rem 1.2rem;
+            border: 1px solid var(--c-soft);
+        }
+
+        .info-label {
+            font-size: 0.7rem;
+            color: var(--c-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.3rem;
+        }
+
+        .info-value {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            color: var(--c-dark);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .info-value.active { color: #059669; }
+
+        /* ── Bottom grid: account status + logout ── */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 280px;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 820px) {
+            .bottom-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Sign out card */
+        .signout-card {
+            background: rgba(255, 255, 255, 0.78);
+            backdrop-filter: blur(32px) saturate(180%);
+            -webkit-backdrop-filter: blur(32px) saturate(180%);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .so-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.07);
+            color: #DC2626;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin-bottom: 0.85rem;
+            border: 1.5px solid rgba(239, 68, 68, 0.14);
+        }
+
+        .so-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--c-dark);
+            margin-bottom: 0.35rem;
+        }
+
+        .so-sub {
+            font-size: 0.8rem;
+            color: var(--c-muted);
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        /* ══════════════════════════════════════════
+           MODAL — Certificate confirmation
+        ══════════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 8, 18, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            z-index: 900;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.visible {
+            display: block !important;
+            opacity: 1 !important;
+        }
+
+        .modal-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            width: 92%;
+            max-width: 460px;
+            background: #fff;
+            border-radius: 26px;
+            padding: 2rem;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(0,0,0,0.04);
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: all 0.35s var(--spring);
+        }
+
+        .modal-card.visible {
+            display: block !important;
+            opacity: 1 !important;
+            transform: translate(-50%, -50%) scale(1) !important;
+        }
+
+        .modal-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.1);
+            color: #D97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            margin: 0 auto 1rem;
+            border: 1.5px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .modal-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            color: var(--c-dark);
+            text-align: center;
+            margin-bottom: 0.4rem;
+        }
+
+        .modal-sub {
+            font-size: 0.855rem;
+            color: var(--c-muted);
+            text-align: center;
+            margin-bottom: 1.3rem;
+            line-height: 1.55;
+        }
+
+        .modal-name-box {
+            background: var(--c-bg);
+            border-radius: 14px;
+            padding: 1rem 1.2rem;
+            text-align: center;
+            border: 1.5px solid var(--c-soft);
+            margin-bottom: 1.5rem;
+        }
+
+        #modalNameDisplay {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--c-dark);
+            letter-spacing: -0.03em;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .modal-actions .btn-secondary { flex: 1; text-align: center; }
+        .modal-actions .btn-primary   { flex: 1; justify-content: center; }
+
+        /* ══════════════════════════════════════════
+           MOBILE MENU DRAWER
+        ══════════════════════════════════════════ */
+        #mobile-menu {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding: 0.8rem;
+            z-index: 190;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        #mobile-menu a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 12px;
+            transition: background 0.18s;
+        }
+
+        #mobile-menu a:hover { background: var(--c-soft); }
+
+        #mobile-menu a.active {
+            font-weight: 700;
+            color: var(--c-indigo);
+            background: rgba(99, 102, 241, 0.07);
+        }
+
+        /* ══════════════════════════════════════════
+           RESPONSIVE
+        ══════════════════════════════════════════ */
+        @media (max-width: 768px) {
+            .stat-strip {
+                grid-template-columns: repeat(3, 1fr);
+                transform: translateY(-20px);
+                padding: 0 1rem;
+                gap: 0.7rem;
+            }
+
+            .st-num { font-size: 1.3rem; }
+
+            .body-wrap,
+            .ph-inner { padding-left: 1rem; padding-right: 1rem; }
+
+            .body-wrap { padding-bottom: 3.5rem; }
+
+            .sec-card { padding: 1.4rem; }
+
+            .profile-name { font-size: 1.6rem; }
+
+            .profile-avatar { width: 72px; height: 72px; }
+
+            .cert-input-row { flex-direction: column; }
+
+            .cert-input-row .btn-primary { width: 100%; justify-content: center; }
+        }
+
+        @media (max-width: 500px) {
+            .stat-strip { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+
+    <!-- Secure Local Storage Cache -->
+    <script src="/static/js/secure-cache.js"></script>
+</head>
+
+<body>
+
+    <!-- ═══════════════════════════════════
+         NAVBAR
+    ═══════════════════════════════════ -->
+    {% include 'components/user_navbar.html' %}
+
+    <!-- ═══════════════════════════════════
+         MOBILE MENU DRAWER
+    ═══════════════════════════════════ -->
+    <div id="mobile-menu" class="hidden">
+        <a href="{{ url_for('user.index') }}">Home</a>
+        <a href="{{ url_for('user.exams') }}">Exams</a>
+        <a href="{{ url_for('user.completed_exams') }}">History</a>
+        <a href="{{ url_for('user.user_profile') }}" class="active">Profile</a>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         PROFILE HERO
+    ═══════════════════════════════════ -->
+    <section class="profile-hero">
+        <div class="ph-grid"></div>
+        <div class="ph-orb ph-orb-a"></div>
+        <div class="ph-orb ph-orb-b"></div>
+
+        <div class="ph-inner">
+
+            <!-- Flash messages inside hero -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'warning' if category == 'warning' else 'danger' if category == 'error' else 'info' }}" style="margin-bottom: 1.4rem;">
+                <i class="fas fa-info-circle"></i>
+                <span style="flex:1;">{{ message }}</span>
+                <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;opacity:0.5;margin-left:auto;font-size:1rem;">&times;</button>
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <div class="ph-identity">
+                <img
+                    src="{{ user.profile_picture if user and user.profile_picture else 'https://placehold.co/120x120/1A1A2E/818CF8?text=' + (user.name[0].upper() if user and user.name else '?') }}"
+                    alt="Profile"
+                    class="profile-avatar"
+                    onerror="this.onerror=null; this.src='https://placehold.co/120x120/1A1A2E/818CF8?text=?'">
+
+                <div class="ph-info">
+                    <h1 class="profile-name">{{ user.name if user else 'User Name' }}</h1>
+                    <p class="profile-email">
+                        <i class="far fa-envelope" style="font-size: 0.8rem;"></i>
+                        {{ user.email if user else 'email@example.com' }}
+                    </p>
+                    <div class="profile-badges">
+                        {% if user and user.email_verified %}
+                        <span class="badge-pill badge-success">
+                            <i class="fas fa-check-circle" style="font-size: 0.65rem;"></i> Verified
+                        </span>
+                        {% else %}
+                        <span class="badge-pill badge-danger">
+                            <i class="fas fa-times-circle" style="font-size: 0.65rem;"></i> Unverified
+                        </span>
+                        {% endif %}
+
+                        <span class="badge-pill badge-neutral">
+                            <i class="far fa-calendar" style="font-size: 0.62rem;"></i>
+                            Member since {{ user.created_at.strftime('%B %Y') if user and user.created_at else 'Unknown' }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Invisible spacer so stat strip can lift up cleanly -->
+        <div style="height: 3.5rem;"></div>
+    </section>
+
+    <!-- ═══════════════════════════════════
+         STAT STRIP — lifts out of hero
+    ═══════════════════════════════════ -->
+    <div class="stat-strip">
+        <div class="stat-tile">
+            <div class="st-icon ic-indigo"><i class="fas fa-shopping-bag"></i></div>
+            <div>
+                <div class="st-num">{{ stats.total_purchased or 0 }}</div>
+                <div class="st-lbl">Purchased</div>
+            </div>
+        </div>
+        <div class="stat-tile">
+            <div class="st-icon ic-purple"><i class="fas fa-check-circle"></i></div>
+            <div>
+                <div class="st-num">{{ stats.total_completed or 0 }}</div>
+                <div class="st-lbl">Completed</div>
+            </div>
+        </div>
+        <div class="stat-tile">
+            <div class="st-icon ic-teal"><i class="fas fa-chart-line"></i></div>
+            <div>
+                <div class="st-num">{{ "%.1f"|format(stats.average_score or 0) }}%</div>
+                <div class="st-lbl">Avg Score</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         BODY CONTENT
+    ═══════════════════════════════════ -->
+    <div class="body-wrap">
+
+        <!-- ── Personal Information Form ── -->
+        <div class="sec-card">
+            <div class="sec-header">
+                <div class="sec-icon si-indigo"><i class="fas fa-user-edit"></i></div>
+                <h2 class="section-title">Personal Information</h2>
+            </div>
+
+            <div class="alert alert-info">
+                <i class="fas fa-lock"></i>
+                <span>
+                    <strong>Security Notice:</strong> Sensitive fields (Name, Email, DOB) are locked.
+                    Contact support for changes.
+                </span>
+            </div>
+
+            <form method="POST" action="{{ url_for('user.update_profile') }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+                <div class="form-grid">
+
+                    <!-- Locked column -->
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Full Name
+                                <span class="field-badge bg-locked">Locked</span>
+                            </label>
+                            <input
+                                type="text"
+                                class="form-input locked"
+                                value="{{ user.name if user else '' }}"
+                                readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Email Address
+                                <span class="field-badge bg-locked">Locked</span>
+                            </label>
+                            <input
+                                type="email"
+                                class="form-input locked"
+                                value="{{ user.email if user else '' }}"
+                                readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Date of Birth
+                                <span class="field-badge bg-locked">Locked</span>
+                            </label>
+                            <input
+                                type="text"
+                                class="form-input locked"
+                                value="{{ user.date_of_birth if user and user.date_of_birth else '' }}"
+                                readonly>
+                        </div>
+                    </div>
+
+                    <!-- Editable column -->
+                    <div>
+                        <div class="form-group">
+                            <label class="form-label">
+                                Phone Number
+                                <span class="field-badge bg-editable">Editable</span>
+                            </label>
+                            <input
+                                type="tel"
+                                class="form-input"
+                                id="phone"
+                                name="phone"
+                                value="{{ user.phone if user and user.phone else '' }}"
+                                placeholder="Enter phone number">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">
+                                Address
+                                <span class="field-badge bg-editable">Editable</span>
+                            </label>
+                            <textarea
+                                class="form-input form-textarea"
+                                name="address"
+                                rows="5"
+                                placeholder="Enter full address">{{ user.address if user and user.address else '' }}</textarea>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="location.reload()">Discard</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save" style="font-size: 0.8rem;"></i>
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- ── Certificate Identity ── -->
+        <div class="sec-card">
+            <div class="sec-header">
+                <div class="sec-icon si-amber"><i class="fas fa-certificate"></i></div>
+                <h2 class="section-title">Certificate Identity</h2>
+            </div>
+
+            {% if user and user.name_in_certificate %}
+
+            <!-- Name already set — show locked display -->
+            <div class="cert-locked-box">
+                <div class="info-label" style="margin-bottom: 0;">Registered Name</div>
+                <div class="cert-name-display">{{ user.name_in_certificate }}</div>
+                <span class="cert-locked-badge">
+                    <i class="fas fa-lock" style="font-size: 0.6rem;"></i>
+                    Permanently Locked
+                </span>
+            </div>
+
+            {% else %}
+
+            <!-- Name not set — show action-required form -->
+            <div class="cert-warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <h4>Action Required</h4>
+                    <p>
+                        The name you enter below will be printed on all your certificates.
+                        <strong>This cannot be changed later.</strong>
+                    </p>
+                </div>
+            </div>
+
+            <form method="POST" action="{{ url_for('user.update_certificate_name') }}" id="certificateNameForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <div class="cert-input-row">
+                    <div class="grow">
+                        <label class="form-label" for="name_in_certificate">
+                            Official Name for Certificates
+                        </label>
+                        <input
+                            type="text"
+                            class="form-input"
+                            id="name_in_certificate"
+                            name="name_in_certificate"
+                            placeholder="e.g., Dr. John Doe"
+                            required
+                            minlength="2"
+                            maxlength="200">
+                    </div>
+                    <button type="submit" class="btn-primary" style="height: 50px; align-self: flex-end; white-space: nowrap;">
+                        <i class="fas fa-lock" style="font-size: 0.75rem;"></i>
+                        Lock Name
+                    </button>
+                </div>
+            </form>
+
+            {% endif %}
+        </div>
+
+        <!-- ── Account Status + Sign Out ── -->
+        <div class="bottom-grid">
+
+            <!-- Account status card -->
+            <div class="sec-card" style="margin-bottom: 0;">
+                <div class="sec-header">
+                    <div class="sec-icon si-slate"><i class="fas fa-shield-alt"></i></div>
+                    <h2 class="section-title">Account Status</h2>
+                </div>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Created On</div>
+                        <div class="info-value">
+                            {{ user.created_at.strftime('%b %d, %Y') if user and user.created_at else 'Unknown' }}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Last Updated</div>
+                        <div class="info-value">
+                            {{ user.updated_at.strftime('%b %d, %Y') if user and user.updated_at else 'Never' }}
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Status</div>
+                        <div class="info-value active">
+                            <i class="fas fa-circle" style="font-size: 0.55rem; margin-right: 0.3rem;"></i>
+                            Active
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sign out card -->
+            <div class="signout-card">
+                <div class="so-icon"><i class="fas fa-sign-out-alt"></i></div>
+                <div class="so-title">Sign Out</div>
+                <p class="so-sub">End your current session safely</p>
+                <a href="{{ url_for('user.logout') }}" class="btn-danger-soft">
+                    <i class="fas fa-sign-out-alt" style="font-size: 0.82rem;"></i>
+                    Logout
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════
+         MODAL — Certificate name confirmation
+    ═══════════════════════════════════ -->
+    <div id="modalOverlay" class="modal-overlay"></div>
+
+    <div id="modalCard" class="modal-card">
+        <div class="modal-icon"><i class="fas fa-question"></i></div>
+        <h3 class="modal-title">Are you sure?</h3>
+        <p class="modal-sub">You are about to permanently set your certificate name to:</p>
+
+        <div class="modal-name-box">
+            <span id="modalNameDisplay"></span>
+        </div>
+
+        <div class="modal-actions">
+            <button id="modalCancel" class="btn-secondary">Cancel</button>
+            <button id="modalConfirm" class="btn-primary" style="justify-content: center;">
+                <i class="fas fa-lock" style="font-size: 0.75rem;"></i>
+                Confirm &amp; Lock
+            </button>
+        </div>
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+
+    <script>
+        // ── Nav scroll glass effect ──
+        const nav = document.querySelector('.header-nav');
+        if (nav) {
+            window.addEventListener('scroll', function () {
+                nav.classList.toggle('scrolled', window.scrollY > 6);
+            }, { passive: true });
+        }
+
+        // ── Mobile menu toggle ──
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu    = document.getElementById('mobile-menu');
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // ── Certificate modal logic ──
+        const certForm = document.getElementById('certificateNameForm');
+
+        if (certForm) {
+            const input      = document.getElementById('name_in_certificate');
+            const modal      = document.getElementById('modalCard');
+            const overlay    = document.getElementById('modalOverlay');
+            const display    = document.getElementById('modalNameDisplay');
+            const confirmBtn = document.getElementById('modalConfirm');
+            const cancelBtn  = document.getElementById('modalCancel');
+
+            // Intercept form submit — show confirmation modal first
+            certForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                if (!input.value.trim() || input.value.trim().length < 2) return;
+
+                display.textContent = input.value.trim();
+                overlay.classList.add('visible');
+                modal.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            });
+
+            // Close helpers
+            function closeModal() {
+                overlay.classList.remove('visible');
+                modal.classList.remove('visible');
+                document.body.style.overflow = 'auto';
+            }
+
+            cancelBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', closeModal);
+
+            // Confirm — actually submit the form
+            confirmBtn.addEventListener('click', function () {
+                closeModal();
+                certForm.submit();
+            });
+        }
+    </script>
+
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+
+</body>
+</html>
+

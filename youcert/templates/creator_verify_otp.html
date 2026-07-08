@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>YOUCERT - Verify OTP</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    
+    <!-- Restore original Font Awesome Link (if backend expects it) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Lucide Icons (Premium Icons) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* =========================================
+           THEME & DESIGN SYSTEM (Auth Screen)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients (Used for text highlights/accents) */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --card-border: rgba(0, 0, 0, 0.06);
+
+            /* Radius */
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+        
+        /* Preserve Original Nav Links Style if they were present */
+        .header-nav { /* Added back original structural styles */
+            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+            background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            height: 70px; display: flex; align-items: center;
+        }
+
+        /* Base Styles: Full screen background */
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: var(--bg-light-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        /* --- Auth Card --- */
+        .auth-card {
+             background: var(--glass-bg);
+             border-radius: var(--radius-lg);
+             border: 1px solid var(--card-border);
+             box-shadow: var(--glass-shadow);
+             width: 100%;
+             max-width: 420px;
+             padding: 2.5rem;
+             position: relative;
+             overflow: hidden;
+        }
+
+        /* Decorative top line (Brand Gradient) */
+        .auth-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--brand-gradient);
+        }
+        
+        /* Logo & Header */
+        .logo-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+
+        .logo-wrapper {
+            width: 48px;
+            height: 48px;
+            background: #EEF2FF;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            color: #4F46E5;
+        }
+        
+        .brand-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Buttons */
+        .btn-primary-custom {
+            background: #000000; /* Black CTA button */
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+        .btn-primary-custom:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #1a1a1a;
+        }
+        
+        /* --- OTP Input Styling --- */
+        .otp-input {
+            width: 100%; 
+            padding: 0.9rem 1.2rem;
+            border-radius: var(--radius-md);
+            border: 1px solid #E2E8F0;
+            background: white;
+            color: var(--text-dark);
+            text-align: center; 
+            font-size: 1.5rem; /* Reduced size for better visual fit */
+            font-weight: 600;
+            letter-spacing: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .otp-input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+        
+        /* Links */
+        .form-link {
+            color: #6366F1;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .form-link:hover {
+            color: #4F46E5;
+            text-decoration: underline;
+        }
+
+        .text-secondary-premium {
+            color: var(--text-muted) !important;
+            line-height: 1.6;
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <div class="auth-card">
+        <!-- Logo and App Name -->
+        <div class="logo-box">
+            <div class="logo-wrapper">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="w-8 h-8" onerror="this.style.display='none'" />
+            </div>
+            <span class="brand-name">Youcert Creator</span>
+        </div>
+        
+        <!-- Icon and Heading -->
+        <div class="w-14 h-14 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 mx-auto mb-6">
+            <i data-lucide="mail-check" style="width: 28px; height: 28px;"></i>
+        </div>
+
+        <h2 class="text-center text-2xl font-bold mb-3 text-text-dark">Verify Your Email</h2>
+        <p class="text-center text-secondary-premium mb-8 text-sm">
+            A one-time password (OTP) has been sent to your email.<br>Please enter it below to continue.
+        </p>
+        
+        <form method="POST" action="/creator/verify_otp">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <div class="mb-6">
+                <label for="otp_Code" class="block text-sm font-semibold mb-2 text-text-dark pl-1">Enter OTP Code</label>
+                <input 
+                    type="text" 
+                    id="otp_Code" 
+                    name="otp" 
+                    required 
+                    maxlength="6" 
+                    pattern="\d{6}"
+                    class="otp-input"
+                    placeholder="••••••"
+                    autocomplete="one-time-code"
+                    autofocus
+                />
+            </div>
+            <button type="submit" class="btn-primary-custom py-3">
+                Verify OTP <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+            </button>
+        </form>
+        
+        <div class="mt-8 pt-6 border-t border-gray-100 text-center space-y-3">
+            <p class="text-sm text-text-muted">
+                Didn't receive the code? 
+                <a href="/creator/resend_otp" class="form-link">Resend OTP</a>
+            </p>
+            <p class="text-sm text-text-muted">
+                <a href="/creator/login" class="form-link flex items-center justify-center gap-2 hover:no-underline">
+                    <i data-lucide="arrow-left" style="width: 14px; height: 14px;"></i> Back to Login
+                </a>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

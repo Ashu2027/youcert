@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Verification - Youcert</title>
+
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           YOUCERT — Certificate Verification
+           Brand: #6366F1 → #9333EA  |  Dark bg + centered glass card
+        ============================================================ */
+
+        :root {
+            --c-bg:     #F0F0F5;
+            --c-dark:   #1A1A2E;
+            --c-muted:  #7C7C8E;
+            --c-soft:   #E8E8F0;
+            --c-indigo: #6366F1;
+            --grad:     linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+            --t:        all 0.4s var(--spring);
+            --r:        24px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html {
+            background: var(--c-bg);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* ── Navigation ── */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.85);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.93);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            color: var(--c-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-radius: 99px;
+            opacity: 0.65;
+            transition: var(--t);
+        }
+
+        .nav-link:hover {
+            opacity: 1;
+            background: rgba(0, 0, 0, 0.04);
+        }
+
+        .text-primary-theme {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+        }
+
+        /* ══════════════════════════════════════════
+           FULL-PAGE DARK BACKGROUND
+           The entire page fill is the dark navy gradient
+           with mesh grid and orbs — card floats on top
+        ══════════════════════════════════════════ */
+        .page-bg {
+            flex-grow: 1;
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 55%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1.5rem;
+        }
+
+        /* Mesh grid overlay */
+        .page-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        /* Ambient orbs */
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(80px);
+        }
+
+        .bg-orb-a {
+            width: 500px;
+            height: 500px;
+            top: -180px;
+            right: -80px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.35), transparent 60%);
+            animation: ho1 18s ease-in-out infinite;
+        }
+
+        .bg-orb-b {
+            width: 340px;
+            height: 340px;
+            bottom: -120px;
+            left: 5%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.28), transparent 60%);
+            animation: ho2 22s ease-in-out infinite;
+        }
+
+        @keyframes ho1 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(-40px, 30px); }
+        }
+
+        @keyframes ho2 {
+            0%, 100% { transform: translate(0, 0); }
+            50%       { transform: translate(28px, -20px); }
+        }
+
+        /* ══════════════════════════════════════════
+           GLASS VERIFICATION CARD
+        ══════════════════════════════════════════ */
+        .glass-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: var(--r);
+            border: 1px solid rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 24px 60px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            padding: 3rem;
+            max-width: 680px;
+            width: 100%;
+        }
+
+        /* ── Status icons ── */
+        .status-icon-box {
+            width: 76px;
+            height: 76px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.4rem;
+            font-size: 2.2rem;
+        }
+
+        .icon-success {
+            background: rgba(16, 185, 129, 0.12);
+            color: #10B981;
+            border: 2px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .icon-error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #EF4444;
+            border: 2px solid rgba(239, 68, 68, 0.22);
+        }
+
+        /* ── Status titles ── */
+        .status-title {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.6rem, 3vw, 2rem);
+            font-weight: 800;
+            letter-spacing: -0.045em;
+            text-align: center;
+            margin-bottom: 0.4rem;
+            line-height: 1.15;
+        }
+
+        .success-title {
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .error-title {
+            color: #EF4444;
+        }
+
+        .status-desc {
+            text-align: center;
+            color: var(--c-muted);
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .support-hint {
+            text-align: center;
+            font-size: 0.82rem;
+            color: var(--c-muted);
+            line-height: 1.6;
+            padding: 1rem;
+            background: var(--c-soft);
+            border-radius: 14px;
+        }
+
+        /* ── Verified authenticity stamp ── */
+        .verified-stamp {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.55rem;
+            background: rgba(16, 185, 129, 0.09);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 14px;
+            padding: 0.75rem 1.2rem;
+            margin-bottom: 1.4rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #059669;
+            letter-spacing: 0.03em;
+        }
+
+        .verified-stamp i {
+            font-size: 0.9rem;
+        }
+
+        /* ── Certificate details list ── */
+        .details-grid {
+            border-top: 1px solid var(--c-soft);
+            padding-top: 1.5rem;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--c-soft);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: var(--c-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+        }
+
+        .detail-value {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--c-dark);
+            line-height: 1.45;
+        }
+
+        .detail-value.score-val {
+            color: #10B981;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .detail-value .sub-note {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: var(--c-muted);
+            margin-left: 0.4rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            .detail-row {
+                grid-template-columns: 1fr;
+                gap: 0.25rem;
+            }
+
+            .glass-card {
+                padding: 1.8rem 1.4rem;
+            }
+
+            .status-title {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <!-- Nav -->
+    <header class="header-nav" id="mainNav">
+        <div class="container mx-auto px-6 h-full flex justify-between items-center">
+            <a class="flex items-center gap-3" href="{{ url_for('user.index') }}" style="text-decoration: none;">
+                <img src="/static/icon/logo.png" alt="Youcert Logo" class="h-10 w-auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));" />
+                <h1 class="text-2xl font-bold text-primary-theme">Youcert</h1>
+            </a>
+            <nav class="hidden md:flex items-center gap-2">
+                <a class="nav-link" href="{{ url_for('user.index') }}">Home</a>
+            </nav>
+            <div class="md:hidden text-xl text-dark"><i class="fas fa-bars"></i></div>
+        </div>
+    </header>
+
+    <!-- Dark background fills the entire remaining page height,
+         with the glass card centered inside it -->
+    <div class="page-bg">
+        <div class="bg-orb bg-orb-a"></div>
+        <div class="bg-orb bg-orb-b"></div>
+
+        <div class="glass-card">
+
+            {% if error %}
+
+                <!-- ═══ ERROR STATE ═══ -->
+                <div class="status-icon-box icon-error">
+                    <i class="fas fa-times"></i>
+                </div>
+                <h1 class="status-title error-title">Verification Failed</h1>
+                <p class="status-desc">{{ error }}</p>
+                <div class="support-hint">
+                    Please verify the URL or contact support if you believe this is an error.
+                </div>
+
+            {% else %}
+
+                <!-- ═══ SUCCESS STATE ═══ -->
+                <div class="status-icon-box icon-success">
+                    <i class="fas fa-check"></i>
+                </div>
+                <h1 class="status-title success-title">Certificate Verified</h1>
+                <p class="status-desc">This is a valid certificate issued by Youcert.</p>
+
+                <div class="verified-stamp">
+                    <i class="fas fa-shield-alt"></i>
+                    Authenticity confirmed &nbsp;·&nbsp; Youcert Certification Authority
+                </div>
+
+                <div class="details-grid">
+                    <div class="detail-row">
+                        <div class="detail-label">Recipient</div>
+                        <div class="detail-value">{{ data.student_name }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Course Title</div>
+                        <div class="detail-value">{{ data.exam_title }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Creator</div>
+                        <div class="detail-value">
+                            {{ data.channel_name }}
+                            <span class="sub-note">({{ data.subscriber_count }} subscribers)</span>
+                        </div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Score</div>
+                        <div class="detail-value score-val">{{ data.score }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Duration</div>
+                        <div class="detail-value">{{ data.course_length }}</div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Completed On</div>
+                        <div class="detail-value">{{ data.completed_at }}</div>
+                    </div>
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        const mainNav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => {
+            mainNav.classList.toggle('scrolled', scrollY > 6);
+        }, { passive: true });
+    </script>
+
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+

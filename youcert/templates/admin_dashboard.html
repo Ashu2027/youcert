@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- CSRF Token Meta Tag -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="user-id" content="{{ session.get('user_id', 'admin') }}" />
+    <meta name="session-id" content="{{ session.sid if session.sid else '' }}" />
+
+    <title>YOUCERT Admin | Command Center</title>
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           A. THEME + DESIGN SYSTEM (Base.html Match)
+           ========================================= */
+        :root {
+            /* Backgrounds */
+            --bg-light-primary: #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --bg-sidebar: #FFFFFF;
+            
+            /* Text Colors */
+            --text-dark: #1D1D1F;
+            --text-muted: #6E6E73;
+            --text-on-brand: #FFFFFF;
+            
+            /* Brand Gradients */
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient: linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            
+            /* Glassmorphism */
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border: rgba(0, 0, 0, 0.06);
+            --glass-blur: blur(12px);
+            
+            /* Status Colors */
+            --success-bg: #D1FAE5;
+            --success-text: #059669;
+            --warning-bg: #FEF3C7;
+            --warning-text: #B45309;
+            --error-bg: #FEE2E2;
+            --error-text: #B91C1C;
+            --info-bg: #DBEAFE;
+            --info-text: #1D4ED8;
+
+            /* Dimensions */
+            --sidebar-width: 260px;
+            --header-height: 64px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--card-border);
+            position: fixed;
+            top: 0; left: 0; bottom: 0;
+            z-index: 50;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-area {
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            gap: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .logo-img { width: 32px; height: 32px; object-fit: contain; }
+        .brand-text { 
+            font-weight: 700; 
+            font-size: 1.1rem; 
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem 1rem;
+        }
+
+        .nav-group { margin-bottom: 2rem; }
+        
+        .nav-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            padding-left: 0.75rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 2px;
+        }
+
+        .nav-link svg { width: 18px; height: 18px; color: var(--text-muted); transition: color 0.2s; }
+
+        .nav-link:hover {
+            background: #F3F4F6;
+            color: var(--text-dark);
+        }
+        
+        .nav-link:hover svg { color: #6366F1; }
+
+        .nav-link.active {
+            background: #EEF2FF;
+            color: #4F46E5;
+        }
+        
+        .nav-link.active svg { color: #4F46E5; }
+
+        .badge {
+            margin-left: auto;
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 99px;
+            font-weight: 600;
+        }
+        .badge-blue { background: var(--info-bg); color: var(--info-text); }
+        .badge-red { background: var(--error-bg); color: var(--error-text); }
+
+        /* --- HEADER --- */
+        .header {
+            height: var(--header-height);
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed;
+            top: 0; left: var(--sidebar-width); right: 0;
+            z-index: 40;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+        }
+
+        .header-title { font-weight: 600; color: var(--text-dark); font-size: 1.1rem; }
+
+        .admin-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.4rem 1rem;
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 99px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .admin-meta { text-align: right; line-height: 1.2; }
+        .admin-name { font-size: 0.85rem; font-weight: 600; display: block; color: var(--text-dark); }
+        .admin-role { 
+            font-size: 0.7rem; 
+            color: #6366F1;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .btn-logout {
+            color: var(--text-muted);
+            padding: 4px;
+            transition: all 0.2s;
+            display: flex;
+        }
+        .btn-logout:hover { color: #EF4444; transform: translateX(2px); }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            flex: 1;
+            padding: 2rem;
+        }
+
+        /* --- QUICK ACTIONS --- */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .action-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            padding: 1.25rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .action-card:hover {
+            border-color: #6366F1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+        }
+
+        .action-icon-box {
+            width: 40px; height: 40px;
+            border-radius: 10px;
+            background: #EEF2FF;
+            display: flex; align-items: center; justify-content: center;
+            color: #6366F1;
+            transition: all 0.2s;
+        }
+        
+        .action-icon-box svg { width: 20px; height: 20px; }
+
+        .action-card:hover .action-icon-box {
+            background: var(--brand-gradient);
+            color: white;
+        }
+
+        .action-text { font-weight: 600; font-size: 0.9rem; }
+
+        /* --- STATS GRID --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.2s;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+
+        .stat-card::after {
+            content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+            background: var(--brand-gradient);
+        }
+
+        .stat-header { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+        .stat-label { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-icon { color: #CBD5E1; width: 20px; height: 20px; }
+        
+        .stat-val { font-size: 2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 0.25rem; letter-spacing: -0.02em; }
+        .stat-sub { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* --- CONTENT SECTIONS --- */
+        .section-container {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--glass-shadow);
+        }
+
+        .section-head {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1.5rem; padding-bottom: 1rem;
+            border-bottom: 1px solid #F1F5F9;
+        }
+        
+        .section-title { font-size: 1.1rem; font-weight: 700; color: var(--text-dark); }
+        
+        /* Activity Items */
+        .activity-item {
+            display: flex; align-items: flex-start; gap: 1rem;
+            padding: 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .activity-item:hover {
+            background: #F8FAFC;
+            border-color: #E2E8F0;
+            transform: translateX(4px);
+        }
+
+        .activity-icon {
+            width: 36px; height: 36px; flex-shrink: 0;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            background: #F1F5F9;
+        }
+        
+        .activity-icon svg { width: 18px; height: 18px; }
+
+        .icon-blue { color: #3B82F6; background: #DBEAFE; }
+        .icon-green { color: #059669; background: #D1FAE5; }
+        .icon-red { color: #DC2626; background: #FEE2E2; }
+        .icon-purple { color: #7E22CE; background: #F3E8FF; }
+
+        .act-content { flex: 1; }
+        .act-title { font-size: 0.9rem; font-weight: 600; margin-bottom: 2px; color: var(--text-dark); }
+        .act-desc { font-size: 0.85rem; color: var(--text-muted); }
+        .act-time { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+
+        .empty-state { text-align: center; padding: 3rem; color: var(--text-muted); }
+        .empty-icon { color: #CBD5E1; width: 48px; height: 48px; margin-bottom: 1rem; }
+
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .main-content { margin-left: 0; padding: 1rem; }
+            .header { left: 0; padding: 0 1rem; }
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+
+    <!-- Secure Local Storage Cache -->
+    <script src="/static/js/secure-cache.js"></script>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+        <div class="logo-area">
+            <img src="/static/icon/logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <span class="brand-text">YOUCERT</span>
+        </div>
+
+        <div class="nav-scroll">
+            <!-- Overview -->
+            <div class="nav-group">
+                <div class="nav-label">Overview</div>
+                <a href="/naanni/dashboard/" class="nav-link active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                {% if session.admin_designation is defined and session.admin_designation <= 1 %}
+                <a href="/naanni/earnings_analysis/" class="nav-link">
+                    <i data-lucide="pie-chart"></i>
+                    <span>My Earnings</span>
+                </a>
+                <a href="/naanni/creator_payment_search/" class="nav-link">
+                    <i data-lucide="trending-up"></i>
+                    <span>Creator Earnings</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- User Management -->
+            <div class="nav-group">
+                <div class="nav-label">Users & Support</div>
+                <a href="/naanni/user/" class="nav-link">
+                    <i data-lucide="users"></i>
+                    <span>All Users</span>
+                </a>
+                <a href="/naanni/user_result/" class="nav-link">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>Exam Results</span>
+                </a>
+                <!-- Support Queries -->
+                <a href="/naanni/contact_query/" class="nav-link">
+                    <i data-lucide="message-square"></i>
+                    <span>Support Queries</span>
+                    <span class="badge badge-blue">Inbox</span>
+                </a>
+            </div>
+
+            <!-- Content & Creators -->
+            <div class="nav-group">
+                <div class="nav-label">Content</div>
+                {% if session.admin_designation is defined and session.admin_designation <= 2 %}
+                <a href="/naanni/exam/" class="nav-link">
+                    <i data-lucide="book-open"></i>
+                    <span>Exams</span>
+                </a>
+                {% if session.admin_designation is defined and session.admin_designation <= 1 %}
+                <a href="/naanni/featured_exams/" class="nav-link">
+                    <i data-lucide="star"></i>
+                    <span>Featured Exams</span>
+                </a>
+                {% endif %}
+                <a href="/naanni/purchase_exam/" class="nav-link">
+                    <i data-lucide="shopping-bag"></i>
+                    <span>Purchases</span>
+                </a>
+                <a href="/naanni/creator/" class="nav-link">
+                    <i data-lucide="palette"></i>
+                    <span>Creators</span>
+                </a>
+                <!-- Join Requests -->
+                <a href="/naanni/creator_requests/?status=pending" class="nav-link">
+                    <i data-lucide="user-plus"></i>
+                    <span>Join Requests</span>
+                    <span class="badge badge-blue">New</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Finance -->
+            <div class="nav-group">
+                <div class="nav-label">Finance</div>
+                {% if session.admin_designation is defined and session.admin_designation <= 1 %}
+                <a href="/naanni/bank_verifications/" class="nav-link">
+                    <i data-lucide="shield-check"></i>
+                    <span>Verifications</span>
+                    {% if stats and stats.pending_verifications > 0 %}
+                    <span class="badge badge-red">{{ stats.pending_verifications }}</span>
+                    {% endif %}
+                </a>
+                <a href="/naanni/bank_details/" class="nav-link">
+                    <i data-lucide="credit-card"></i>
+                    <span>Bank Details</span>
+                </a>
+                {% endif %}
+                
+                <!-- Payout Button (Sidebar Only) -->
+                {% if session.admin_designation is defined and session.admin_designation == 0 %}
+                <a href="/naanni/payout/" class="nav-link">
+                    <i data-lucide="banknote"></i>
+                    <span>Process Payouts</span>
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Communications -->
+            {% if session.admin_designation is defined and session.admin_designation == 0 %}
+            <div class="nav-group">
+                <div class="nav-label">Communications</div>
+                <a href="/naanni/send_email_creators/" class="nav-link">
+                    <i data-lucide="mail"></i>
+                    <span>Email Creators</span>
+                </a>
+                <a href="/naanni/send_email_users/" class="nav-link">
+                    <i data-lucide="send"></i>
+                    <span>Email Users</span>
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Administration -->
+            <div class="nav-group">
+                <div class="nav-label">System</div>
+                {% if session.admin_designation is defined and session.admin_designation <= 1 %}
+                <a href="/naanni/admin/" class="nav-item nav-link">
+                    <i data-lucide="shield"></i>
+                    <span>Admins</span>
+                </a>
+                {% endif %}
+                
+                {% if session.admin_designation is defined and session.admin_designation == 0 %}
+                <a href="/naanni/registration_requests/" class="nav-link">
+                    <i data-lucide="user-check"></i>
+                    <span>Registration Reqs</span>
+                </a>
+                {% endif %}
+
+                {% if session.admin_designation is defined and session.admin_designation <= 2 %}
+                <a href="/naanni/documents/" class="nav-link">
+                    <i data-lucide="file-text"></i>
+                    <span>Documents</span>
+                </a>
+                <a href="/naanni/upload_document/" class="nav-link">
+                    <i data-lucide="upload-cloud"></i>
+                    <span>Upload Doc</span>
+                </a>
+                {% endif %}
+                
+                {% if session.admin_designation is defined and session.admin_designation <= 1 %}
+                <a href="/naanni/logs/" class="nav-link">
+                    <i data-lucide="history"></i>
+                    <span>Audit Logs</span>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-title">Dashboard Overview</div>
+        <div class="admin-profile">
+            <div class="admin-meta">
+                <span class="admin-name">{{ session.admin_name if session.admin_name else 'Admin' }}</span>
+                <span class="admin-role">
+                    {% if session.admin_designation is defined %}
+                        {{ designation_names.get(session.admin_designation, 'HERO') }}
+                    {% else %}
+                        HERO
+                    {% endif %}
+                </span>
+            </div>
+            <a href="/naanni/logout/" class="btn-logout" title="Logout">
+                <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        
+        <!-- QUICK ACTIONS -->
+        <div class="quick-actions">
+            <a href="/naanni/contact_query/" class="action-card">
+                <div class="action-icon-box"><i data-lucide="mail"></i></div>
+                <span class="action-text">Support Inbox</span>
+            </a>
+
+            {% if session.admin_designation is defined and session.admin_designation <= 2 %}
+            <a href="/naanni/upload_document/" class="action-card">
+                <div class="action-icon-box"><i data-lucide="upload"></i></div>
+                <span class="action-text">Upload Document</span>
+            </a>
+            <a href="/naanni/creator_requests/?status=pending" class="action-card">
+                <div class="action-icon-box"><i data-lucide="user-plus"></i></div>
+                <span class="action-text">Review Creators</span>
+            </a>
+            <a href="/naanni/user/create/" class="action-card">
+                <div class="action-icon-box"><i data-lucide="user-check"></i></div>
+                <span class="action-text">Add User</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <!-- STATS GRID -->
+        <div class="stats-grid">
+            {% if stats %}
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Active Users</span>
+                    <i data-lucide="users" class="stat-icon"></i>
+                </div>
+                <div class="stat-val">{{ stats.active_users or 0 }}</div>
+                <div class="stat-sub">{{ stats.total_users or 0 }} registered</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Creators</span>
+                    <i data-lucide="video" class="stat-icon"></i>
+                </div>
+                <div class="stat-val">{{ stats.active_creators or 0 }}</div>
+                <div class="stat-sub">{{ stats.total_creators or 0 }} registered</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Revenue</span>
+                    <i data-lucide="dollar-sign" class="stat-icon"></i>
+                </div>
+                <div class="stat-val" style="color: var(--success-text);">₹{{ "{:,.2f}".format(stats.total_revenue or 0) }}</div>
+                <div class="stat-sub">Total earnings</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">Pending Actions</span>
+                    <i data-lucide="alert-circle" class="stat-icon"></i>
+                </div>
+                <div class="stat-val" style="color: var(--warning-text);">{{ stats.pending_verifications or 0 }}</div>
+                <div class="stat-sub">Bank Verifications</div>
+            </div>
+            {% else %}
+            <div class="stat-card">
+                <div class="stat-val">Loading...</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- PENDING TASKS -->
+        {% if session.admin_designation is defined and session.admin_designation <= 2 %}
+        <div class="section-container">
+            <div class="section-head">
+                <h2 class="section-title">Pending Tasks</h2>
+            </div>
+
+            {% if stats and stats.pending_verifications > 0 %}
+            <a href="/naanni/bank_verifications/" class="activity-item">
+                <div class="activity-icon icon-red"><i data-lucide="shield-alert"></i></div>
+                <div class="act-content">
+                    <div class="act-title">Bank Verifications Pending</div>
+                    <div class="act-desc">{{ stats.pending_verifications }} accounts waiting for approval</div>
+                </div>
+            </a>
+            {% endif %}
+
+            {% if session.admin_designation == 0 and pending_registrations and pending_registrations > 0 %}
+            <a href="/naanni/registration_requests/" class="activity-item">
+                <div class="activity-icon icon-purple"><i data-lucide="user-cog"></i></div>
+                <div class="act-content">
+                    <div class="act-title">Admin Access Requests</div>
+                    <div class="act-desc">{{ pending_registrations }} users requested admin access</div>
+                </div>
+            </a>
+            {% endif %}
+            
+            <!-- New Task: Creator Requests -->
+            <a href="/naanni/creator_requests/?status=pending" class="activity-item">
+                <div class="activity-icon icon-blue"><i data-lucide="user-plus"></i></div>
+                <div class="act-content">
+                    <div class="act-title">Creator Join Applications</div>
+                    <div class="act-desc">Check pending creator applications</div>
+                </div>
+            </a>
+
+            {% if not stats or (stats.pending_verifications == 0 and (not pending_registrations or pending_registrations == 0)) %}
+            <div class="empty-state">
+                <i data-lucide="check-circle-2" class="empty-icon"></i>
+                <div>All Caught Up</div>
+                <div style="font-size: 0.8rem; margin-top: 0.5rem;">No urgent tasks remaining</div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- RECENT ACTIVITY -->
+        <div class="section-container">
+            <div class="section-head">
+                <h2 class="section-title">System Activity</h2>
+                <a href="/naanni/logs/" style="font-size: 0.8rem; color: #4F46E5; text-decoration: none;">View All</a>
+            </div>
+
+            {% if recent_activities %}
+                {% for activity in recent_activities[:8] %}
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        {% if activity.action_code.startswith('SK') %}<i data-lucide="key"></i>
+                        {% elif activity.action_code.startswith('PAY') %}<i data-lucide="banknote"></i>
+                        {% elif activity.action_code.startswith('BNK') %}<i data-lucide="landmark"></i>
+                        {% elif activity.action_code.startswith('USR') %}<i data-lucide="user"></i>
+                        {% else %}<i data-lucide="file-text"></i>{% endif %}
+                    </div>
+                    <div class="act-content">
+                        <div class="act-title">
+                            {{ activity.admin_name }}
+                            <span style="font-weight: 400; color: var(--text-muted);">
+                            {% if activity.action_code == 'SK01' %}logged in
+                            {% elif activity.action_code == 'BNK01' %}verified bank
+                            {% elif activity.action_code == 'PAY01' %}processed payout
+                            {% else %}action: {{ activity.action_code }}{% endif %}
+                            </span>
+                        </div>
+                        <div class="act-desc">{{ activity.details or 'System action recorded' }}</div>
+                    </div>
+                    <div class="act-time">
+                        {{ activity.timestamp.strftime('%H:%M') if activity.timestamp else '' }}
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i data-lucide="clock" class="empty-icon"></i>
+                    <div>No recent activity</div>
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        console.log('YOUCERT Admin Dashboard Loaded');
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>

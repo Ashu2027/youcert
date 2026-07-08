@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    
+    <title>Earnings Analysis - YOUCERT Admin</title>
+    
+    <link rel="icon" type="image/png" href="/static/icon/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* =========================================
+           THEME & VARIABLES
+           ========================================= */
+        :root {
+            --bg-light-primary:   #F5F5F7;
+            --bg-light-secondary: #FFFFFF;
+            --text-dark:          #1D1D1F;
+            --text-muted:         #6E6E73;
+            --text-on-brand:      #FFFFFF;
+            
+            --brand-gradient: linear-gradient(135deg, #6366F1 0%, #9333ea 100%);
+            --cta-gradient:   linear-gradient(135deg, #4F46E5 0%, #A855F7 100%);
+            --glass-shadow:   0 8px 32px rgba(0, 0, 0, 0.04);
+            --card-border:    rgba(0, 0, 0, 0.06);
+
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light-primary);
+            color: var(--text-dark);
+            min-height: 100vh;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* =========================================
+           COMPONENTS
+           ========================================= */
+        
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .logo-container { display: flex; align-items: center; gap: 0.75rem; }
+        .logo-img { width: 32px; height: 32px; object-fit: contain; }
+        .brand-name {
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            padding: 0.6rem 1.25rem; border-radius: var(--radius-md);
+            border: 1px solid transparent; font-size: 0.875rem; font-weight: 500;
+            cursor: pointer; transition: all 0.2s ease; text-decoration: none; gap: 0.5rem;
+        }
+        .btn-primary {
+            background: var(--cta-gradient); color: var(--text-on-brand);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+        }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35); }
+        .btn-secondary {
+            background: var(--bg-light-secondary); border: 1px solid #E2E8F0;
+            color: var(--text-dark); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
+        .btn-secondary:hover { background: #F8FAFC; border-color: #CBD5E1; transform: translateY(-1px); }
+
+        /* Main Layout */
+        .main-content { max-width: 1400px; margin: 2rem auto; padding: 0 1.5rem; }
+        .page-header { margin-bottom: 2rem; }
+        .page-title {
+            font-size: 1.875rem; font-weight: 700; margin-bottom: 0.5rem;
+            display: flex; align-items: center; gap: 0.75rem; color: var(--text-dark);
+        }
+        .page-subtitle { color: var(--text-muted); font-size: 0.95rem; }
+
+        /* Filter Card */
+        .filter-card {
+            background: var(--bg-light-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            margin-bottom: 2.5rem;
+            box-shadow: var(--glass-shadow);
+        }
+        .filter-header {
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem;
+            font-size: 1rem; font-weight: 600;
+            padding-bottom: 1rem; border-bottom: 1px solid #F1F5F9;
+        }
+        .filter-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem; align-items: end;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .filter-label { font-size: 0.875rem; font-weight: 600; }
+        .filter-input {
+            padding: 0.75rem 1rem; background: #FFFFFF; border: 1px solid #E2E8F0;
+            border-radius: var(--radius-md); font-size: 0.875rem; transition: all 0.2s ease;
+        }
+        .filter-input:focus { outline: none; border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem; margin-bottom: 2.5rem;
+        }
+        .stat-card {
+            background: white; border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg); padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: transform 0.2s;
+        }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+        .stat-label {
+            color: var(--text-muted); font-size: 0.75rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;
+        }
+        .stat-value { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.25rem; }
+        .stat-subtext { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Content Grid */
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2.5rem; }
+        .data-card {
+            background: white; border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: var(--glass-shadow); height: 100%; display: flex; flex-direction: column;
+        }
+        .card-header {
+            padding: 1rem 1.5rem; border-bottom: 1px solid #F1F5F9;
+            font-weight: 600; background: #FAFAFA;
+        }
+        .card-body { padding: 1.5rem; flex-grow: 1; min-height: 300px; }
+        .section-title {
+            font-size: 1.25rem; font-weight: 600; margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+
+        /* Tables */
+        .table-wrapper { overflow-x: auto; }
+        .data-table { width: 100%; border-collapse: collapse; }
+        .data-table th, .data-table td {
+            padding: 1rem 1.5rem; text-align: left; font-size: 0.875rem;
+            border-bottom: 1px solid #F1F5F9; white-space: nowrap;
+        }
+        .data-table th {
+            font-weight: 600; color: var(--text-muted); background: #F8FAFC;
+            text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.75rem;
+            position: sticky; top: 0;
+        }
+        .data-table tr:hover { background: #F8FAFC; }
+        .data-table td:nth-child(n+3), .data-table th:nth-child(n+3) { text-align: right; }
+
+        /* Utils */
+        .empty-state { text-align: center; padding: 5rem 2rem; color: var(--text-muted); }
+        .empty-icon { color: #CBD5E1; width: 64px; height: 64px; margin-bottom: 1rem; }
+        
+        .alert {
+            padding: 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem;
+            display: flex; align-items: center; gap: 0.75rem; font-size: 0.875rem; font-weight: 500;
+        }
+        .alert-success { background: #D1FAE5; color: #059669; }
+        .alert-error { background: #FEE2E2; color: #B91C1C; }
+
+        @media(max-width: 1000px) { .content-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) {
+            .header { padding: 1rem; }
+            .main-content { padding: 1rem; margin-top: 60px; }
+            .filter-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+    
+    <!-- Mobile Responsive Framework -->
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+<body>
+
+    <header class="header">
+        <div class="header-left">
+             <div class="logo-container">
+                 <img src="/static/icon/logo.png" alt="YOUCERT" class="logo-img" onerror="this.style.display='none'">
+                 <span class="brand-name">YOUCERT Admin</span>
+             </div>
+        </div>
+        <a href="{{ url_for('sevak69.dashboard') }}" class="btn btn-secondary">
+            <i data-lucide="arrow-left" style="width: 16px; height: 16px;"></i>
+            Back to Dashboard
+        </a>
+    </header>
+
+    <main class="main-content">
+        <div class="page-header">
+             <h1 class="page-title">
+                 <i data-lucide="banknote" style="width: 32px; height: 32px; color: #4F46E5;"></i>
+                 Earnings Analysis
+             </h1>
+             <p class="page-subtitle">Analyze platform revenue by date range (Chief+ Access)</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i data-lucide="{{ 'check-circle-2' if category == 'success' else 'alert-circle' }}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="filter-card">
+            <div class="filter-header">
+                <i data-lucide="filter" style="width: 18px; height: 18px;"></i>
+                Filter by Date Range
+            </div>
+            <form method="GET" action="{{ url_for('sevak69.earnings_analysis') }}">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label for="date_from" class="filter-label">From Date</label>
+                        <input type="date" id="date_from" name="start_date" class="filter-input" value="{{ start_date }}" required>
+                    </div>
+                    <div class="filter-group">
+                        <label for="date_to" class="filter-label">To Date</label>
+                        <input type="date" id="date_to" name="end_date" class="filter-input" value="{{ end_date }}" required>
+                    </div>
+                    <div class="filter-group">
+                         <label class="filter-label">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <i data-lucide="bar-chart-2" style="width: 16px; height: 16px;"></i>
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        {% if totals %}
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Transactions</div>
+                    <div class="stat-value">{{ "{:,}".format(totals.total_transactions|default(0)) }}</div>
+                    <div class="stat-subtext">in selected period</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Revenue</div>
+                    <div class="stat-value" style="color: #4F46E5;">₹{{ "{:,.0f}".format(totals.total_revenue|default(0)) }}</div>
+                     <div class="stat-subtext">Gross sales amount</div>
+                </div>
+                 <div class="stat-card">
+                     <div class="stat-label">Unique Buyers</div>
+                     <div class="stat-value" style="color: #059669;">{{ "{:,}".format(totals.unique_buyers|default(0)) }}</div>
+                     <div class="stat-subtext">Active customers</div>
+                 </div>
+                 <div class="stat-card">
+                     <div class="stat-label">Avg Order Value</div>
+                     <div class="stat-value" style="color: #F59E0B;">₹{{ "{:,.2f}".format(totals.avg_order_value|default(0)) }}</div>
+                      <div class="stat-subtext">Revenue per sale</div>
+                 </div>
+            </div>
+
+            <div class="content-grid">
+                <div class="data-card">
+                    <div class="card-header">Revenue Trend</div>
+                    <div class="card-body">
+                        <canvas id="revenueChart" style="width: 100%; height: 300px;"></canvas>
+                    </div>
+                </div>
+
+                <div class="data-card">
+                    <div class="card-header">Top Creators</div>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Creator</th>
+                                    <th>Sales</th>
+                                    <th>Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for creator in top_creators %}
+                                <tr>
+                                    <td>
+                                        <div style="font-weight: 600;">{{ creator.creator_name }}</div>
+                                        <div style="font-size: 0.75rem; color: var(--text-muted);">{{ creator.channel_id }}</div>
+                                    </td>
+                                    <td style="text-align: right;">{{ creator.sales_count }}</td>
+                                    <td style="text-align: right; color: #059669; font-weight: 600;">₹{{ "{:,.0f}".format(creator.total_revenue) }}</td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="3" style="text-align: center; padding: 1.5rem;">No data available</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <h2 class="section-title">
+                <i data-lucide="clock" style="width: 20px; height: 20px; color: #4F46E5;"></i>
+                Recent Transactions
+            </h2>
+            <div class="data-card">
+                <div class="table-wrapper">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for sale in recent_sales %}
+                            <tr>
+                                <td style="font-family: monospace;">{{ sale.unique_order_number }}</td>
+                                <td>
+                                    <div style="font-weight: 500;">{{ sale.user_name }}</div>
+                                    <div style="font-size: 0.75rem; color: var(--text-muted);">{{ sale.user_email }}</div>
+                                </td>
+                                <td>{{ sale.payment_date }}</td>
+                                <td style="font-weight: 600; text-align: right;">₹{{ "{:,.2f}".format(sale.amount_paid) }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="4" style="text-align: center; padding: 2rem;">No recent transactions found</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+             
+        {% else %}
+             <div class="data-card">
+                 <div class="empty-state">
+                     <i data-lucide="calendar-search" class="empty-icon"></i>
+                     <div style="font-size: 1.125rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-dark);">
+                         No Data Found
+                     </div>
+                     <p>Try adjusting your date range to see results.</p>
+                 </div>
+             </div>
+        {% endif %}
+    </main>
+
+    {% if totals %}
+    <div id="chart-data-storage" 
+         data-labels="{{ chart_labels | default([]) | tojson }}" 
+         data-revenue="{{ chart_revenue | default([]) | tojson }}"
+         style="display: none;">
+    </div>
+    {% endif %}
+
+    <script id="chart-labels" type="application/json">
+        {{ chart_labels | tojson | safe }}
+    </script>
+    <script id="chart-revenue" type="application/json">
+        {{ chart_revenue | tojson | safe }}
+    </script>
+
+    <script>
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                // --- STEP 1: Get Content ---
+                const rawLabels = document.getElementById('chart-labels').textContent;
+                const rawRevenue = document.getElementById('chart-revenue').textContent;
+
+                // --- STEP 2: Parse Data (The Fix) ---
+                let labels = JSON.parse(rawLabels);
+                let revenue = JSON.parse(rawRevenue);
+
+                // *** CRITICAL FIX: If data is still a string (Double-Encoded), parse again ***
+                if (typeof labels === 'string') {
+                    console.log("Detected stringified list, parsing again...");
+                    labels = JSON.parse(labels);
+                }
+                if (typeof revenue === 'string') {
+                    revenue = JSON.parse(revenue);
+                }
+
+                console.log("Final Chart Data:", { labels, revenue });
+
+                // --- STEP 3: Draw Chart ---
+                const canvas = document.getElementById('revenueChart');
+                
+                if (canvas && labels && labels.length > 0) {
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Gradient Effect
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)'); 
+                    gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Revenue',
+                                data: revenue,
+                                borderColor: '#6366F1',
+                                backgroundColor: gradient,
+                                borderWidth: 3,
+                                pointBackgroundColor: '#FFFFFF',
+                                pointBorderColor: '#6366F1',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7,
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    titleColor: '#1e293b',
+                                    bodyColor: '#1e293b',
+                                    borderColor: '#e2e8f0',
+                                    borderWidth: 1,
+                                    padding: 10,
+                                    displayColors: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return 'Revenue: ₹' + Number(context.raw).toLocaleString();
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: { borderDash: [4, 4], color: '#e2e8f0' },
+                                    ticks: {
+                                        callback: function(value) { return '₹' + value; },
+                                        color: '#64748b'
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#64748b' }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    console.warn("Chart initialized but data is empty.");
+                }
+
+            } catch (error) {
+                console.error("Chart Error:", error);
+            }
+        });
+
+        // Auto-dismiss alerts
+        const alerts = document.querySelectorAll('.alert'); 
+        alerts.forEach(alert => {
+             setTimeout(() => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+             }, 5000);
+        });
+    </script>
+    
+    <!-- Mobile Responsive Framework -->
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,90 @@
+{# ============================================================================
+   CREATOR SIDEBAR NAVIGATION COMPONENT
+   ============================================================================
+   This is the centralized sidebar for all creator-facing pages.
+
+   Usage: {% include 'components/creator_sidebar.html' %}
+
+   Features:
+   - Fixed left sidebar with glass morphism effect
+   - Lucide icons for navigation
+   - Active page highlighting
+   - "List New Exam" CTA button at bottom
+   - Consistent branding across all creator pages
+
+   Pages using this sidebar:
+   - Dashboard (creator_index.html)
+   - Listed Exams (creator_listed_exam_list.html)
+   - Settings (creator_settings.html)
+   - Bank Details (creator_bank_accounts_list.html)
+   ============================================================================ #}
+
+<aside class="sidebar">
+    {# Logo and Brand Name #}
+    <div class="logo-container">
+        <img src="/static/icon/logo.png" alt="Youcert Logo" class="logo-img" onerror="this.style.display='none'">
+        <span class="brand-name">Youcert</span>
+    </div>
+
+    {# Navigation Links #}
+    <nav class="flex flex-col gap-1">
+        <a href="/creator/home" class="nav-link {% if request.endpoint == 'creator.creator_index' %}active{% endif %}">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/creator/listed_exams" class="nav-link {% if request.endpoint == 'creator.listed_exam' or request.endpoint == 'creator.exam_details' %}active{% endif %}">
+            <i data-lucide="list-checks"></i>
+            <span>Listed Exams</span>
+        </a>
+        <a href="/creator/settings" class="nav-link {% if request.endpoint == 'creator.creator_settings' %}active{% endif %}">
+            <i data-lucide="settings"></i>
+            <span>Settings</span>
+        </a>
+        <a href="/creator/bank_accounts" class="nav-link {% if request.endpoint == 'creator.view_bank_accounts' or 'bank_account' in (request.endpoint or '') %}active{% endif %}">
+            <i data-lucide="landmark"></i>
+            <span>Bank Details</span>
+        </a>
+    </nav>
+
+    {# CTA Button - List New Exam #}
+    <a href="/creator/list_new_exam" class="btn-cta {% if request.endpoint == 'creator.list_new_exam' %}btn-cta-active{% endif %}">
+        <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i>
+        <span>List New Exam</span>
+    </a>
+
+    {# Active State Styling for CTA Button #}
+    <style>
+        .btn-cta-active {
+            position: relative;
+            box-shadow:
+                0 0 0 2px #6366F1,
+                0 0 0 4px rgba(99, 102, 241, 0.3),
+                0 0 20px rgba(99, 102, 241, 0.5),
+                0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .btn-cta-active::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: inherit;
+            padding: 2px;
+            background: linear-gradient(135deg, #6366F1, #8B5CF6, #9333ea);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.8;
+            animation: pulse-border 2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+    </style>
+</aside>

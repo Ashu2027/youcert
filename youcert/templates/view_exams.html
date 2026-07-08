@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Youcert - View Courses</title>
+
+    <link rel="icon" type="image/x-icon" href="/static/icon/logo.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* ============================================================
+           YOUCERT — View Courses (Public Page)
+           Layout:
+             1. Fixed frosted nav   (logo · search bar · login / signup OR avatar)
+             2. Dark HERO banner    (heading + subtext)
+             3. Course cards grid   (search-filterable)
+           Brand: #6366F1 → #9333EA  |  BG: #F0F0F5
+        ============================================================ */
+
+        :root {
+            --c-bg:     #F0F0F5;
+            --c-dark:   #1A1A2E;
+            --c-muted:  #7C7C8E;
+            --c-soft:   #E8E8F0;
+            --c-indigo: #6366F1;
+            --c-purple: #9333EA;
+            --grad:     linear-gradient(135deg, #6366F1 0%, #9333EA 100%);
+            --spring:   cubic-bezier(0.16, 1, 0.3, 1);
+            --t:        all 0.4s var(--spring);
+            --r:        20px;
+        }
+
+        *, *::before, *::after {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html { background: var(--c-bg); scroll-behavior: smooth; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--c-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a { text-decoration: none; }
+
+        /* ══════════════════════════════════════════
+           FIXED NAV
+        ══════════════════════════════════════════ */
+        .header-nav {
+            position: fixed;
+            inset: 0 0 auto 0;
+            z-index: 200;
+            height: 70px;
+            background: rgba(240, 240, 245, 0.88);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            align-items: center;
+            padding: 0 2rem;
+            gap: 1.5rem;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .header-nav.scrolled {
+            background: rgba(255, 255, 255, 0.94);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.07);
+        }
+
+        /* Logo + brand */
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            flex-shrink: 0;
+        }
+
+        .nav-brand img { height: 34px; width: auto; }
+
+        .nav-brand-name {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Search bar */
+        .nav-search-wrap {
+            flex: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .nav-search {
+            width: 100%;
+            padding: 0.62rem 1rem 0.62rem 2.75rem;
+            border-radius: 99px;
+            border: 1.5px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--c-dark);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            outline: none;
+            transition: var(--t);
+        }
+
+        .nav-search:focus {
+            border-color: var(--c-indigo);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-search::placeholder { color: #B0B0C0; }
+
+        .nav-search-icon {
+            position: absolute;
+            left: 0.95rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--c-muted);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        /* Auth nav links */
+        #auth-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            flex-shrink: 0;
+        }
+
+        .auth-link-login {
+            padding: 0.5rem 1.1rem;
+            border-radius: 99px;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--c-dark);
+            opacity: 0.7;
+            transition: var(--t);
+        }
+
+        .auth-link-login:hover { opacity: 1; background: rgba(0, 0, 0, 0.04); }
+
+        .auth-link-signup {
+            padding: 0.5rem 1.2rem;
+            border-radius: 99px;
+            background: var(--c-dark);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.875rem;
+            transition: var(--t);
+        }
+
+        .auth-link-signup:hover {
+            background: #000;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+        }
+
+        /* Profile avatar (when logged in) */
+        #header-profile-pic-container {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid rgba(99, 102, 241, 0.25);
+            flex-shrink: 0;
+        }
+
+        /* ══════════════════════════════════════════
+           HERO BANNER
+        ══════════════════════════════════════════ */
+        .hero {
+            background: linear-gradient(135deg, #0D0D1A 0%, #111128 50%, #0A1A3A 100%);
+            position: relative;
+            overflow: hidden;
+            padding: 3.2rem 0 3.6rem;
+        }
+
+        .hero-grid {
+            position: absolute; inset: 0;
+            background-image:
+                linear-gradient(rgba(99, 102, 241, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(99, 102, 241, 0.06) 1px, transparent 1px);
+            background-size: 52px 52px;
+            pointer-events: none;
+        }
+
+        .hero-orb {
+            position: absolute; border-radius: 50%;
+            pointer-events: none; filter: blur(80px);
+        }
+        .hero-orb-a {
+            width: 480px; height: 480px; top: -200px; right: -50px;
+            background: radial-gradient(circle, rgba(99,102,241,0.38), transparent 60%);
+            animation: ho1 18s ease-in-out infinite;
+        }
+        .hero-orb-b {
+            width: 300px; height: 300px; bottom: -80px; left: 3%;
+            background: radial-gradient(circle, rgba(147,51,234,0.3), transparent 60%);
+            animation: ho2 22s ease-in-out infinite;
+        }
+        @keyframes ho1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-40px,28px)} }
+        @keyframes ho2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(28px,-20px)} }
+
+        .hero-inner {
+            position: relative; z-index: 2;
+            max-width: 1360px; margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex; align-items: center; gap: 0.45rem;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.13);
+            padding: 0.3rem 0.9rem; border-radius: 99px;
+            font-size: 0.7rem; font-weight: 700;
+            color: rgba(255,255,255,0.55);
+            letter-spacing: 0.09em; text-transform: uppercase;
+            margin-bottom: 1.1rem;
+        }
+        .hero-eyebrow-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: linear-gradient(135deg, #818CF8, #C084FC);
+        }
+
+        .hero-title {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            font-weight: 800; letter-spacing: -0.048em;
+            line-height: 1.06; color: #fff;
+            margin-bottom: 0.65rem;
+        }
+        .hero-title .accent {
+            background: linear-gradient(120deg, #A5B4FC, #F0ABFC);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-sub {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.4);
+            max-width: 500px; margin: 0 auto;
+        }
+
+        /* ══════════════════════════════════════════
+           MAIN CONTENT
+        ══════════════════════════════════════════ */
+        .main-wrap {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 2.5rem 2rem 5rem;
+        }
+
+        /* Results count / label */
+        .results-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .results-label {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--c-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        /* Course cards grid */
+        #courses-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.4rem;
+        }
+
+        /* Individual course card */
+        .course-card {
+            background: #fff;
+            border-radius: var(--r);
+            border: 1px solid rgba(0,0,0,0.04);
+            overflow: hidden;
+            transition: var(--t);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(99,102,241,0.12);
+            border-color: rgba(99,102,241,0.15);
+        }
+
+        .course-thumb {
+            aspect-ratio: 16/9;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: var(--c-soft);
+            transition: transform 0.55s var(--spring);
+            overflow: hidden;
+        }
+
+        .course-card:hover .course-thumb { transform: scale(1.04); }
+
+        .course-body {
+            padding: 1.1rem 1.2rem 1.3rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .course-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.38;
+            color: var(--c-dark);
+            margin-bottom: 0.3rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .course-creator {
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.55rem;
+        }
+
+        .course-desc {
+            font-size: 0.8rem;
+            color: var(--c-muted);
+            line-height: 1.55;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; line-clamp: 3;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        /* No results */
+        .no-results {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--c-muted);
+            font-family: 'Sora', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .no-results i {
+            display: block;
+            font-size: 2.8rem;
+            color: #D1D1DB;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-nav { padding: 0 1rem; gap: 0.9rem; }
+            .nav-brand-name { display: none; }
+            .nav-search-wrap { max-width: none; }
+            .main-wrap { padding: 1.8rem 1rem 4rem; }
+            #courses-container { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            #courses-container { grid-template-columns: 1fr; }
+        }
+    </style>
+
+    <link rel="stylesheet" href="/static/css/mobile-premium.css">
+</head>
+
+<body class="antialiased">
+
+    <!-- ═══════════════════════════════════
+         FIXED NAV
+    ═══════════════════════════════════ -->
+    <header class="header-nav" id="mainNav">
+        <!-- Logo -->
+        <div class="nav-brand">
+            <img src="/static/icon/logo.png" alt="Youcert Logo" />
+            <span class="nav-brand-name">Youcert</span>
+        </div>
+
+        <!-- Search -->
+        <div class="nav-search-wrap">
+            <i class="fas fa-search nav-search-icon"></i>
+            <input
+                id="search-input"
+                type="text"
+                placeholder="Search for courses…"
+                class="nav-search"
+            />
+        </div>
+
+        <!-- Auth / profile -->
+        <div style="display:flex;align-items:center;gap:0.6rem;flex-shrink:0;">
+            <nav id="auth-nav"></nav>
+            <div
+                id="header-profile-pic-container"
+                class="hidden"
+                style='background-image:url("");'
+            ></div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════════════════════
+         HERO
+    ═══════════════════════════════════ -->
+    <section class="hero">
+        <div class="hero-grid"></div>
+        <div class="hero-orb hero-orb-a"></div>
+        <div class="hero-orb hero-orb-b"></div>
+        <div class="hero-inner">
+            <div class="hero-eyebrow">
+                <div class="hero-eyebrow-dot"></div>
+                Explore
+            </div>
+            <h1 class="hero-title">Browse <span class="accent">Courses</span></h1>
+            <p class="hero-sub">Discover professional exams and certifications from expert creators</p>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════ -->
+    <main class="main-wrap">
+        <div class="results-bar">
+            <span class="results-label" id="resultsLabel">All Courses</span>
+        </div>
+
+        <div id="courses-container"></div>
+    </main>
+
+    <script>
+        // ── Nav scroll effect ──
+        const mainNav = document.getElementById('mainNav');
+        window.addEventListener('scroll', () => mainNav.classList.toggle('scrolled', scrollY > 6), { passive: true });
+
+        // ══ Sample Data (replace with real API call when ready) ══
+        const allCourses = [
+            { id: 1, title: "Introduction to Web Development",   creator: "John Doe",     description: "Learn the fundamentals of web development from scratch.", imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Web+Dev" },
+            { id: 2, title: "Data Analysis with Python",         creator: "Jane Smith",   description: "Master data manipulation and visualization using Python.",   imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Python+Data" },
+            { id: 3, title: "UI/UX Design for Beginners",        creator: "Alex Turner",  description: "A practical guide to creating user-friendly interfaces.",    imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=UI%2FUX" },
+            { id: 4, title: "Digital Marketing Fundamentals",    creator: "Sarah Connor", description: "Build a strong foundation in online marketing strategies.",  imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Marketing" },
+            { id: 5, title: "Advanced JavaScript",               creator: "Emily White",  description: "Dive deep into modern JavaScript concepts and frameworks.",  imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Advanced+JS" },
+            { id: 6, title: "Mobile App Development",            creator: "Chris Evans",  description: "Create cross-platform mobile apps using modern tools.",      imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Mobile+App" },
+            { id: 7, title: "Cybersecurity Basics",              creator: "Frank Miller", description: "An introduction to protecting digital systems and data.",    imageUrl: "https://placehold.co/400x225/E8E8F0/7C7C8E?text=Cybersecurity" }
+        ];
+
+        // ── Render courses (with optional search filter) ──
+        function fetchAndRenderCourses(searchQuery = '') {
+            const container    = document.getElementById('courses-container');
+            const resultsLabel = document.getElementById('resultsLabel');
+            container.innerHTML = '';
+
+            const q = searchQuery.trim().toLowerCase();
+            const filtered = q
+                ? allCourses.filter(c =>
+                    c.title.toLowerCase().includes(q) ||
+                    c.creator.toLowerCase().includes(q) ||
+                    c.description.toLowerCase().includes(q)
+                )
+                : allCourses;
+
+            // Update label
+            if (q) {
+                resultsLabel.textContent = `${filtered.length} result${filtered.length !== 1 ? 's' : ''} for "${searchQuery}"`;
+            } else {
+                resultsLabel.textContent = `All Courses (${allCourses.length})`;
+            }
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <i class="fas fa-search"></i>
+                        No courses found matching "<strong>${searchQuery}</strong>"
+                    </div>`;
+                return;
+            }
+
+            filtered.forEach((course, idx) => {
+                const card = document.createElement('a');
+                card.href      = `/course/${course.id}`;
+                card.className = 'course-card';
+                card.style.animationDelay = `${idx * 40}ms`;
+
+                card.innerHTML = `
+                    <div class="course-thumb" style="background-image:url('${course.imageUrl}');"></div>
+                    <div class="course-body">
+                        <div class="course-title">${escHtml(course.title)}</div>
+                        <div class="course-creator">By ${escHtml(course.creator)}</div>
+                        <p class="course-desc">${escHtml(course.description)}</p>
+                    </div>`;
+
+                container.appendChild(card);
+            });
+        }
+
+        // ── Render auth header (login/signup vs avatar) ──
+        function renderHeader() {
+            const authNav     = document.getElementById('auth-nav');
+            const profilePic  = document.getElementById('header-profile-pic-container');
+            const isLoggedIn  = false; // Replace with your actual session/cookie check
+
+            if (isLoggedIn) {
+                authNav.classList.add('hidden');
+                profilePic.classList.remove('hidden');
+                profilePic.style.backgroundImage = 'url("https://placehold.co/100x100/F0F0F5/7C7C8E?text=User")';
+            } else {
+                profilePic.classList.add('hidden');
+                authNav.classList.remove('hidden');
+                authNav.innerHTML = `
+                    <a href="/login"  class="auth-link-login">Log In</a>
+                    <a href="/signup" class="auth-link-signup">Sign Up</a>`;
+            }
+        }
+
+        // ── XSS-safe helper ──
+        function escHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str || '';
+            return d.innerHTML;
+        }
+
+        // ── Init ──
+        window.onload = () => {
+            fetchAndRenderCourses();
+            renderHeader();
+
+            document.getElementById('search-input').addEventListener('input', e => {
+                fetchAndRenderCourses(e.target.value);
+            });
+        };
+    </script>
+
+    <script src="/static/js/mobile-premium.js"></script>
+</body>
+</html>
+
